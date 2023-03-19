@@ -1,0 +1,26 @@
+{
+  "name": "modular-fitness-site",
+  "version": "1.0.0",
+  "description": "A powerful and fully modular fitness tracker site that gives users power to customize their own dashboard.",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/g00gol/modular-fitness-site.git"
+  },
+  "author": "Jackey Yang, Matthew Thomas, Harshdeep Aujla, Kyle Boberg",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/g00gol/modular-fitness-site/issues"
+  },
+  "homepage": "https://github.com/g00gol/modular-fitness-site#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-handlebars": "^7.0.2",
+    "mongodb": "^5.1.0"
+  }
+}
