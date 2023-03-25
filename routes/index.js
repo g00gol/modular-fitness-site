@@ -1,6 +1,10 @@
+import userRoutes from "./user.js";
+
 const constructorMethod = (app) => {
-  app.use("/", (req, res) => {
-    res.render("index", { title: "Mode Fitness" });
+  app.use("/", userRoutes);
+
+  app.use("*", (req, res) => {
+    res.status(404).json({ error: "Not found" });
   });
 };
 
