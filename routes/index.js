@@ -1,10 +1,11 @@
-import userRoutes from "./user.js";
+import userRoutes from "./users.js";
 
 const constructorMethod = (app) => {
   app.use("/", userRoutes);
 
   app.use("*", (req, res) => {
-    res.status(404).json({ error: "Not found" });
+    console.log("error");
+    res.status(404).render("error", { errorCode: 404, errorText: "Not Found" });
   });
 };
 
