@@ -1,7 +1,16 @@
 <section>
   <form action="/login" method="POST">
-    <label for="username"></label>
-    <input name="username" type="text" placeholder="Username" />
+    <label>
+      <input name="username" type="text" placeholder="Username" />
+    </label>
+
+    <label>
+      <input name="password" type="text" placeholder="Password">
+    </label=>
     <input type="submit" />
   </form>
+
+  {{#if error}}
+    <p class="error">{{error}}</p>
+  {{/if}}
 </section>

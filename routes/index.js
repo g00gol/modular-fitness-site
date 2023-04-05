@@ -1,7 +1,10 @@
-import userRoutes from "./users.js";
+import mainRoutes from "./main.js";
+import { loginRouter, signupRouter } from "./users.js";
 
 const constructorMethod = (app) => {
-  app.use("/", userRoutes);
+  app.use("/", mainRoutes);
+
+  app.use("/login", loginRouter);
 
   app.use("*", (req, res) => {
     console.log("error");
