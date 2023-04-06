@@ -1,0 +1,30 @@
+<section>
+  <form action="/signup" method="POST">
+    <label>
+      <input name="name" type="text" value="{{name}}" placeholder="Name" />
+    </label>
+
+    <label>
+      <input
+        name="username"
+        type="text"
+        value="{{username}}"
+        placeholder="Username"
+      />
+    </label>
+
+    <label>
+      <input name="password" type="text" placeholder="Password" />
+    </label>
+
+    <label>
+      <input name="retypePassword" type="text" placeholder="Retype Password" />
+    </label>
+
+    <input type="submit" />
+  </form>
+
+  {{#if error}}
+    <p class="error">{{error}}</p>
+  {{/if}}
+</section>

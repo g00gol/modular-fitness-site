@@ -11,24 +11,56 @@ import {
 
 const create = async (name, username, password) => {
   // Check if all parameters exist
-  invalidParams();
+  invalidParams(name, username, password);
 
   // Check if given parameters are valid strings (verbose)
-  invalidStrings();
-
-  // Check if given parameters are valid string arrays (verbose)
-  invalidStrArrays();
+  invalidStrings(name, username, password);
 
   // Trim all strings
+  name = name.trim();
+  username = username.trim();
+  password = password.trim();
 
-  // Insert band into database
-  let bandsCollection = await users();
-  let createInfo = await bandsCollection.insertOne();
+  // Insert user into database
+  let newUser = {
+    name,
+    username,
+    password,
+  };
+
+  let usersCollection = await users();
+  let createInfo = await usersCollection.insertOne(newUser);
   if (!createInfo.acknowledged || !createInfo.insertedId)
-    throw [500, "Error: could not add users"];
+    throw { errorCode: 500, errorMessage: "Error: could not add users" };
 
-  let user = await get(createInfo.insertedId.toString());
+  return createInfo;
+};
+
+const getByUsername = async (username) => {
+  // Check if all parameters exist
+  invalidParams(username);
+
+  // Check if given parameters are valid strings (verbose)
+  invalidStrings(username);
+
+  // Trim all strings
+  username = username.trim();
+
+  // Find user in database
+  let usersCollection = await users();
+  let user = await usersCollection.findOne({
+    username: username,
+  });
+
+  // Check if user exists
+  if (!user)
+    throw {
+      errorCode: 404,
+      errorMessage: `Error: user not found with username ${username}`,
+    };
+
+  user._id = user._id.toString();
   return user;
 };
 
-export { create };
+export { create, getByUsername };
