@@ -1,0 +1,15 @@
+/* 
+  Custom Colors: please use syntax var(--colorName) when using colors in a css file
+*/
+:root {
+  --white: #FFFFFF;
+  --powder-white: #ECEFF4;
+  --gray-1: #4C566A;
+  --gray-2: #2E3440;
+  --frost: #5E81AC;
+}
+
+body {
+  background-color: var(--powder-white);
+  color: var(--gray-2);
+}
