@@ -1,4 +1,8 @@
 <section>
+  {{#if success}}
+    <p class="success">{{success}}</p>
+  {{/if}}
+
   <form action="/login" method="POST">
     <label>
       <input name="username" type="text" placeholder="Username" />

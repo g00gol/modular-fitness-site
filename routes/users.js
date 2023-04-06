@@ -1,7 +1,7 @@
 import { Router } from "express";
-import bcrypt from "bcrypt";
+import bcrypt, { hash } from "bcrypt";
 
-// import { user } from "../data/users.js";
+import { users } from "../data/index.js";
 import * as validation from "../helpers.js";
 
 /**
@@ -19,11 +19,11 @@ loginRouter
   })
   .post((req, res) => {
     let { username, password } = req.body;
-    username = username.trim;
-
     if (!username || !password) {
       return res.render("login", { error: "One or more fields invalid." });
     }
+
+    username = username.trim();
 
     try {
     } catch (e) {}
@@ -35,33 +35,41 @@ loginRouter
 const signupRouter = Router();
 signupRouter
   .route("/")
-  .get((req, res) => {})
-  .post((req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
+  .get((req, res) => {
+    try {
+      return res.render("signup", { error: "" });
+    } catch (e) {
+      return res.status(500).json("Internal Server Error");
+    }
+  })
+  .post(async (req, res) => {
+    let { name, username, password, retypePassword } = req.body;
+    if (!name || !username || !password || !retypePassword) {
+      return res.render("signup", {
+        name,
+        username,
+        error: "One or more fields invalid.",
+      });
+    }
 
-    // Hash the password
-    bcrypt.hash(password, 10, function (err, hash) {
-      if (err) {
-        console.log(err);
-      } else {
-        // Insert the user into the database
-        const db = client.db(dbName);
-        const collection = db.collection("users");
-        collection.insertOne(
-          { username: username, password: hash },
-          function (err, result) {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log("User added to database");
-              req.session.loggedIn = true;
-              return res.redirect("/dashboard");
-            }
-          }
-        );
-      }
-    });
+    name = name.trim();
+    username = username.trim();
+
+    if (password !== retypePassword) {
+      return res.render("signup", {
+        username,
+        error: "Passwords do not match.",
+      });
+    }
+
+    try {
+      // Hash the password
+      let hashedPassword = await bcrypt.hash(password, 10);
+      await users.create(name, username, hashedPassword);
+      return res.redirect("/login");
+    } catch (e) {
+      return res.status(500).json("Internal Server Error");
+    }
   });
 
 export { loginRouter, signupRouter };

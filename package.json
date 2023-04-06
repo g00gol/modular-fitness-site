@@ -25,5 +25,12 @@
     "express-handlebars": "^7.0.2",
     "express-session": "^1.17.3",
     "mongodb": "^5.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.21.4",
+    "babel-loader": "^9.1.2",
+    "dotenv": "^16.0.3",
+    "webpack": "^5.78.0",
+    "webpack-cli": "^5.0.1"
   }
 }

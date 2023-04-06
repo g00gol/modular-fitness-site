@@ -2,9 +2,11 @@ import express from "express";
 import exphbs from "express-handlebars";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import dotenv from "dotenv";
 
 import configRoutes from "./routes/index.js";
 
+dotenv.config({ path: "./.env" });
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
