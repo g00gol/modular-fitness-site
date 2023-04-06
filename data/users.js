@@ -31,9 +31,36 @@ const create = async (name, username, password) => {
   let usersCollection = await users();
   let createInfo = await usersCollection.insertOne(newUser);
   if (!createInfo.acknowledged || !createInfo.insertedId)
-    throw [500, "Error: could not add users"];
+    throw { errorCode: 500, errorMessage: "Error: could not add users" };
 
   return createInfo;
 };
 
-export { create };
+const getByUsername = async (username) => {
+  // Check if all parameters exist
+  invalidParams(username);
+
+  // Check if given parameters are valid strings (verbose)
+  invalidStrings(username);
+
+  // Trim all strings
+  username = username.trim();
+
+  // Find user in database
+  let usersCollection = await users();
+  let user = await usersCollection.findOne({
+    username: username,
+  });
+
+  // Check if user exists
+  if (!user)
+    throw {
+      errorCode: 404,
+      errorMessage: `Error: user not found with username ${username}`,
+    };
+
+  user._id = user._id.toString();
+  return user;
+};
+
+export { create, getByUsername };

@@ -1,5 +1,5 @@
 /**
- * The main routes for the application
+ * The dashboard routes for the application
  */
 
 import { Router } from "express";
@@ -8,7 +8,11 @@ const router = Router();
 
 router.route("/").get((req, res) => {
   try {
-    return res.render("homepage", { title: "Home" });
+    console.log(req.session);
+    return res.render("dashboard", {
+      title: "Dashboard",
+      user: req.session.user,
+    });
   } catch (e) {
     return res.status(500).json("Internal Server Error");
   }

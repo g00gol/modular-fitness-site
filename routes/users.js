@@ -1,5 +1,10 @@
+/**
+ * Routes for user authentication
+ */
+
 import { Router } from "express";
 import bcrypt, { hash } from "bcrypt";
+import session from "express-session";
 
 import { users } from "../data/index.js";
 import * as validation from "../helpers.js";
@@ -17,7 +22,7 @@ loginRouter
       return res.status(500).json("Internal Server Error");
     }
   })
-  .post((req, res) => {
+  .post(async (req, res) => {
     let { username, password } = req.body;
     if (!username || !password) {
       return res.render("login", { error: "One or more fields invalid." });
@@ -26,7 +31,19 @@ loginRouter
     username = username.trim();
 
     try {
-    } catch (e) {}
+      var user = await users.getByUsername(username);
+    } catch (e) {
+      return res.render("login", { error: "Invalid username or password." });
+    }
+
+    let auth = await bcrypt.compare(password, user.password);
+    if (auth) {
+      req.session.user = user.name;
+      console.log("login", req.session);
+      return res.redirect("/dashboard");
+    } else {
+      res.render("login", { error: "Invalid username or password." });
+    }
   });
 
 /**
