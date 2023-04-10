@@ -1,3 +1,5 @@
+// Make sure to update main.css with new colors
+
 tailwind.config = {
   theme: {
     extend: {

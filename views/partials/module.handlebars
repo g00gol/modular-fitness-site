@@ -1,0 +1,8 @@
+{{!-- module.handlebars is the layout for each module. We will use @partial-block in order to variably render HTML within this partial.
+      Note: In general, you should not need to edit this file.
+ --}}
+
+<section class="h-[40vh] flex flex-col space-y-8">
+  <h2 class="flex module-bar">{{moduleName}}</h2>
+  {{> @partial-block }}
+</section>

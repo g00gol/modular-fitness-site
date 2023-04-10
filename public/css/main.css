@@ -1,17 +1,38 @@
 /*
   Quicksand Font
 */
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap");
+
+/*
+  TailwindCSS
+*/
+@layer utilities {
+  .module-bar::before {
+    display: inline-block;
+    content: "";
+    background-color: var(--gray-2);
+    width: 10px;
+    margin-right: 10px;
+  }
+
+  .rounded-std {
+    border: 0;
+    border-radius: 20px;
+  }
+}
 
 /* 
   Custom Colors: please use syntax var(--colorName) when using colors in a css file
 */
 :root {
-  --white: #FFFFFF;
-  --powder-white: #ECEFF4;
-  --gray-1: #4C566A;
-  --gray-2: #2E3440;
-  --frost: #5E81AC;
+  --snow-1: #d8dee9;
+  --snow-2: #e5e9f0;
+  --polar: #81a1c1;
+  --white: #ffffff;
+  --powder-white: #eceff4;
+  --gray-1: #4c566a;
+  --gray-2: #2e3440;
+  --frost: #5e81ac;
 }
 
 body {
@@ -22,4 +43,8 @@ body {
 
 h1 {
   font-size: 20pt !important;
+}
+
+h2 {
+  font-size: 16pt !important;
 }
