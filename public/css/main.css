@@ -1,3 +1,8 @@
+/*
+  Quicksand Font
+*/
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
+
 /* 
   Custom Colors: please use syntax var(--colorName) when using colors in a css file
 */
@@ -12,4 +17,9 @@
 body {
   background-color: var(--powder-white);
   color: var(--gray-2);
+  font-family: "Quicksand", sans-serif;
+}
+
+h1 {
+  font-size: 20pt !important;
 }
