@@ -1,4 +1,16 @@
 <section>
   <h1>Hello, <span class="font-bold">{{user}}</span></h1>
   <p>Welcome to your modules!</p>
+
+  {{#> module moduleName="Module 1"}}
+    {{#> panels/panel-1}}
+      <h2>Module 1</h2>
+      <p>Module 1 content</p>
+    {{/panels/panel-1}}
+
+    {{#> panels/panel-2}}
+      <h2>Module 2</h2>
+      <p>Module 2 content</p>
+    {{/panels/panel-2}}
+  {{/module}}
 </section>

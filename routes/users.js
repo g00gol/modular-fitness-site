@@ -15,22 +15,28 @@ const loginRouter = Router();
 loginRouter
   .route("/")
   .get((req, res) => {
+    let title = "Login";
+
     try {
       // If the user is already logged in, redirect to dashboard
       if (req.session && req.session.loggedIn) {
         return res.redirect("/dashboard");
       } else {
-        return res.render("login", { error: "" });
+        return res.render("login", { title });
       }
     } catch (e) {
       return res.status(500).json("Internal Server Error");
     }
   })
   .post(async (req, res) => {
+    let title = "Login";
     // Get the username and password from the request body and check if they are valid
     let { username, password } = req.body;
     if (!username || !password) {
-      return res.render("login", { error: "One or more fields invalid." });
+      return res.render("login", {
+        title,
+        error: "One or more fields invalid.",
+      });
     }
 
     // Trim the username
@@ -40,7 +46,10 @@ loginRouter
     try {
       var user = await users.getByUsername(username);
     } catch (e) {
-      return res.render("login", { error: "Invalid username or password." });
+      return res.render("login", {
+        title,
+        error: "Invalid username or password.",
+      });
     }
 
     // Check if the password is correct
@@ -54,7 +63,10 @@ loginRouter
 
       return res.redirect("/");
     } else {
-      res.render("login", { error: "Invalid username or password." });
+      res.render("login", {
+        title,
+        error: "Invalid username or password.",
+      });
     }
   });
 
@@ -65,22 +77,27 @@ const signupRouter = Router();
 signupRouter
   .route("/")
   .get((req, res) => {
+    let title = "Signup";
+
     try {
       // If the user is already logged in, redirect to dashboard
       if (req.session && req.session.loggedIn) {
         return res.redirect("/dashboard");
       } else {
-        return res.render("signup");
+        return res.render("signup", { title });
       }
     } catch (e) {
       return res.status(500).json("Internal Server Error");
     }
   })
   .post(async (req, res) => {
+    let title = "Signup";
+
     // Get the name, username, password and retypePassword from the request body and check if they are valid
     let { name, username, password, retypePassword } = req.body;
     if (!name || !username || !password || !retypePassword) {
       return res.render("signup", {
+        title,
         name,
         username,
         error: "One or more fields invalid.",
@@ -94,6 +111,7 @@ signupRouter
     // Check if the passwords match
     if (password !== retypePassword) {
       return res.render("signup", {
+        title,
         username,
         error: "Passwords do not match.",
       });
