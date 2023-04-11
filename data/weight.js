@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import { weights } from "../config/mongoCollections.js";
 import { users } from "../config/mongoCollections.js";
+import moment from 'moment'
 import {
     invalidParams,
     invalidStrings,
@@ -47,6 +48,7 @@ const enterWeight = async (username, weightReading) =>
     {
         _id: new ObjectId(),
         weight: weightReading,
+        time: moment().format()
     };
     try 
     {
