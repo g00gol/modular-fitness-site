@@ -14,6 +14,17 @@ export const invalidParams = (...params) => {
   }
 };
 
+export const invalidNum = (...params) =>
+{
+  for (let i in params)
+  {
+    if(typeof params[i] != 'number' || isNaN(params[i]))
+    {
+      throw [400, `Error: function parameter ${i} must be a valid Number.`];
+    }
+  }
+}
+
 /**
  *
  * @param  {...any} strings
