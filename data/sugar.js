@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { weights } from "../config/mongoCollections.js";
+import { sugar } from "../config/mongoCollections.js";
 import { users } from "../config/mongoCollections.js";
 import moment from 'moment'
 import {
@@ -12,9 +12,9 @@ import {
   } from "../helpers.js";
   import { getByUsername } from "./users.js"
 
-const enterWeight = async (username, weightReading) => 
+const enterSugar = async (username, sugarReading, fasting) => 
 {
-    if(!username || !weightReading)
+    if(!username || !sugarReading)
     {
         throw `Missing parameters`
     }
@@ -22,13 +22,17 @@ const enterWeight = async (username, weightReading) =>
     {
         throw `Username needs to be a non empty string`
     }
-    if (typeof weightReading != 'number' || isNaN(weightReading) )
+    if (typeof sugarReading != 'number' || isNaN(sugarReading) )
     {
-        throw `Weightreading must be a valid number`
+        throw `SugarReading must be a valid number`
     }
-    if (weightReading <= 0)
+    if (sugarReading <= 0)
     {
-        throw `weight does not seem to be correct. `
+        throw `sugarReading does not seem to be correct. `
+    }
+    if(typeof fasting != 'boolean')
+    {
+        throw `error: fasting should be a bool`
     }
     username = username.trim()
     let user
@@ -36,7 +40,6 @@ const enterWeight = async (username, weightReading) =>
     {
         let userCollection = await users();
         user = await getByUsername(username)
-        // console.log(user)
     }
     catch (e)
     {
@@ -47,20 +50,21 @@ const enterWeight = async (username, weightReading) =>
     let newEntry = 
     {
         _id: new ObjectId(),
-        weight: weightReading,
-        time: moment().format()
+        sugarReading: sugarReading,
+        time: moment().format(),
+        fasting: fasting
     };
     try 
     {
-    let weightsCollection = await weights();
-    let result = await weightsCollection.updateOne
+    let sugarCollection = await sugar();
+    let result = await sugarCollection.updateOne
     (
         {username: username},
         {$push:{data: newEntry}}
     )
     if (result.matchedCount === 0) 
     {
-        await weightsCollection.insertOne(
+        await sugarCollection.insertOne(
         {
             _id: new ObjectId(),
             username: username,
@@ -70,8 +74,8 @@ const enterWeight = async (username, weightReading) =>
     } 
     catch (e) 
     {
-    throw `Error: could not insert weight reading for ${username}`;
+    throw `Error: could not insert sugarreading reading for ${username}`;
     }
 
 };
-export { enterWeight };
+export { enterSugar };
