@@ -6,22 +6,31 @@ import {
     invalidStrings,
     invalidID,
 } from "../helpers.js";
+import moment from 'moment';
+moment().format();
 
 
-const createCardio = async (username, type, distance, duration, dateTime, caloriesBurned) => {
+const createCardio = async (username, type, distance, duration, dateTime, caloriesBurned, weight) => {
     //allow user to input the calories burned if they know, otherwise calculate automatically.
     //use <= 0 to signal that calories burned was not inputted
+    //html will grab default weight value from either weight tracker or previous logs
 
-    invalidParams(type, distance, duration, dateTime, caloriesBurned);
+    invalidParams(type, distance, duration, dateTime, caloriesBurned, weight);
     invalidStrings(type);
     if(type != "walk" && type != "run" && type != "cycle" && type != "swim"){throw "invalid cardio type"}
     //validate dateTime?
+    if(!moment(dateTime).isValid()){throw "invalid date"};
+    ///
     if(typeof(duration) != "number"){throw "Duration must be a number"};
     if(duration <= 0){throw "Duration must be greater than 0"};
     if(typeof(distance) != "number"){throw "Distance must be a number"};
     if(distance <= 0){throw "Distance must be greater than 0"};
     if(typeof(caloriesBurned) != "number"){throw "caloriesBurned must be a number"};
-    if(caloriesBurned <= 0){caloriesBurned = calculateCaloriesBurned(60, distance, duration, type)}; //get the weight somehow
+    if(typeof(weight) != "number"){throw "weight must be a number"};
+    if(caloriesBurned <= 0){
+        if(weight <= 0){throw "invalid weight"}
+        caloriesBurned = calculateCaloriesBurned(weight, distance, duration, type)
+    } 
 
 
     let userCollection = await users();
@@ -60,7 +69,18 @@ const getCardioByID = async (username, id) => {
 
 
 const getCardioByDate = async (username, dateTime) => {
-    
+    if(!moment(dateTime).isValid()){throw "invalid date"};
+    let allCardios = await getAllCardios(username);
+
+    let allOfDate = []
+    for(let i = 0; i < allCardios.length; i++){
+        if(allCardios[i].dateTime.dayOfYear == dateTime.dayOfYear && allCardios[i].dateTime.year == dateTime.year){ //seems like a bad way to do it
+            allOfDate.push(allCardios[i]);
+        }
+    }
+    if(allOfDate.length == 0){throw {errorCode: 400, errorMessage: "Error: No cardio on this date"}};
+    return allOfDate;
+
 }
 
 
@@ -139,10 +159,6 @@ const updateCardio = async (username, id, type, distance, duration, dateTime, ca
     }
     throw {errorCode: 400, errorMessage: "Error: could not find cardio workout"};
 }
-
-
-
-
 
 //calculate calories burned
 /**
