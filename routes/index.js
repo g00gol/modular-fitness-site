@@ -7,11 +7,11 @@ import dashboardRoutes from "./dashboard.js";
 const constructorMethod = (app) => {
   app.use(
     session({
-      name: "",
-      secret: "This is a secret.. shhh don't tell anyone",
+      name: "AuthCookie",
+      secret: "secret-key",
       saveUninitialized: false,
       resave: false,
-      cookie: { maxAge: 60000 },
+      cookie: { secure: false },
     })
   );
 

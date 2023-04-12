@@ -3,14 +3,28 @@
 
 <head>
   <title>Mode Fitness | {{title}}</title>
+  {{!-- TailwindCSS --}}
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/public/js/tailwind.config.js"></script>
+
+  {{!-- CSS --}}
   <link href="/public/css/main.css" rel="stylesheet">
+  
   {{!-- Logo --}}
   <link rel="icon" href="/public/assets/images/Logo.png" type="image/png" sizes="16x16">
-  <script src="https://cdn.tailwindcss.com"></script>
+  
+  {{!-- Font Awesome --}}
+  <script src="https://kit.fontawesome.com/403ffa82c4.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
-  {{{body}}}
+  {{!-- Navbar --}}
+  {{> nav}}
+
+  {{!-- Body --}}
+  <main class="ml-nav p-8">
+    {{{body}}}
+  </main>
 </body>
 
 </html>
