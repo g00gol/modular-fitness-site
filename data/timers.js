@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { users } from "../config/mongoCollections.js";
+import { timers } from "../config/mongoCollections.js";
 import { getByUsername } from "./users.js"
 import {
     invalidParams,
@@ -7,18 +7,23 @@ import {
     invalidID,
 } from "../helpers.js";
 
-const createTimer = async (username, title, type, duration) => {
+const create = async (username, title, type, duration) => {
     invalidParams(title, type, duration);
     invalidStrings(title, type);
-    if(typeof(duration) != "number"){throw "Duration must be a number"};
+    type = type.trim();
+    title = title.trim();
+    if(!(type == "timer" || type == "stopwatch")){throw "invalid type"}
+    if(typeof(duration) != "number"){throw "Duration must be a number"}
     if(duration <= 0){throw "Duration must be greater than 0"};
 
 
-    let userCollection = await users();
-    let user = await getByUsername(username);; //REPLACE WITH USER GET FUNCTION FROM USERS.JS
-    let newTimer = {_id: new ObjectId, title: title, type: type, duration: duration}
-    let createInfo = await userCollection.findOneAndUpdate({_id: new ObjectId(user._id)}, {$push: {timers: newTimer}}, {returnDocument: "after"});
-    if(createInfo.lastErrorObject.n === 0){throw {errorCode: 500, errorMessage: "Error: could not add timer"};}
+    await getByUsername(username); //make sure it exists
+
+    let timerCollection = await timers();
+    let newTimer = {username: username, title: title, type: type, duration: duration};
+    let createInfo = await timerCollection.insertOne(newTimer);
+    if (!createInfo.acknowledged || !createInfo.insertedId)
+    throw { errorCode: 500, errorMessage: "Error: could not add timer" };
 
     
 
@@ -27,88 +32,73 @@ const createTimer = async (username, title, type, duration) => {
 }
 
 
-const getAllTimers = async(username) => {
-    let user = await getByUsername(username); //REPLACE WITH USER GET FUNCTION FROM USERS.JS
-    let allTimers = user.timers;
-    if (!user.timers || user.timers.length == 0){throw {errorCode: 400, errorMessage: "Error: user has no timers"}}
+const getAll = async(username) => {
+    await getByUsername(username);
+    let timerCollection = await timers();
+    let allTimers = await timerCollection.find({username: username}).toArray();
+
+    if (!allTimers || allTimers.length == 0){throw {errorCode: 400, errorMessage: "Error: user has no timers"}}
+    
     for(let i = 0; i < allTimers.length; i++){
         allTimers[i]._id = allTimers[i]._id.toString();
     }
     return allTimers;
 }
 
-const getTimer = async (username, id) => {
+const get = async (id) => {
     id = invalidID(id);
-    let allTimers = await getAllTimers(username);
-    for(let i = 0; i < allTimers.length; i++){
-        if(allTimers[i]._id = id){
-            return allTimers[i];
-        }
-    }
-    throw {errorCode: 400, errorMessage: "Error: cannot find timer"}
+    let timerCollection = await timers();
+    
+
+    let output = await timerCollection.findOne({_id: new ObjectId(id)});
+    if(!output){throw{errorCode: 400, errorMessage: "Error: cannot find cardio"}}
+
+    output._id = output._id.toString();
+    return output;
 }
 
 
-const deleteTimer = async (username, id) => {
+const remove = async (id) => {
     id = invalidID(id);
-    let userCollection = await users();
-    let user = await getByUsername(username);; //REPLACE WITH USER GET FUNCTION FROM USERS.JS
+
+    let deleted = get(id);
+
+    let timerCollection = await timers();
+    let deleteInfo = await timerCollection.findOneAndDelete({_id: new ObjectId(id)});
+    if(deleteInfo.lastErrorObject.n === 0){throw {errorCode: 500, errorMessage: "Error: could not delete timer"};}
     
-    let allTimers = await getAllTimers(username);
-    let deleted = undefined;
-
-    
-
-    for(let i = 0; i < allTimers.length; i++){
-        if(allTimers[i]._id == id){
-            deleted = allTimers[i];
-            deleted._id = deleted._id.toString();
-
-            allTimers.splice(i, 1)
-            let deleteInfo = await userCollection.findOneAndUpdate({_id: new ObjectId(user._id)}, {$set: {timers: allTimers}}, {returnDocument: "after"});
-            if(deleteInfo.lastErrorObject.n === 0){throw {errorCode: 500, errorMessage: "Error: could not delete timer"};}
-            
-            return {deleted: true, timer: deleted};
-        }
-    }
-    throw {errorCode: 400, errorMessage: "Error: cannot find timer"}
-
-
+    return deleted;
 }
 
-const updateTimer = async (username, id, title, type, duration) => {
+const update = async (id, username, title, type, duration) => {
     invalidParams(title, type, duration);
     invalidStrings(title, type);
-    if(typeof(duration) != "number"){throw "Duration must be a number"};
+    type = type.trim();
+    title = title.trim();
+    if(!(type == "timer" || type == "stopwatch")){throw "invalid type"}
+    if(typeof(duration) != "number"){throw "Duration must be a number"}
     if(duration <= 0){throw "Duration must be greater than 0"};
-    id = invalidID(id);
+    invalidID(id);
 
 
-    let userCollection = await users();
-    let user = await getByUsername(username);; //REPLACE WITH USER GET FUNCTION FROM USERS.JS
-    let allTimers = await getAllTimers(username);
 
-    for(let i = 0; i < allTimers.length; i++){
-        if(allTimers[i]._id == id){
-            allTimers[i].title = title;
-            allTimers[i].type = type;
-            allTimers[i].duration = duration;
+    await getByUsername(username); //make sure it exists
 
-            let updateInfo = await userCollection.findOneAndUpdate({_id: new ObjectId(user._id)}, {$set: {timers: allTimers}}, {returnDocument: "after"});
-            //({_id: new ObjectId(bandId)}, {$set: updateBand}, {returnDocument: "after"});
-            if(updateInfo.lastErrorObject.n === 0){throw {errorCode: 500, errorMessage: "Error: could not update timer"};}
+    let timerCollection = await timers();
+    let updatedTimer= {_id: new ObjectId(id), username: username, title: title, type: type, duration: duration};
+    let updateInfo = await timerCollection.findOneAndUpdate({_id: new ObjectId(id)}, {$set: updatedTimer}, {returnDocument: "after"});
+    if(updateInfo.lastErrorObject.n === 0){throw {errorCode: 500, errorMessage: "Error: could not update Cardio Workout"};}
 
-            return await getTimer(username, id);
-        }
-    }
-    throw {errorCode: 400, errorMessage: "Error: could not find timer"};
+
+    updateInfo.value._id = updateInfo.value._id.toString();
+    return updateInfo.value;
 }
 
 
 export{
-    createTimer,
-    getTimer,
-    getAllTimers,
-    deleteTimer,
-    updateTimer
+    create,
+    get,
+    getAll,
+    remove,
+    update
 }

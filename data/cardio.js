@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { users } from "../config/mongoCollections.js";
+import { cardio } from "../config/mongoCollections.js";
 import { getByUsername } from "./users.js"
 import {
     invalidParams,
@@ -10,7 +10,7 @@ import moment from 'moment';
 moment().format();
 
 
-const createCardio = async (username, type, distance, duration, dateTime, caloriesBurned, weight) => {
+const create = async (username, type, distance, duration, dateTime, caloriesBurned, weight) => {
     //allow user to input the calories burned if they know, otherwise calculate automatically.
     //use <= 0 to signal that calories burned was not inputted
     //html will grab default weight value from either weight tracker or previous logs
@@ -33,11 +33,13 @@ const createCardio = async (username, type, distance, duration, dateTime, calori
     } 
 
 
-    let userCollection = await users();
-    let user = await getByUsername(username);; //REPLACE WITH USER GET FUNCTION FROM USERS.JS
-    let newCardio = {_id: new ObjectId, type: type, distance: distance, duration: duration, dateTime: dateTime, caloriesBurned: caloriesBurned};
-    let createInfo = await userCollection.findOneAndUpdate({_id: new ObjectId(user._id)}, {$push: {cardios: newCardio}}, {returnDocument: "after"});
-    if(createInfo.lastErrorObject.n === 0){throw {errorCode: 500, errorMessage: "Error: could not add Cardio Workout"};}
+    await getByUsername(username); //make sure it exists
+
+    let cardioCollection = await cardio();
+    let newCardio = {username: username, type: type, distance: distance, duration: duration, dateTime: dateTime, caloriesBurned: caloriesBurned};
+    let createInfo = await cardioCollection.insertOne(newCardio);
+    if (!createInfo.acknowledged || !createInfo.insertedId)
+    throw { errorCode: 500, errorMessage: "Error: could not add cardio" };
 
     
 
@@ -46,118 +48,112 @@ const createCardio = async (username, type, distance, duration, dateTime, calori
 
 }
 
-const getAllCardios = async (username) => {
-    let user = await getByUsername(username); 
-    let allCardios = user.cardios;
-    if (!user.cardios || user.cardios.length == 0){throw {errorCode: 400, errorMessage: "Error: user has no cardios"}}
+const getAll = async (username) => {
+    await getByUsername(username);
+    let cardioCollection = await cardio();
+    let allCardios = await cardioCollection.find({username: username}).toArray();
+
+    if (!allCardios || allCardios.length == 0){throw {errorCode: 400, errorMessage: "Error: user has no cardios"}}
+    
     for(let i = 0; i < allCardios.length; i++){
         allCardios[i]._id = allCardios[i]._id.toString();
     }
     return allCardios;
 }
 
-const getCardioByID = async (username, id) => {
+const getByID = async (id) => {
     id = invalidID(id);
-    let allCardios = await getAllCardios(username);
-    for(let i = 0; i < allCardios.length; i++){
-        if(allCardios[i]._id = id){
-            return allCardios[i];
-        }
-    }
-    throw {errorCode: 400, errorMessage: "Error: cannot find cardio"}
+    let cardioCollection = await cardio();
+    
+
+    let output = await cardioCollection.findOne({_id: new ObjectId(id)});
+    if(!output){throw{errorCode: 400, errorMessage: "Error: cannot find cardio"}}
+
+    output._id = output._id.toString();
+    return output;
 }
 
 
-const getCardioByDate = async (username, dateTime) => {
+const getByDate = async (username, dateTime) => {
     if(!moment(dateTime).isValid()){throw "invalid date"};
-    let allCardios = await getAllCardios(username);
+    await getByUsername(username);
 
-    let allOfDate = []
-    for(let i = 0; i < allCardios.length; i++){
-        if(allCardios[i].dateTime.dayOfYear == dateTime.dayOfYear && allCardios[i].dateTime.year == dateTime.year){ //seems like a bad way to do it
-            allOfDate.push(allCardios[i]);
-        }
+    let cardioCollection = await cardio();
+    let allOfDate = await cardioCollection.find({dateTime: dateTime, username: username}).toArray();
+    
+    if(!allOfDate){throw{errorCode: 400, errorMessage: "Error: cannot find cardio on this date"}}
+
+    for(let i = 0; i < allOfDate.length; i++){
+        allOfDate[i]._id = allOfDate[i]._id.toString();
     }
-    if(allOfDate.length == 0){throw {errorCode: 400, errorMessage: "Error: No cardio on this date"}};
+
     return allOfDate;
 
 }
 
 
-const getCardioByType = async (username, type) => {
+const getByType = async (username, type) => {
     invalidStrings(type);
     if(type != "walk" && type != "run" && type != "cycle" && type != "swim"){throw "invalid cardio type"}
 
-    let allCardios = await getAllCardios(username);
-    let allOfType = []
-    for(let i = 0; i < allCardios.length; i++){
-        if(allCardios[i].type == type){
-            allOfType.push(allCardios[i]);
-        }
+    await getByUsername(username);
+
+    let cardioCollection = await cardio();
+    let allOfType = await cardioCollection.find({type: type, username: username}).toArray();
+    
+    if(!allOfType){throw{errorCode: 400, errorMessage: "Error: cannot find cardio of this type"}}
+
+    for(let i = 0; i < allOfType.length; i++){
+        allOfType[i]._id = allOfType[i]._id.toString();
     }
-    if(allOfType.length == 0){throw {errorCode: 400, errorMessage: "Error: No cardio of this type"}};
+
     return allOfType;
 }
 
 
-const deleteCardio = async (username, id) => {
+const remove = async (id) => {
     id = invalidID(id);
-    let userCollection = await users();
-    let user = await getByUsername(username);; //REPLACE WITH USER GET FUNCTION FROM USERS.JS
-    
-    let allCardios = await getAllCardios(username);
-    let deleted = undefined;
 
-    
+    let deleted = getByID(id);
 
-    for(let i = 0; i < allCardios.length; i++){
-        if(allCardios[i]._id == id){
-            deleted = allCardios[i];
-            deleted._id = deleted._id.toString();
-
-            allCardios.splice(i, 1)
-            let deleteInfo = await userCollection.findOneAndUpdate({_id: new ObjectId(user._id)}, {$set: {cardios: allCardios}}, {returnDocument: "after"});
-            if(deleteInfo.lastErrorObject.n === 0){throw {errorCode: 500, errorMessage: "Error: could not delete cardio workout"};}
-            
-            return {deleted: true, cardio: deleted};
-        }
-    }
-    throw {errorCode: 400, errorMessage: "Error: cannot find cardio workout"}
+    let cardioCollection = await cardio();
+    let deleteInfo = await cardioCollection.findOneAndDelete({_id: new ObjectId(id)});
+    if(deleteInfo.lastErrorObject.n === 0){throw {errorCode: 500, errorMessage: "Error: could not delete Cardio Workout"};}
     
+    return deleted;
 }
 
 
-const updateCardio = async (username, id, type, distance, duration, dateTime, caloriesBurned) => {
-    invalidParams(type, distance, duration, dateTime, caloriesBurned);
+const update = async (id, username, type, distance, duration, dateTime, caloriesBurned, weight) => {
+    invalidParams(type, distance, duration, dateTime, caloriesBurned, weight);
     invalidStrings(type);
+    invalidID(id);
     if(type != "walk" && type != "run" && type != "cycle" && type != "swim"){throw "invalid cardio type"}
     //validate dateTime?
+    if(!moment(dateTime).isValid()){throw "invalid date"};
+    ///
     if(typeof(duration) != "number"){throw "Duration must be a number"};
     if(duration <= 0){throw "Duration must be greater than 0"};
     if(typeof(distance) != "number"){throw "Distance must be a number"};
     if(distance <= 0){throw "Distance must be greater than 0"};
     if(typeof(caloriesBurned) != "number"){throw "caloriesBurned must be a number"};
-    if(caloriesBurned <= 0){caloriesBurned = calculateCaloriesBurned(60, distance, duration, type)}; //get the weight somehow
+    if(typeof(weight) != "number"){throw "weight must be a number"};
+    if(caloriesBurned <= 0){
+        if(weight <= 0){throw "invalid weight"}
+        caloriesBurned = calculateCaloriesBurned(weight, distance, duration, type)
+    } 
 
 
-    let userCollection = await users();
-    let user = await getByUsername(username);; //REPLACE WITH USER GET FUNCTION FROM USERS.JS
-    let allCardios = await getAllCardios(username);
+    await getByUsername(username); //make sure it exists
 
-    for(let i = 0; i < allCardios.length; i++){
-        if(allCardios[i]._id == id){
-            allCardios[i].title = title;
-            allCardios[i].type = type;
-            allCardios[i].duration = duration;
+    let cardioCollection = await cardio();
+    let updatedCardio = {_id: new ObjectId(id), username: username, type: type, distance: distance, duration: duration, dateTime: dateTime, caloriesBurned: caloriesBurned};
+    let updateInfo = await cardioCollection.findOneAndUpdate({_id: new ObjectId(id)}, {$set: updatedCardio}, {returnDocument: "after"});
+    if(updateInfo.lastErrorObject.n === 0){throw {errorCode: 500, errorMessage: "Error: could not update Cardio Workout"};}
 
-            let updateInfo = await userCollection.findOneAndUpdate({_id: new ObjectId(user._id)}, {$set: {cardios: allCardios}}, {returnDocument: "after"});
-            //({_id: new ObjectId(bandId)}, {$set: updateBand}, {returnDocument: "after"});
-            if(updateInfo.lastErrorObject.n === 0){throw {errorCode: 500, errorMessage: "Error: could not update cardio workout"};}
 
-            return await getCardioByID(username, id);
-        }
-    }
-    throw {errorCode: 400, errorMessage: "Error: could not find cardio workout"};
+    updateInfo.value._id = updateInfo.value._id.toString();
+    return updateInfo.value;
 }
 
 //calculate calories burned
@@ -180,11 +176,11 @@ let calculateCaloriesBurned = (weight, distance, time, type) => {
 
 
 export{
-    createCardio,
-    getCardioByID,
-    getCardioByDate,
-    getAllCardios,
-    getCardioByType,
-    deleteCardio,
-    updateCardio
+    create,
+    getByID,
+    getByDate,
+    getAll,
+    getByType,
+    remove,
+    update
 }
