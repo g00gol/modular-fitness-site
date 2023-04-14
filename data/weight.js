@@ -102,7 +102,7 @@ const deleteAllWeightDataForUser = async (username) =>
     try 
     {
         let weightsCollection = await weights();
-        await weightsCollection.deleteMany({username: username});
+        await weightsCollection.findOneAndDelete({username: username});
         // can retrun whatever here.
     }
     catch (e) 
@@ -111,6 +111,60 @@ const deleteAllWeightDataForUser = async (username) =>
         throw `Error: could not delete.`;
     }
 
+};
+//will use this to create stats for the user.
+const getAllWeightsObj = async (username) =>
+{
+    if(!username)
+    {
+        throw `Error: username not provided.`
+    }
+    if(typeof username != 'string' || username.trim().length === 0)
+    {
+        throw `Error: username must be a non empty string.`
+    }
+    username = username.trim();
+    let user
+    try 
+    {
+        let userCollection = await users();
+        user = await getByUsername(username)
+    }
+    catch (e)
+    {
+        console.log(e)
+        throw `error user does not exists in the users collection.`
+    }
+    try 
+    {
+        let weightsCollection = await weights();
+        let record = await weightsCollection.findOne({username: username});
+        return record.data;
+        
+    }
+    catch (e) 
+    {
+        console.log(e);
+        throw `Error: could not find.`;
+    }
+};
+
+const getWeightById = async(id) =>
+{
+    // invalidID(id);
+    try 
+    {
+        let weightsCollection = await weights();
+        let record = await weightsCollection.findOne({data: {$elemMatch: {_id: new ObjectId(id)}}});
+        let ans = record["data"].find(data => data._id.toString() === id)
+        return ans;
+        // return record;  
+    }
+    catch (e) 
+    {
+        console.log(e);
+        throw `Error: could not find weight of Id: ${id}.`;
+    }
 }
-// await deleteAllWeightDataForUser("mkaur")
-export { enterWeight, deleteAllWeightDataForUser };
+
+export { enterWeight, deleteAllWeightDataForUser, getAllWeightsObj, getWeightById };

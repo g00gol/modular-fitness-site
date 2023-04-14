@@ -105,7 +105,7 @@ const deleteAllSugarDataForUser = async (username) =>
     try 
     {
         let sugarCollection = await sugar();
-        await sugarCollection.deleteMany({username: username});
+        await sugarCollection.findOneAndDelete({username: username});
         // can retrun whatever here.
     }
     catch (e) 
@@ -115,4 +115,31 @@ const deleteAllSugarDataForUser = async (username) =>
     }
 
 };
-export {enterSugar, deleteAllSugarDataForUser};
+const deleteOneSugarEnrty  = async(username, id) =>
+{
+    if(!username)
+    {
+        throw `Error: username not provided.`
+    }
+    if(typeof username != 'string' || username.trim().length === 0)
+    {
+        throw `Error: username must be a non empty string.`
+    }
+    username = username.trim();
+    let user
+    try 
+    {
+        let userCollection = await users();
+        user = await getByUsername(username)
+        // console.log(user)
+    }
+    catch (e)
+    {
+        console.log(e)
+        throw `error user does not exists in the users collection.`
+    }
+    id = invalidID(id)
+    
+    
+}
+export {enterSugar, deleteAllSugarDataForUser, deleteOneSugarEnrty};
