@@ -143,11 +143,11 @@ const deleteOneSugarEnrty  = async(username, id) =>
     {
         let sugarCollection = await sugar();
         let record = await sugarCollection.findOne({data: {$elemMatch: {_id: new ObjectId(id)}}});
-        let done = await sugarCollection.findOneAndUpdate({_id: record["_id"]},{$pull: {data: {_id: new ObjectId(albumId)}}})
+        let done = await sugarCollection.findOneAndUpdate({_id: record["_id"]},{$pull: {data: {_id: new ObjectId(id)}}})
         if (done === null) 
         {
           throw 'Error: this id did not exist.';
-        }    
+        }  
     }
     catch (e) 
     {

@@ -166,5 +166,47 @@ const getWeightById = async(id) =>
         throw `Error: could not find weight of Id: ${id}.`;
     }
 }
+const deleteOneWeightEnrty  = async(username, id) =>
+{
+    if(!username)
+    {
+        throw `Error: username not provided.`
+    }
+    if(typeof username != 'string' || username.trim().length === 0)
+    {
+        throw `Error: username must be a non empty string.`
+    }
+    username = username.trim();
+    let user
+    try 
+    {
+        let userCollection = await users();
+        user = await getByUsername(username)
+        // console.log(user)
+    }
+    catch (e)
+    {
+        console.log(e)
+        throw `error user does not exists in the users collection.`
+    }
+    id = invalidID(id)
+    try
+    {
+        let weightCollection = await weights();
+        let record = await weightCollection.findOne({data: {$elemMatch: {_id: new ObjectId(id)}}});
+        let done = await weightCollection.findOneAndUpdate({_id: record["_id"]},{$pull: {data: {_id: new ObjectId(id)}}})
+        if (done === null) 
+        {
+          throw 'Error: this id did not exist.';
+        }  
+    }
+    catch (e) 
+    {
+        console.log(e);
+        throw `Error: could not delete weight entry of Id: ${id}.`;
+    }
 
-export { enterWeight, deleteAllWeightDataForUser, getAllWeightsObj, getWeightById };
+
+}
+
+export { enterWeight, deleteAllWeightDataForUser, getAllWeightsObj, getWeightById, deleteOneWeightEnrty };
