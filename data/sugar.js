@@ -157,6 +157,39 @@ const deleteOneSugarEnrty  = async(username, id) =>
 
 
 }
+const updateSugartEntry = async (id, sugarReading, fasting) =>
+{
+    invalidID(id)
+    if (typeof sugarReading != 'number' || isNaN(sugarReading) )
+    {
+        throw `SugarReading must be a valid number`
+    }
+    if (sugarReading <= 0)
+    {
+        throw `sugarReading does not seem to be correct. `
+    }
+    if(typeof fasting != 'boolean')
+    {
+        throw `error: fasting should be a bool`
+    }
+    try 
+    {
+        let sugarCollection = await sugar();
+        let update = await sugarCollection.updateOne({'data._id': new ObjectId(id)}, {$set:{'data.$.sugarReading':sugarReading, 'data.$.fasting': fasting}}); // https://www.mongodb.com/community/forums/t/update-nested-sub-document-with-a-specific-condition/136373
+        if(update.matchedCount === 0 )
+        {
+            throw `Error: coudl not update.`
+        }
+        
+        // return record;  
+    }
+    catch (e) 
+    {
+        console.log(e);
+        throw `Error: could not find sugar of Id: ${id}.`;
+    }
+
+}
 const getSugarById = async(id) =>
 {
     invalidID(id);
@@ -211,4 +244,4 @@ const getAllSugarObj = async (username) =>
     }
 };
 
-export {enterSugar, deleteAllSugarDataForUser, deleteOneSugarEnrty, getSugarById, getAllSugarObj};
+export {enterSugar, deleteAllSugarDataForUser, deleteOneSugarEnrty, getSugarById, getAllSugarObj, updateSugartEntry};

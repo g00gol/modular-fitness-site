@@ -166,6 +166,36 @@ const getWeightById = async(id) =>
         throw `Error: could not find weight of Id: ${id}.`;
     }
 }
+
+const updateWeightEntry = async (id, weight) =>
+{
+    invalidID(id)
+    if(!weight)
+    {
+        throw `Missing the new weight num`
+    }
+    if(typeof weight != 'number' || isNaN(weight) || weight <= 0)
+    {
+        throw `weight must be a valid number`
+    }
+    try 
+    {
+        let weightsCollection = await weights();
+        let update = await weightsCollection.updateOne({'data._id': new ObjectId(id)}, {$set:{'data.$.weight':weight}} ); // https://www.mongodb.com/community/forums/t/update-nested-sub-document-with-a-specific-condition/136373
+        if(update.matchedCount === 0 )
+        {
+            throw `Error: coudl not update.`
+        }
+        
+        // return record;  
+    }
+    catch (e) 
+    {
+        console.log(e);
+        throw `Error: could not find weight of Id: ${id}.`;
+    }
+
+}
 const deleteOneWeightEnrty  = async(username, id) =>
 {
     if(!username)
@@ -209,4 +239,4 @@ const deleteOneWeightEnrty  = async(username, id) =>
 
 }
 
-export { enterWeight, deleteAllWeightDataForUser, getAllWeightsObj, getWeightById, deleteOneWeightEnrty };
+export { enterWeight, deleteAllWeightDataForUser, getAllWeightsObj, getWeightById, deleteOneWeightEnrty, updateWeightEntry };
