@@ -139,7 +139,76 @@ const deleteOneSugarEnrty  = async(username, id) =>
         throw `error user does not exists in the users collection.`
     }
     id = invalidID(id)
-    
-    
+    try
+    {
+        let sugarCollection = await sugar();
+        let record = await sugarCollection.findOne({data: {$elemMatch: {_id: new ObjectId(id)}}});
+        let done = await sugarCollection.findOneAndUpdate({_id: record["_id"]},{$pull: {data: {_id: new ObjectId(albumId)}}})
+        if (done === null) 
+        {
+          throw 'Error: this id did not exist.';
+        }    
+    }
+    catch (e) 
+    {
+        console.log(e);
+        throw `Error: could not delete sugar of Id: ${id}.`;
+    }
+
+
 }
-export {enterSugar, deleteAllSugarDataForUser, deleteOneSugarEnrty};
+const getSugarById = async(id) =>
+{
+    invalidID(id);
+    try 
+    {
+        let sugarCollection = await sugar();
+        let record = await sugarCollection.findOne({data: {$elemMatch: {_id: new ObjectId(id)}}});
+        let ans = record["data"].find(data => data._id.toString() === id)
+        return ans;
+        // return record;  
+    }
+    catch (e) 
+    {
+        console.log(e);
+        throw `Error: could not find sugar of Id: ${id}.`;
+    }
+}
+//will use this to create stats for the user.
+const getAllSugarObj = async (username) =>
+{
+    if(!username)
+    {
+        throw `Error: username not provided.`
+    }
+    if(typeof username != 'string' || username.trim().length === 0)
+    {
+        throw `Error: username must be a non empty string.`
+    }
+    username = username.trim();
+    let user
+    try 
+    {
+        let userCollection = await users();
+        user = await getByUsername(username)
+    }
+    catch (e)
+    {
+        console.log(e)
+        throw `error user does not exists in the users collection.`
+    }
+    try 
+    {
+        let sugarCollection = await sugar();
+        let record = await sugarCollection.findOne({username: username});
+        return record.data;
+        
+    }
+    catch (e) 
+    {
+        console.log(e);
+        throw `Error: could not find.`;
+    }
+};
+
+export {enterSugar, deleteAllSugarDataForUser, deleteOneSugarEnrty, getSugarById, getAllSugarObj};

@@ -151,7 +151,7 @@ const getAllWeightsObj = async (username) =>
 
 const getWeightById = async(id) =>
 {
-    // invalidID(id);
+    invalidID(id);
     try 
     {
         let weightsCollection = await weights();
