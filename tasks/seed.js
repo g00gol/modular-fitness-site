@@ -33,7 +33,6 @@ let timer1 = await timers.create("johndoe", "plank", "timer", 50)
 await timers.create("johndoe", "meditation", "timer", 100)
 await timers.create("johndoe", "chill", "timer", 2000)
 
-console.log(await timers.update(timer1._id, "johndoe", "plankies", "timer", 100))
 await users.create("patrick hill", "nycSwag", hashedPassword);
 await users.create("mandeep", "mkaur", hashedPassword);
 await enterWeight("mkaur", 99)
