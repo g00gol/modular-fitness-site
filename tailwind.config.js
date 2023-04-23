@@ -1,6 +1,6 @@
-// Make sure to update main.css with new colors
-
-tailwind.config = {
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ["**/*.handlebars", "**/*.html"],
   theme: {
     extend: {
       spacing: {
@@ -17,4 +17,5 @@ tailwind.config = {
       },
     },
   },
+  plugins: [],
 };

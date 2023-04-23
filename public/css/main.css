@@ -6,7 +6,11 @@
 /*
   TailwindCSS
 */
-@layer utilities {
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer base {
   .module-bar::before {
     display: inline-block;
     content: "";
@@ -42,9 +46,9 @@ body {
 }
 
 h1 {
-  font-size: 20pt !important;
+  font-size: 20pt;
 }
 
 h2 {
-  font-size: 16pt !important;
+  font-size: 16pt;
 }
