@@ -11,7 +11,7 @@ router.route("/").get((req, res) => {
     if (req.session && req.session.loggedIn) {
       return res.render("homepage", { title: "Home", user: req.session.user });
     } else {
-      return res.redirect("/signup");
+      return res.render("landing", {title: "Lanidng page"});
     }
   } catch (e) {
     return res.status(500).json("Internal Server Error");
