@@ -25,7 +25,8 @@
     "express-handlebars": "^7.0.2",
     "express-session": "^1.17.3",
     "moment": "^2.29.4",
-    "mongodb": "^5.1.0"
+    "mongodb": "^5.1.0",
+    "xss": "^1.0.14"
   },
   "devDependencies": {
     "@babel/core": "^7.21.4",

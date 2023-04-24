@@ -4,6 +4,7 @@
 
 import { Router } from "express";
 import bcrypt, { hash } from "bcrypt";
+import xss from "xss";
 
 import { users } from "../data/index.js";
 import * as validation from "../helpers.js";
@@ -32,6 +33,8 @@ loginRouter
     let title = "Login";
     // Get the username and password from the request body and check if they are valid
     let { username, password } = req.body;
+    username = xss(username);
+    password = xss(password);
     if (!username || !password) {
       return res.render("login", {
         title,
@@ -95,6 +98,11 @@ signupRouter
 
     // Get the name, username, password and retypePassword from the request body and check if they are valid
     let { name, username, password, retypePassword } = req.body;
+    name = xss(name);
+    username = xss(username);
+    password = xss(password);
+    retypePassword = xss(retypePassword);
+
     if (!name || !username || !password || !retypePassword) {
       return res.render("signup", {
         title,
