@@ -35,7 +35,7 @@
     @apply w-fit h-fit flex flex-col items-center justify-center space-y-8;
   }
   .userForm input {
-    @apply w-[20vw] h-1/6;
+    @apply w-[20vw] h-1/6 bg-transparent;
   }
 }
 

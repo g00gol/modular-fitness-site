@@ -8,7 +8,8 @@
     "seed": "node tasks/seed.js",
     "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:css": "postcss public/css/main.css -o public/css/build.css"
+    "build:css": "postcss public/css/main.css -o public/css/build.css",
+    "watch:css": "nodemon -w public/css -w views -e css,handlebars -x \"npm run build:css\""
   },
   "repository": {
     "type": "git",
@@ -26,16 +27,17 @@
     "express": "^4.18.2",
     "express-handlebars": "^7.0.2",
     "express-session": "^1.17.3",
+    "moment": "^2.29.4",
     "mongodb": "^5.1.0",
     "postcss": "^8.4.23",
     "postcss-cli": "^10.1.0",
-    "tailwindcss": "^3.3.1",
-    "moment": "^2.29.4"
+    "tailwindcss": "^3.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.21.4",
     "babel-loader": "^9.1.2",
     "dotenv": "^16.0.3",
+    "nodemon": "^2.0.22",
     "webpack": "^5.78.0",
     "webpack-cli": "^5.0.1"
   }
