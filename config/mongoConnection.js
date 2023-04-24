@@ -6,7 +6,7 @@ let _db = undefined;
 const dbConnection = async () => {
   if (!_connection) {
     _connection = await MongoClient.connect(
-      process.env.MONGO_URI ?? "mongodb://localhost:27017"
+      process.env.MONGO_URI ?? "mongodb://127.0.0.1:27017"
     );
     _db = _connection.db(process.env.MONGO_DB_NAME ?? "mode-fitness");
   }

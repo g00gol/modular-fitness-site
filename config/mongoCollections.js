@@ -17,6 +17,8 @@ const getCollectionFn = (collection) => {
 
 /* Now, you can list your collections here: */
 export const users = getCollectionFn("users");
+export const cardio = getCollectionFn("cardio");
+export const timers = getCollectionFn("timers");
 export const weights = getCollectionFn("weights");
 export const sugar = getCollectionFn("sugar");
 
