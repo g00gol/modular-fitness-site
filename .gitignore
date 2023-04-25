@@ -108,3 +108,6 @@ dist
 
 # build.css file
 **/build.css
+
+# package-lock.json
+package-lock.json
