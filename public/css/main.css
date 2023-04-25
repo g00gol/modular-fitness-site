@@ -1,12 +1,18 @@
 /*
-  Quicksand Font
-*/
+ * Fonts
+ */
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
 
 /*
-  TailwindCSS
-*/
-@layer utilities {
+ * TailwindCSS
+ */
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer base {
+  /* Modular Title Bar */
   .module-bar::before {
     display: inline-block;
     content: "";
@@ -15,9 +21,21 @@
     margin-right: 10px;
   }
 
+  /* Standard rounded border */
   .rounded-std {
     border: 0;
     border-radius: 20px;
+  }
+
+  /* User Form */
+  .userFormContainer {
+    @apply w-1/2 h-full flex flex-col items-center justify-center bg-white;
+  }
+  .userForm {
+    @apply w-fit h-fit flex flex-col items-center justify-center space-y-8;
+  }
+  .userForm input {
+    @apply w-[20vw] h-1/6 bg-transparent;
   }
 }
 
@@ -27,24 +45,31 @@
 :root {
   --snow-1: #d8dee9;
   --snow-2: #e5e9f0;
-  --polar: #81a1c1;
+  --snow-3: #eceff4;
   --white: #ffffff;
-  --powder-white: #eceff4;
+  --frost: #5e81ac;
+  --polar: #81a1c1;
   --gray-1: #4c566a;
   --gray-2: #2e3440;
-  --frost: #5e81ac;
 }
 
 body {
-  background-color: var(--powder-white);
+  background-color: var(--snow-3);
   color: var(--gray-2);
   font-family: "Quicksand", sans-serif;
 }
 
 h1 {
-  font-size: 20pt !important;
+  font-size: 20pt;
 }
 
 h2 {
-  font-size: 16pt !important;
+  font-size: 16pt;
+}
+
+a {
+  color: var(--frost);
+}
+a:hover {
+  color: var(--polar);
 }
