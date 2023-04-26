@@ -1,6 +1,9 @@
 <section>
   <h1>Hello, <span class="font-bold">{{user}}</span></h1>
-  <p>Welcome to your modules!</p>
+  <div class="flex justify-between w-full">
+    <p>Welcome to your modules!</p>
+    <button class="text-frost hover:text-polar underline">Edit Modules</button>
+  </div>
 
   {{#> module moduleName="Module 1"}}
     {{#> panels/panel-1}}

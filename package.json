@@ -9,7 +9,7 @@
     "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:css": "postcss public/css/main.css -o public/css/build.css",
-    "dev": "nodemon -w public/css -w views -w routes -e css,handlebars,js -x \"npm run build:css && npm run start\""
+    "dev": "nodemon -w public/css -w views -w routes -e css,handlebars,js -x \"npm run build:css && nodemon app.js\""
   },
   "repository": {
     "type": "git",
