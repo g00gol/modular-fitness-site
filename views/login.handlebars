@@ -3,13 +3,13 @@
     <p class="success">{{success}}</p>
   {{/if}}
 
-  <form action="/login" method="POST">
+  <form action="/login" method="POST" id = "login-form">
     <label>
-      <input name="username" type="text" placeholder="Username" />
+      <input id = "userNameInput" name="username" type="text" placeholder="Username" />
     </label>
 
     <label>
-      <input name="password" type="password" placeholder="Password" />
+      <input id = "passwordInput" name="password" type="password" placeholder="Password" />
     </label>
     <input type="submit" />
   </form>
