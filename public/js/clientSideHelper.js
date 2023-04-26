@@ -41,4 +41,4 @@ function authPassword(password, confirmPassword) {
       } // https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address
       return true;
   }
-   
+  export { emailValidation, authPassword };

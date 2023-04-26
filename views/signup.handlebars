@@ -1,11 +1,12 @@
 <section>
-  <form action="/signup" method="POST">
+  <form action="/signup" method="POST" id = "registration-form">
     <label>
       <input name="name" type="text" value="{{name}}" placeholder="Name" />
     </label>
 
     <label>
       <input
+        id = "usernameInput"
         name="username"
         type="text"
         value="{{username}}"
@@ -14,11 +15,12 @@
     </label>
 
     <label>
-      <input name="password" type="password" placeholder="Password" />
+      <input name="password" type="password" placeholder="Password"  id="passwordInput"/>
     </label>
 
     <label>
       <input
+        id = "retypePasswordInput"
         name="retypePassword"
         type="password"
         placeholder="Retype Password"
