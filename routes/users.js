@@ -5,7 +5,7 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
 import xss from "xss";
-
+import moment from "moment";
 import { users } from "../data/index.js";
 import * as validation from "../utils/helpers.js";
 import * as middleware from "../utils/middleware.js";
@@ -88,13 +88,15 @@ signupRouter
     let title = "Signup";
 
     // Get the name, username, password and retypePassword from the request body and check if they are valid
-    let { name, username, password, retypePassword } = req.body;
+    let { name, username, password, retypePassword, DOB } = req.body;
+    // console.log(req.body)
     name = xss(name);
     username = xss(username);
     password = xss(password);
+    DOB = xss(DOB);
     retypePassword = xss(retypePassword);
-
-    if (!name || !username || !password || !retypePassword) {
+    
+    if (!name || !username || !password || !retypePassword || !DOB) {
       return res.render("signup", {
         title,
         name,
@@ -102,10 +104,38 @@ signupRouter
         error: "One or more fields invalid.",
       });
     }
-
+  
+  //https://stackoverflow.com/questions/14057497/moment-js-how-do-i-get-the-number-of-years-since-a-date-not-rounded-up
+  //checking if the date is from the future
+    if(moment(DOB).isAfter(moment()))
+    {
+      return res.render("signup", 
+      {
+        title,
+        name,
+        username,
+        error: "Date of birth can not be from the future.",
+      });
+    }
+    //checking if the user is under 13
+    let age =  moment().diff(DOB, 'years'); 
+    if(age < 13)
+    {
+      return res.render("signup", 
+      {
+        title,
+        name,
+        username,
+        error: "Sorry, User must be at least 13 years old.",
+      });
+    }
+    
     // Trim the name and username
     name = name.trim();
     username = username.trim();
+
+    //making name and username lower case
+    username = username.toLowerCase()
 
     // Check if the passwords match
     if (password !== retypePassword) {

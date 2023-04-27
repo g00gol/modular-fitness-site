@@ -1,7 +1,11 @@
 <section>
   <form action="/signup" method="POST" id = "registration-form">
     <label>
-      <input name="name" type="text" value="{{name}}" placeholder="Name" />
+      <input 
+      name="name" 
+      type="text" 
+      value="{{name}}"
+       placeholder="Full Name" />
     </label>
 
     <label>
@@ -13,9 +17,21 @@
         placeholder="Username"
       />
     </label>
-
     <label>
-      <input name="password" type="password" placeholder="Password"  id="passwordInput"/>
+      <input
+      id = "emailInput"
+      name = "email"
+      type = "email"
+      value="{{email}}"
+      placeholder= "email"
+      />
+    </label>
+    <label>
+      <input 
+      name="password" 
+      type="password" 
+      placeholder="Password"  
+      id="passwordInput"/>
     </label>
 
     <label>
@@ -26,9 +42,16 @@
         placeholder="Retype Password"
       />
     </label>
-
+  <label> 
+    Date of Birth
+    <input 
+    id = "DOBinput" 
+    name = "DOB" 
+    type = "date"  /> 
+  </label>
     <input type="submit" />
   </form>
+  
 
   <div>Signed up already? <a href="/login">Login here</a></div>
 
