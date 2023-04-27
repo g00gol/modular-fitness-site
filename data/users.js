@@ -1,66 +1,180 @@
-import { ObjectId } from "mongodb";
-
+import bcrypt from "bcrypt";
 import { users } from "../config/mongoCollections.js";
-import {
-  invalidParams,
-  invalidStrings,
-  invalidStrArrays,
-  invalidID,
-  arraysEqual,
-} from "../utils/helpers.js";
 
-const create = async (name, username, password) => {
-  // Check if all parameters exist
-  invalidParams(name, username, password);
+import * as validation from "../utils/validation.js";
 
-  // Check if given parameters are valid strings (verbose)
-  invalidStrings(name, username, password);
+/**
+ * Creates a new user using the following fields:
+ * @param {string} fullName
+ * @param {string} username
+ * @param {string} password
+ * @param {string} confirmPassword
+ * @returns {insertedUser: true} if the user was successfully inserted
+ * @throws {array} of invalid parameters if there are any invalid parameters
+ */
+export const createUser = async (
+  fullName,
+  username,
+  password,
+  confirmPassword,
+  DOB
+) => {
+  // Check if parameters exists
+  try {
+    validation.authParam({
+      fullNameInput: fullName,
+      usernameInput: username,
+      passwordInput: password,
+      confirmPasswordInput: confirmPassword,
+    });
+  } catch (e) {
+    throw e;
+  }
 
-  // Trim all strings
-  name = name.trim();
-  username = username.trim();
-  password = password.trim();
+  /**
+   * An array of invalid parameters which is checked later on
+   * Each check must be mutually exclusive
+   */
+  let invalidParams = [];
 
-  // Insert user into database
+  // Validate full name
+  try {
+    validation.authFullName({
+      fullNameInput: fullName,
+    });
+  } catch (e) {
+    // Add the invalid parameters array to the invalidParams array
+    invalidParams = [...invalidParams, ...e];
+  }
+
+  // Validate username
+  try {
+    validation.authUsername({ usernameInput: username });
+  } catch (e) {
+    // Add the invalid parameters array to the invalidParams array
+    invalidParams = [...invalidParams, ...e];
+  }
+
+  // Validate passwordInput and confirmPasswordInput
+  try {
+    validation.authPassword(password, confirmPassword);
+  } catch (e) {
+    // Add the invalid parameters array to the invalidParams array
+    invalidParams = [...invalidParams, ...e];
+  }
+
+  try {
+    validation.authDOB({ DOBInput: DOB });
+  } catch (e) {
+    // Add the invalid parameters array to the invalidParams array
+    invalidParams = [...invalidParams, ...e];
+  }
+
+  // Check if there are any invalid parameters
+  if (invalidParams.length > 0) {
+    throw { invalid: invalidParams };
+  }
+
+  // Otherwise, proceed to create the user
+  /**
+   * Format the inputs
+   */
+  fullName = fullName.trim();
+  username = username.toLowerCase().trim();
+
+  // Hash the password
+  let hashedPassword = await bcrypt.hash(password, 10);
+  // Create the user object
   let newUser = {
-    name,
+    fullName,
     username,
-    password,
+    password: hashedPassword,
+    DOB,
+    enabledModueles: [],
   };
 
-  let usersCollection = await users();
+  const usersCollection = await users();
+  // Check if the user already exists
+  let user = await usersCollection.findOne({ username });
+  if (user) throw { alreadyExists: true };
+
+  // Insert the user into the database
   let createInfo = await usersCollection.insertOne(newUser);
+
+  // Check if the user was successfully inserted
   if (!createInfo.acknowledged || !createInfo.insertedId)
-    throw { errorCode: 500, errorMessage: "Error: could not add users" };
+    throw { serverError: [500, "Internal Server Error"] };
 
-  return createInfo;
+  return { insertedUser: true };
 };
 
-const getByUsername = async (username) => {
-  // Check if all parameters exist
-  invalidParams(username);
+/**
+ * Checks if the user data is correct
+ * @param {string} username
+ * @param {string} password
+ * @returns the user data if the user was successfully authenticated
+ * @throws {array} of invalid parameters if there are any invalid parameters
+ */
+export const checkUser = async (username, password) => {
+  // Validate the username and password
+  try {
+    validation.authParam({ username, password });
+  } catch (e) {
+    throw e;
+  }
 
-  // Check if given parameters are valid strings (verbose)
-  invalidStrings(username);
+  /**
+   * An array of invalid parameters which is checked later on
+   * Each check must be mutually exclusive
+   */
+  let invalidParams = [];
 
-  // Trim all strings
-  username = username.trim();
+  // Validate username
+  try {
+    validation.authUsername({ usernameInput: username });
+  } catch (e) {
+    // Add the invalid parameters array to the invalidParams array
+    invalidParams = [...invalidParams, ...e];
+  }
 
-  // Find user in database
-  let usersCollection = await users();
-  let user = await usersCollection.findOne({
-    username: username,
-  });
+  // Validate password
+  try {
+    validation.authPassword(password, password);
+  } catch (e) {
+    // Add the invalid parameters array to the invalidParams array
+    invalidParams = [...invalidParams, ...e];
+  }
 
-  // Check if user exists
-  if (!user)
-    throw {
-      errorCode: 404,
-      errorMessage: `Error: user not found with username ${username}`,
-    };
+  // Check if there are any invalid parameters
+  if (invalidParams.length > 0) {
+    throw { invalid: invalidParams };
+  }
 
-  user._id = user._id.toString();
-  return user;
+  username = username.toLowerCase().trim();
+
+  // Try to find the user by username
+  const usersCollection = await users();
+  let user;
+  try {
+    user = await usersCollection.findOne({ username });
+  } catch (e) {
+    throw { serverError: [500, "Internal Server Error"] };
+  }
+
+  // Check if user was found with the username
+  if (user) {
+    // Check if the password is correct
+    let match = await bcrypt.compare(password, user.password);
+    if (match) {
+      return {
+        fullName: user.fullName,
+        username: user.username,
+      };
+    }
+  }
+
+  // Else case
+  throw { error: ["Invalid username or password"] };
 };
 
-export { create, getByUsername };
+export const getByUsername = async (username) => {};

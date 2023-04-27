@@ -1,11 +1,11 @@
 <section>
-  <h1>Hello, <span class="font-bold">{{user}}</span></h1>
+  <h1>Hello, <span class="font-bold">{{user.fullName}}</span></h1>
   <p>Welcome to your modules!</p>
 
-  {{#> module moduleName="Module 1"}}
+  {{#> module moduleName="Timer"}}
     {{#> panels/panel-1}}
-      <h2>Module 1</h2>
-      <p>Module 1 content</p>
+      <h2>Timers</h2>
+      <button>Meditation</button>
     {{/panels/panel-1}}
 
     {{#> panels/panel-2}}
