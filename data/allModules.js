@@ -1,33 +1,41 @@
-const allModules = {
-  calorieTracker: {
+const allModules = [
+  {
+    tag: "calorieTracker",
     name: "Calorie Tracker",
   },
-  bodyWeightTracker: {
+  {
+    tag: "bodyWeightTracker",
     name: "Body Weight Tracker",
   },
-  workoutTracker: {
+  {
+    tag: "workoutTracker",
     name: "Workout Tracker",
   },
-  timer: {
+  {
+    tag: "timer",
     name: "Timer",
   },
-  cardioTracker: {
+  {
+    tag: "cardioTracker",
     name: "Cardio Tracker",
   },
-  notepad: {
+  {
+    tag: "notepad",
     name: "Notepad",
   },
-  eventsCalendar: {
+  {
+    tag: "eventsCalendar",
     name: "Events Calendar",
   },
-  bloodSugarTracker: {
+  {
+    tag: "bloodSugarTracker",
     name: "Blood Sugar Tracker",
   },
-};
+];
 
-const allModulesSorted = allModules.sort((a, b) => {
-  if (a.name < b.name) return -1;
-  return 1;
-});
+// Sort the modules alphabetically
+const allModulesSorted = allModules.sort((a, b) =>
+  a.name > b.name ? 1 : b.name > a.name ? -1 : 0
+);
 
 export default allModulesSorted;

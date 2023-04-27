@@ -4,6 +4,7 @@
 
 import { Router } from "express";
 import * as middleware from "../utils/middleware.js";
+import allModules from "../data/allModules.js";
 
 const router = Router();
 
@@ -18,12 +19,26 @@ router.route("/modules").get(middleware.home, (req, res) => {
     return res.render("modules", {
       title: "Home",
       user: req.session.user,
+      allModules,
     });
   } catch (e) {
     return res.redirect("/error" + "?500");
   }
 });
 
-// router.route("")
+router.route("/modules").post(middleware.home, (req, res) => {
+  let {
+    bloodSugarTracker,
+    bodyWeightTracker,
+    calorieTracker,
+    cardioTracker,
+    eventsCalendar,
+    notepad,
+    timer,
+    workoutTracker,
+  } = req.body;
+
+  console.log(bodyWeightTracker);
+});
 
 export default router;
