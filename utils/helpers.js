@@ -3,8 +3,9 @@
 import { ObjectId } from "mongodb";
 
 /**
- *
+ * Takes in any amount of parameters and checks if they are defined
  * @param  {...any} params
+ * @throws [400, `Error: function parameter ${i} must have valid values`] if any of the inputs are not defined
  */
 export const invalidParams = (...params) => {
   for (let i in params) {
@@ -14,22 +15,24 @@ export const invalidParams = (...params) => {
   }
 };
 
-export const invalidNum = (...params) =>
-{
-  for (let i in params)
-  {
-    if(typeof params[i] != 'number' || isNaN(params[i]))
-    {
+/**
+ * Takes in any amount of parameters and checks if they are valid numbers
+ * @param  {...any} params
+ * @throws [400, `Error: function parameter ${i} must be a valid Number.`] if any of the inputs are not valid numbers
+ */
+export const invalidNum = (...params) => {
+  for (let i in params) {
+    if (typeof params[i] != "number" || isNaN(params[i])) {
       throw [400, `Error: function parameter ${i} must be a valid Number.`];
     }
   }
-}
+};
 
 /**
- *
+ * Takes in any amount of parameters and checks if they are valid strings
  * @param  {...any} strings
  * @usage inputs must be formatted as {varName: varValue}
- *
+ * @throws [400, `Error: ${field} must be a non-empty string`] if any of the inputs are not valid strings
  */
 export const invalidStrings = (...strings) => {
   for (let i in strings) {
@@ -42,10 +45,10 @@ export const invalidStrings = (...strings) => {
 };
 
 /**
- *
+ * Takes in any amount of parameters and checks if they are valid string arrays
  * @param {...any} arrays
  * @usage inputs must be formatted as {varName: varValue}
- *
+ * @throws [400, `Error: ${field} must be a valid array with at least one value`] if any of the inputs are not valid string arrays
  */
 export const invalidStrArrays = (...arrays) => {
   for (let i in arrays) {
@@ -67,8 +70,9 @@ export const invalidStrArrays = (...arrays) => {
 };
 
 /**
- *
+ * Takes in any amount of parameters and checks if they are valid ObjectIds
  * @param { id } string
+ * @throws [400, "Error: id is not a valid ObjectId"] if the input is not a valid ObjectId
  */
 export const invalidID = (id) => {
   invalidParams(id);

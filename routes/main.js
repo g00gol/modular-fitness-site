@@ -38,7 +38,10 @@ router.route("/modules").post(middleware.home, (req, res) => {
     workoutTracker,
   } = req.body;
 
-  console.log(bodyWeightTracker);
+  res.render("modules", {
+    title: "Home",
+    user: req.session.user,
+  });
 });
 
 export default router;
