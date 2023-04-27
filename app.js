@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 
 import configRoutes from "./routes/index.js";
+import * as middleware from "./utils/middleware.js";
 
 dotenv.config({ path: "./.env" });
 const app = express();
@@ -40,6 +41,19 @@ app.engine(
 );
 app.set("view engine", "handlebars");
 
+const hbs = exphbs.create({});
+
+// Custom handlebar function to check if an array contains an item
+hbs.handlebars.registerHelper("ifContains", function (arr, item, options) {
+  if (!arr) return;
+
+  if (arr.includes(item)) {
+    return options.fn(this);
+  }
+  return options.inverse(this);
+});
+
+app.use(middleware.logging);
 configRoutes(app);
 
 app.listen(3000, () => {

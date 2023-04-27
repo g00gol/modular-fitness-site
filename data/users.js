@@ -7,7 +7,7 @@ import {
   invalidStrArrays,
   invalidID,
   arraysEqual,
-} from "../helpers.js";
+} from "../utils/helpers.js";
 
 const create = async (name, username, password) => {
   // Check if all parameters exist

@@ -3,19 +3,27 @@
  */
 
 import { Router } from "express";
+import * as middleware from "../utils/middleware.js";
 
 const router = Router();
 
-router.route("/").get((req, res) => {
+router.route("/").get(middleware.root, (req, res) => {
+  /**
+   * You should not be here
+   */
+});
+
+router.route("/modules").get(middleware.home, (req, res) => {
   try {
-    if (req.session && req.session.loggedIn) {
-      return res.render("homepage", { title: "Home", user: req.session.user });
-    } else {
-      return res.render("landing", {title: "Lanidng page"});
-    }
+    return res.render("modules", {
+      title: "Home",
+      user: req.session.user,
+    });
   } catch (e) {
-    return res.status(500).json("Internal Server Error");
+    return res.redirect("/error" + "?500");
   }
 });
+
+// router.route("")
 
 export default router;

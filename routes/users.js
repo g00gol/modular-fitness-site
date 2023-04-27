@@ -3,11 +3,12 @@
  */
 
 import { Router } from "express";
-import bcrypt, { hash } from "bcrypt";
+import bcrypt from "bcrypt";
 import xss from "xss";
 
 import { users } from "../data/index.js";
-import * as validation from "../helpers.js";
+import * as validation from "../utils/helpers.js";
+import * as middleware from "../utils/middleware.js";
 
 /**
  * Login route
@@ -15,16 +16,11 @@ import * as validation from "../helpers.js";
 const loginRouter = Router();
 loginRouter
   .route("/")
-  .get((req, res) => {
+  .get(middleware.login, (req, res) => {
     let title = "Login";
 
     try {
-      // If the user is already logged in, redirect to dashboard
-      if (req.session && req.session.loggedIn) {
-        return res.redirect("/dashboard");
-      } else {
-        return res.render("login", { title });
-      }
+      return res.render("login", { title });
     } catch (e) {
       return res.status(500).json("Internal Server Error");
     }
@@ -79,16 +75,11 @@ loginRouter
 const signupRouter = Router();
 signupRouter
   .route("/")
-  .get((req, res) => {
+  .get(middleware.signup, (req, res) => {
     let title = "Signup";
 
     try {
-      // If the user is already logged in, redirect to dashboard
-      if (req.session && req.session.loggedIn) {
-        return res.redirect("/dashboard");
-      } else {
-        return res.render("signup", { title });
-      }
+      return res.render("signup", { title });
     } catch (e) {
       return res.status(500).json("Internal Server Error");
     }
@@ -137,4 +128,18 @@ signupRouter
     }
   });
 
-export { loginRouter, signupRouter };
+/**
+ * Logout route
+ */
+const logoutRouter = Router();
+logoutRouter.route("/").get(middleware.logout, (req, res) => {
+  try {
+    req.session.destroy();
+  } catch (e) {
+    return res.redirect("/error?500");
+  }
+
+  return res.redirect("/");
+});
+
+export { loginRouter, signupRouter, logoutRouter };
