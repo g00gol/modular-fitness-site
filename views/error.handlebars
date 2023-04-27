@@ -1,1 +1,11 @@
-<h1>{{errorCode}} {{errorText}}</h1>
+{{log this}}
+
+<div class="w-screen h-screen">
+  <h1>
+    {{#each error}}
+      {{this}}
+    {{/each}}
+  </h1>
+
+  <a href="/">Go back</a>
+</div>

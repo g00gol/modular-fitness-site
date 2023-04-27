@@ -27,6 +27,11 @@
     border-radius: 20px;
   }
 
+  /* Nav Icons */
+  .icons-clickable {
+    @apply cursor-pointer text-[4vh] text-gray-2 hover:text-frost transition-all;
+  }
+
   /* User Form */
   .userFormContainer {
     @apply w-1/2 h-full flex flex-col items-center justify-center bg-white;
