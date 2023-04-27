@@ -2,8 +2,8 @@ import { Router } from "express";
 import bcrypt, { hash } from "bcrypt";
 import xss from "xss";
 
-import * as users from "../../data/users";
-import { getAllSugarObj } from "../../data/sugar"
+import * as users from "../../data/users.js";
+import { getAllSugarObj } from "../../data/sugar.js"
 import session from "express-session";
 
 const sugarRouter = Router();

@@ -1,8 +1,25 @@
 //https://blog.logrocket.com/data-visualization-d3-js-node-js/
 import * as d3 from "https://cdn.skypack.dev/d3@7";
+import axios from 'https://cdn.skypack.dev/axios';
+
+
+
+
+const getSugarData = async () =>
+{
+    try
+    {
+        let sugarData = await axios.get('/api/sugar')
+        return sugarData.data
+    }
+    catch (e)
+    {
+        throw e
+    }
+}
 
 async function drawChart() {
-    const data = [100,90,80,70,60,50,40]
+    const data = getSugarData();
     const svgWidth = 500;
     const svgHeight = 500;
     const barPadding = 5;
