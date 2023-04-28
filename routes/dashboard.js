@@ -3,20 +3,16 @@
  */
 
 import { Router } from "express";
+import * as middleware from "../utils/middleware.js";
 
 const router = Router();
 
-router.route("/").get((req, res) => {
+router.route("/").get(middleware.home, (req, res) => {
   try {
-    // console.log(req.session);
-    if (req.session && req.session.loggedIn) {
-      return res.render("dashboard", {
-        title: "Dashboard",
-        user: req.session.user,
-      });
-    } else {
-      return res.redirect("/login");
-    }
+    return res.render("dashboard", {
+      title: "Dashboard",
+      user: req.session.user,
+    });
   } catch (e) {
     return res.status(500).json("Internal Server Error");
   }

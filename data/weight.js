@@ -9,7 +9,7 @@ import {
     invalidID,
     arraysEqual,
     invalidNum,
-  } from "../helpers.js";
+  } from "../utils/helpers.js";
   import { getByUsername } from "./users.js"
 
 const enterWeight = async (username, weightReading) => 

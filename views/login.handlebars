@@ -1,20 +1,42 @@
-<section>
-  {{#if success}}
-    <p class="success">{{success}}</p>
-  {{/if}}
+<script type="module" src="../public/js/users.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
-  <form action="/login" method="POST">
-    <label>
-      <input name="username" type="text" placeholder="Username" />
-    </label>
+<section class="userContainer" id="login-container">
+  <div class="userFormContainer">
+    <form class="userForm" id="login-form" action="/login" method="POST">
+      <div>
+        <h1>Welcome back</h1>
+        <p>Please enter your details to log in.</p>
+      </div>
+      
+      <label for="usernameInput">Username</label>
+      <input
+        id="usernameInput"
+        class="{{#ifContains invalid "usernameInput"}}invalidInput{{/ifContains}}"
+        name="usernameInput"
+        type="text"
+        placeholder="Enter your username"
+        value="{{valid.usernameInput}}"
+      />
 
-    <label>
-      <input name="password" type="password" placeholder="Password" />
-    </label>
-    <input type="submit" />
-  </form>
+      <label for="passwordInput">Password</label>
+      <input
+        id="passwordInput"
+        class="{{#ifContains invalid "passwordInput"}}invalidInput{{/ifContains}}"
+        name="passwordInput"
+        type="password"
+        placeholder="Enter your password"
+      />
+      <input type="submit" />
 
-  {{#if error}}
-    <p class="error">{{error}}</p>
-  {{/if}}
+      <div class="errorContainer">
+        {{#each error}}
+          <p class="error">{{this}}</p>
+        {{/each}}
+      </div>
+      <a href="/signup">Click here to sign up!</a>
+    </form>
+  </div>
+
+  <span class="userFeature"></span>
 </section>
