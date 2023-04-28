@@ -38,9 +38,30 @@ router.route("/modules").post(middleware.home, (req, res) => {
     workoutTracker,
   } = req.body;
 
+  // Get the user and their modules
+  let modules = req.session.user.modules;
+
+  // Update the modules with the newly checked modules
+  function updateModule(moduleName) {
+    moduleName = eval(moduleName); // wow i cant believe i remembered this at 2am lmfao
+
+    if (moduleName) {
+      if (!modules.includes(moduleName)) {
+        modules.push(moduleName);
+      } else {
+        modules = modules.filter((x) => x !== moduleName);
+      }
+    }
+  }
+
+  for (let { tag } of allModules) {
+    updateModule(tag);
+  }
+
   res.render("modules", {
     title: "Home",
     user: req.session.user,
+    allModules,
   });
 });
 

@@ -92,7 +92,7 @@ export const createUser = async (
     username,
     password: hashedPassword,
     DOB,
-    enabledModueles: [],
+    enabledModules: [],
   };
 
   const usersCollection = await users();
@@ -171,6 +171,7 @@ export const checkUser = async (username, password) => {
       return {
         fullName: user.fullName,
         username: user.username,
+        enabledModules: user.enabledModules,
       };
     }
   }
