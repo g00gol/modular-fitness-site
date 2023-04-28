@@ -34,6 +34,22 @@ await users.createUser(
   "2001-01-01"
 );
 
+await users.createUser(
+  "Mandeep Kaur",
+  "mkaur",
+  testPassword,
+  testPassword,
+  "2001-01-01"
+);
+
+await users.createUser(
+  "Patrick Hill",
+  "nycSwag",
+  testPassword,
+  testPassword,
+  "2001-01-01"
+);
+
 //create some cardio workouts
 await cardio.create("johndoe", "run", 1500, 1, moment(), -1, 60);
 await cardio.create("johndoe", "walk", 15, 2, moment(), -1, 60);
