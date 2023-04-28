@@ -1,16 +1,29 @@
+<script src="../public/js/editModules.js"></script>
+<script src="../public/js/timer-select.js"></script>
+
 <section>
   <h1>Hello, <span class="font-bold">{{user}}</span></h1>
   <p>Welcome to your modules!</p>
 
-  {{#> module moduleName="Module 1"}}
-    {{#> panels/panel-1}}
-      <h2>Module 1</h2>
-      <p>Module 1 content</p>
-    {{/panels/panel-1}}
+  {{#> module moduleName="Timers"}}
+    {{#> panels/timers-1}}
+      <h2>All Timers</h2>
+      <div id="saved-timers">
+      {{#each allTimers}}
+        <button class="timer-select-button" id="{{this._id}}" data-title="{{this.title}}" data-duration="{{this.durationFormat}}" data-seconds="{{this.duration}}">
+          <p class="timer title">{{this.title}}</p> <p class="timer duration">{{this.durationFormat}}</p>
+        </button>
+      {{/each}}
+      </div>
+    {{/panels/timers-1}}
 
     {{#> panels/panel-2}}
-      <h2>Module 2</h2>
-      <p>Module 2 content</p>
+    <div id="timer-counter" data-paused="false" data-seconds="">
+      <h2 id="timer-name"></h2>
+      <p id="timer-duration"></p>
+      <p id="countdown" data-timeLeft=""></p>
+      <p id="play-pause-p"></p>
+    </div>
     {{/panels/panel-2}}
   {{/module}}
 </section>

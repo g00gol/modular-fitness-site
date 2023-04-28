@@ -111,3 +111,10 @@ export const updateRating = (band) => {
 
   return Number((sumRatings / albums.length).toFixed(1));
 };
+
+
+export const formatDuration = (secs) => {
+  if(secs<60){return `${secs}s`}
+  if(secs<3600)return `${Math.floor(secs/60)}m${secs%60}s`
+  return `${Math.floor(secs/3600)}h${secs%3600}m`
+}

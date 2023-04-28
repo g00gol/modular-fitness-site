@@ -57,6 +57,7 @@ loginRouter
     // If the password is correct, set the session and redirect to dashboard
     if (auth) {
       // Set the session
+      req.session.username = username
       req.session.user = user.name;
       req.session.loggedIn = true;
 
