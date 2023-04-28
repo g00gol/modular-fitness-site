@@ -175,7 +175,7 @@ signupRouter
         title,
         valid: validParams,
         invalid: e,
-        error: ["Invalid username or password"],
+        error: ["One or more fields are invalid"],
       });
     }
 
@@ -221,7 +221,7 @@ signupRouter
 
     // If there are any invalid parameters, render the register page with the invalid parameters
     if (invalidParams.length > 0) {
-      // Form the errorMessages array using the errorMessages object and invalidParams array
+      // For each invalid parameter, map a new error message to the errorMessages array
       let error = [];
       for (const param of invalidParams) {
         error.push(errorMessages[param]);
