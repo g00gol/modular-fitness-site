@@ -3,6 +3,8 @@ import exphbs from "express-handlebars";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+import fs from "fs";
+import path from "path";
 
 import configRoutes from "./routes/index.js";
 import * as middleware from "./utils/middleware.js";
@@ -42,6 +44,42 @@ app.engine(
 app.set("view engine", "handlebars");
 
 const hbs = exphbs.create({});
+
+// Register partials dynamically
+const modulesPath = path.join(__dirname, "views/partials/modules");
+
+fs.readdirSync(modulesPath).forEach((file) => {
+  const fileName = path.basename(file, ".handlebars");
+  const partial = fs.readFileSync(path.join(modulesPath, file), "utf8");
+  hbs.handlebars.registerPartial(`modules/${fileName}`, partial);
+});
+
+const panelsPath = path.join(__dirname, "views/partials/panels");
+
+fs.readdirSync(panelsPath).forEach((file) => {
+  const fileName = path.basename(file, ".handlebars");
+  const partial = fs.readFileSync(path.join(panelsPath, file), "utf8");
+  hbs.handlebars.registerPartial(`panels/${fileName}`, partial);
+});
+
+hbs.handlebars.registerPartial(
+  "module",
+  fs.readFileSync(
+    path.join(__dirname, "views/partials/module.handlebars"),
+    "utf8"
+  )
+);
+
+// Custom handlebar function to dynamically render a partial from views/partials/modules
+hbs.handlebars.registerHelper("renderModule", function (module, options) {
+  if (!module || !options) return `${module} not found}`;
+
+  let partial = hbs.handlebars.partials[`modules/${module}`];
+  if (!partial) return `${module} not found}`;
+
+  let compile = hbs.handlebars.compile(partial);
+  return new hbs.handlebars.SafeString(compile(this));
+});
 
 // Custom handlebar function to check if an array contains an item
 hbs.handlebars.registerHelper("ifContains", function (arr, item, options) {

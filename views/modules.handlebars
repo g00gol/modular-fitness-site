@@ -1,3 +1,5 @@
+{{log this}}
+
 <script src="../public/js/editModules.js"></script>
 
 <section class="px-12 py-8">
@@ -13,7 +15,7 @@
       <form class="flex flex-col space-y-2 text-lg" action="/modules" method="POST">
         {{#each allModules}}
         <label class="w-fit">
-          <input type="checkbox" name="{{this.tag}}" id="{{this.tag}}" value="{{this.tag}}">
+          <input type="checkbox" name="{{this.tag}}" id="{{this.tag}}" value="{{this.tag}}" {{#ifContains ../enabledModules this.tag}}checked{{/ifContains}} >
           {{this.name}}
         </label>
         {{/each}}
@@ -23,15 +25,9 @@
     {{/modal}}
   </div>
 
-  {{#> module moduleName="Timer"}}
-    {{#> panels/panel-1}}
-      <h2>Timers</h2>
-      <button>Meditation</button>
-    {{/panels/panel-1}}
+  </script>
 
-    {{#> panels/panel-2}}
-      <h2>Module 2</h2>
-      <p>Module 2 content</p>
-    {{/panels/panel-2}}
-  {{/module}}
+  {{#each enabledModules}}
+    {{{renderModule this}}}
+  {{/each}}
 </section>

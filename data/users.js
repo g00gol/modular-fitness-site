@@ -180,8 +180,76 @@ export const checkUser = async (username, password) => {
   throw { error: ["Username or password is incorrect"] };
 };
 
-export const getByUsername = async (username) => {};
+/**
+ * Gets the user by username
+ * @param {*} username
+ * @returns the user data if the user was successfully found
+ * @throws {array} of invalid parameters if there are any invalid parameters
+ */
+export const getByUsername = async (username) => {
+  try {
+    validation.authParam({ username });
+  } catch (e) {
+    throw { error: [500, "Internal Server Error"] };
+  }
 
-export const updateByUsername = async (username) => {
-  getByUsername(username);
+  try {
+    validation.authUsername({ usernameInput: username });
+  } catch (e) {
+    throw { error: [500, "Internal Server Error"] };
+  }
+
+  username = username.toLowerCase().trim();
+  let user;
+  const usersCollection = await users();
+  try {
+    user = await usersCollection.findOne({ username });
+  } catch (e) {
+    throw { error: [500, "Internal Server Error"] };
+  }
+
+  if (!user) {
+    throw { error: [500, "Internal Server Error"] };
+  }
+
+  return {
+    fullName: user.fullName,
+    username: user.username,
+    DOB: user.DOB,
+    enabledModules: user.enabledModules,
+  };
+};
+
+export const updateEnabledModulesByUsername = async (
+  username,
+  enabledModules
+) => {
+  try {
+    validation.authParam({ username });
+  } catch (e) {
+    throw e;
+  }
+
+  try {
+    validation.authUsername({ usernameInput: username });
+  } catch (e) {
+    throw e;
+  }
+
+  // Edit the user with the new data
+  const usersCollection = await users();
+  let updateInfo;
+  try {
+    updateInfo = await usersCollection.updateOne(
+      { username },
+      { $set: { enabledModules } }
+    );
+  } catch (e) {
+    throw { error: [500, "Internal Server Error"] };
+  }
+
+  if (!updateInfo.acknowledged) {
+    throw { error: [500, "Internal Server Error"] };
+  }
+  return { updated: true };
 };

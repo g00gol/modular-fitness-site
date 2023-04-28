@@ -18,10 +18,13 @@
 
 <body>
   {{!-- Navbar --}}
-  {{> nav}}
+  {{#if disableNav}}
+  {{else}}
+    {{> nav}}
+  {{/if}}
 
   {{!-- Body --}}
-  <main class="ml-nav">
+  <main class={{#if disableNav}}{{else}}"ml-nav"{{/if}}>
     {{{body}}}
   </main>
 </body>
