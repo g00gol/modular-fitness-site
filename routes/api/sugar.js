@@ -17,7 +17,7 @@ sugarRouter.route("/sugar").post(middleware.authAPI, async (req, res) => {
   }
   try {
     let data = await getAllSugarObj(req.session.user.username);
-    return data;
+    return res.status(200).json(data);
   } catch (e) {
     return res.status(500).json({ error: "Internal Server Error" });
   }

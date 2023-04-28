@@ -1,16 +1,10 @@
 //https://blog.logrocket.com/data-visualization-d3-js-node-js/
-import * as d3 from "https://cdn.skypack.dev/d3@7";
-import axios from 'https://cdn.skypack.dev/axios';
-
-
-
 
 const getSugarData = async () =>
 {
     try
     {
         let sugarData = await axios.post('/api/sugar')
-        console.log(sugarData.data)
         return sugarData.data
     }
     catch (e)

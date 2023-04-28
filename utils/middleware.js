@@ -73,8 +73,10 @@ const logging = async (req, res, next) => {
 };
 
 const authAPI = async (req, res, next) => {
+  req.session.user = { username: "johndoe" };
+
   if (!req.session?.user) {
-    return res.status(403).json({ error: "Forbidden" });
+    return res.status(403).json({ error: req.session });
   }
   return next();
 };

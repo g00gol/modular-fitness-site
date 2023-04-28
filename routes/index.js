@@ -4,8 +4,9 @@ import http from "http";
 import mainRoutes from "./main.js";
 import * as userRoutes from "./users.js";
 import dashboardRoutes from "./dashboard.js";
-import * as middleware from "../utils/middleware.js";
 import * as sugarAPIRoutes from "./api/sugar.js";
+
+import * as middleware from "../utils/middleware.js";
 
 const constructorMethod = (app) => {
   app.use(
