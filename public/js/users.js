@@ -152,8 +152,6 @@ function loginValidation() {
       invalidParams = [...invalidParams, ...e];
     }
 
-    console.log(invalidParams);
-
     if (invalidParams.length > 0) {
       for (const param of invalidParams) {
         setInvalidClass(fieldIds[param]);
