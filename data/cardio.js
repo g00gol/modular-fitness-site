@@ -63,6 +63,7 @@ const create = async (
     duration: duration,
     dateTime: dateTime,
     caloriesBurned: caloriesBurned,
+    date: dateTime.format("MM/DD/YYYY")
   };
   let createInfo = await cardioCollection.insertOne(newCardio);
   if (!createInfo.acknowledged || !createInfo.insertedId)
@@ -230,6 +231,7 @@ const update = async (
     duration: duration,
     dateTime: dateTime,
     caloriesBurned: caloriesBurned,
+    date: dateTime.format("MM/DD/YYYY")
   };
   let updateInfo = await cardioCollection.findOneAndUpdate(
     { _id: new ObjectId(id) },

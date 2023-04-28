@@ -12,6 +12,7 @@ const doTimer = (timeLeft) => {
         timeLeft--;
         $('#countdown').html(formatDuration(timeLeft))
         $('#countdown').attr("data-timeLeft", `${timeLeft}`)
+        $('#countdown-progress').attr("value", timeLeft)
         if(timeLeft < 0){
             clearInterval(timer);
             $('#countdown').html("Timer Done!")
@@ -21,18 +22,20 @@ const doTimer = (timeLeft) => {
 
 document.addEventListener("DOMContentLoaded", () => {
     
-    clearInterval(timer);
 
     $("button.timer-select-button").on("click", function(){
         //this.id has the id for the timer
-        $('#play-pause-p').html("Click to start!")
-        $('#timer-name').html($(this).attr("data-title"))
-        $('#timer-duration').html($(this).attr("data-duration"))
-        $('#countdown').html($(this).attr("data-duration"))
-        $('#countdown').attr("data-timeLeft", $(this).attr("data-seconds"))
-        $('#timer-counter').attr("data-seconds", $(this).attr("data-seconds"))
-        
-        
+        if($(this).attr("data-title") != $('#timer-name').html()){
+            clearInterval(timer);
+            $('#timer-counter').attr("data-paused", "false")
+            $('#play-pause-p').html("Click to start!")
+            $('#timer-name').html($(this).attr("data-title"))
+            $('#countdown').html($(this).attr("data-duration"))
+            $('#countdown').attr("data-timeLeft", $(this).attr("data-seconds"))
+            $('#timer-counter').attr("data-seconds", $(this).attr("data-seconds"))
+            $('#countdown-progress').attr("max", $(this).attr("data-seconds"))
+            $('#countdown-progress').attr("value", $(this).attr("data-seconds"))
+        }
     });
   });
 
@@ -48,6 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }else{
                 timeLeft = parseInt($(this).attr("data-seconds"))
             }
+            $('#countdown-progress').attr("value", timeLeft)
             doTimer(timeLeft);
             $('#timer-counter').attr("data-paused", "true")
             $('#play-pause-p').html("Click to pause!")
@@ -59,3 +63,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
   
+document.addEventListener("DOMContentLoaded", () => {
+    $("#new-timer").on("click", function(){
+        console.log("add new timer")
+    });
+  });

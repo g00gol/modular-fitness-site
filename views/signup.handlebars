@@ -1,61 +1,42 @@
-<section>
-  <form action="/signup" method="POST" id = "registration-form">
-    <label>
-      <input 
-      name="name" 
-      type="text" 
-      value="{{name}}"
-       placeholder="Full Name" />
-    </label>
+<script type="module" src="../public/js/users.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
-    <label>
-      <input
-        id = "usernameInput"
-        name="username"
-        type="text"
-        value="{{username}}"
-        placeholder="Username"
-      />
-    </label>
-    <label>
-      <input
-      id = "emailInput"
-      name = "email"
-      type = "email"
-      value="{{email}}"
-      placeholder= "email"
-      />
-    </label>
-    <label>
-      <input 
-      name="password" 
-      type="password" 
-      placeholder="Password"  
-      id="passwordInput"/>
-    </label>
+<section class="userContainer" id="signup-container">
+  <div class="userFormContainer">
+    <form class="userForm" id="signup-form" action="/signup" method="POST">
+      <h1>Welcome to Mode Fitness!</h1>
+      <p>Please enter your information to sign up.</p>
 
-    <label>
-      <input
-        id = "retypePasswordInput"
-        name="retypePassword"
-        type="password"
-        placeholder="Retype Password"
-      />
-    </label>
-  <label> 
-    Date of Birth
-    <input 
-    id = "DOBinput" 
-    name = "DOB" 
-    type = "date"  /> 
-  </label>
-    <input type="submit" />
-  </form>
-  
+      <label for="fullNameInput">Full name</label>
+      <input id="fullNameInput" class="{{#ifContains invalid "fullNameInput"}}invalidInput{{/ifContains}}"
+        name="fullNameInput" type="text" value="{{valid.fullNameInput}}" placeholder="Enter your full name" />
 
-  <div>Signed up already? <a href="/login">Login here</a></div>
+      <label for="usernameInput">Username</label>
+      <input id="usernameInput" class="{{#ifContains invalid "usernameInput"}}invalidInput{{/ifContains}}"
+        name="usernameInput" type="text" value="{{valid.usernameInput}}" placeholder="Enter your username" />
 
-  {{#if error}}
-    <p class="error">{{error}}</p>
-  {{/if}}
+      <label for="passwordInput">Password</label>
+      <input id="passwordInput" class="{{#ifContains invalid "passwordInput"}}invalidInput{{/ifContains}}"
+        name="passwordInput" type="password" placeholder="Enter your password" />
+
+      <label for="confirmPasswordInput">Confirm password</label>
+      <input id="confirmPasswordInput" class="{{#ifContains invalid "confirmPasswordInput"}}invalidInput{{/ifContains}}" name="confirmPasswordInput" type="password" placeholder="Retype your password" />
+
+      <label for="DOBInput">Date of birth</label>
+      <input id="DOBInput" class="{{#ifContains invalid "DOBInput"}}invalidInput{{/ifContains}}" name="DOBInput"
+        type="date" value="{{valid.DOBInput}}" />
+
+      <input type="submit" />
+
+      <div class="errorContainer">
+        {{#each error}}
+        <p class="error">{{this}}</p>
+        {{/each}}
+      </div>
+
+      <p class="error" {{#unless alreadyExists}}hidden{{/unless}}>A user with the e-mail address already exists</p>
+
+      <a href="/login">Already have an account? Click here to log-in</a>
+    </form>
+  </div>
 </section>

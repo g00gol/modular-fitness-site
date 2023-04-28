@@ -33,14 +33,34 @@
   }
 
   /* User Form */
+  .userContainer {
+    @apply w-full h-screen flex;
+  }
   .userFormContainer {
-    @apply w-1/2 h-full flex flex-col items-center justify-center bg-white;
+    @apply w-1/2 h-full flex justify-center items-center bg-white;
+  }
+  .userFormContainer h1 {
+    @apply text-4xl font-bold;
+  }
+  .userFormContainer p:not(.error) {
+    @apply text-gray-1 mb-8;
   }
   .userForm {
-    @apply w-fit h-fit flex flex-col items-center justify-center space-y-8;
+    @apply w-1/2 flex flex-col justify-center items-start;
   }
   .userForm input {
-    @apply w-[20vw] h-1/6 bg-transparent;
+    @apply w-full bg-transparent border border-snow-1 p-2 mb-4 rounded-md;
+  }
+  .userForm input[type="submit"] {
+    @apply bg-frost text-white;
+  }
+  .userFeature {
+    @apply w-1/2 h-screen;
+  }
+
+  /* Error Container */
+  .errorContainer {
+    @apply space-y-2;
   }
 }
 
@@ -77,4 +97,93 @@ a {
 }
 a:hover {
   color: var(--polar);
+}
+
+.invalidInput {
+  border: 1px solid red !important;
+}
+
+.error {
+  color: red !important;
+}
+
+.left-panel{
+  background-color: var(--polar);
+  border: 0;
+  border-radius: 20px;
+  color: white;
+  padding: 10px;
+  width: 35%;
+  margin-top: 7px;
+}
+
+.right-panel{
+  background-color: white;
+  border: 0;
+  border-radius: 20px;
+  padding: 10px;
+  width: 25%;
+  margin-top: 7px;
+}
+
+.timer-select-button{
+  background-color: var(--frost);
+  border: 0;
+  border-radius: 10px;
+  display: block;
+  width: 90%;
+  height: 20%;
+  margin-bottom: 5px;
+  margin-left: 15px;
+  padding-left: 5px;
+  padding-right: 5px;
+  text-align: left;
+}
+
+.cardio-select-button{
+  background-color: var(--frost);
+  border: 0;
+  border-radius: 10px;
+  display: block;
+  width: 90%;
+  height: 20%;
+  margin-bottom: 5px;
+  margin-left: 15px;
+  padding-left: 5px;
+  padding-right: 5px;
+  text-align: left;
+}
+
+.timer-duration{
+  text-align: right;
+  display: inline;
+}
+
+.timer-title{
+  text-align: left;
+  display: inline;
+}
+
+.modules{
+  margin-top: 5px;
+}
+
+#countdown{
+  font-size: xx-large;
+  text-align: center;
+}
+
+#countdown-progress{
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width:100%;
+
+  color: var(--frost);
+  background: var(--snow-3);
+}
+
+#play-pause-p{
+  font-size: small;
 }

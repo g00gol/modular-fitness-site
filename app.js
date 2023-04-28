@@ -45,7 +45,8 @@ const hbs = exphbs.create({});
 
 // Custom handlebar function to check if an array contains an item
 hbs.handlebars.registerHelper("ifContains", function (arr, item, options) {
-  if (!arr) return;
+  if (!arr || !item || !options) return;
+  if (!Array.isArray(arr)) return;
 
   if (arr.includes(item)) {
     return options.fn(this);
