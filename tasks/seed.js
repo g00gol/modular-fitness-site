@@ -1,4 +1,3 @@
-import bcrypt from "bcrypt";
 import moment from "moment";
 
 import { dbConnection, closeConnection } from "../config/mongoConnection.js";
@@ -27,7 +26,13 @@ const db = await dbConnection();
 await db.dropDatabase();
 
 let testPassword = "!Test123456";
-await users.createUser("John Doe", "johndoe", testPassword, testPassword);
+await users.createUser(
+  "John Doe",
+  "johndoe",
+  testPassword,
+  testPassword,
+  "2001-01-01"
+);
 
 //create some cardio workouts
 await cardio.create("johndoe", "run", 1500, 1, moment(), -1, 60);

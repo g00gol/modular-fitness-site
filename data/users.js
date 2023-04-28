@@ -9,6 +9,7 @@ import * as validation from "../utils/validation.js";
  * @param {string} username
  * @param {string} password
  * @param {string} confirmPassword
+ * @param {string} DOB - Format: YYYY-MM-DD
  * @returns {insertedUser: true} if the user was successfully inserted
  * @throws {array} of invalid parameters if there are any invalid parameters
  */
@@ -26,6 +27,7 @@ export const createUser = async (
       usernameInput: username,
       passwordInput: password,
       confirmPasswordInput: confirmPassword,
+      DOBInput: DOB,
     });
   } catch (e) {
     throw e;
