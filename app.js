@@ -1,4 +1,5 @@
 import express from "express";
+import session from "express-session";
 import exphbs from "express-handlebars";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
@@ -15,6 +16,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const staticDir = express.static(__dirname + "/public");
+
+app.use(
+  session({
+    name: "AuthCookie",
+    secret: "schrodingers cat",
+    saveUninitialized: false,
+    resave: false,
+    cookie: { secure: false },
+  })
+);
 
 const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   // If the user posts to the server with a property called _method, rewrite the request's method
@@ -74,10 +85,10 @@ hbs.handlebars.registerPartial(
 
 // Custom handlebar function to dynamically render a partial from views/partials/modules
 hbs.handlebars.registerHelper("renderModule", function (module, options) {
-  if (!module || !options) return `${module} not found}`;
+  if (!module || !options) return `${module} not found`;
 
   let partial = hbs.handlebars.partials[`modules/${module}`];
-  if (!partial) return `${module} not found}`;
+  if (!partial) return `${module} not found`;
 
   let compile = hbs.handlebars.compile(partial);
   return new hbs.handlebars.SafeString(compile(this));

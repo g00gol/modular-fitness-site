@@ -5,7 +5,7 @@
 import { Router } from "express";
 import * as middleware from "../utils/middleware.js";
 import * as users from "../data/users.js";
-import allModules from "../data/allModules.js";
+import allModules from "../public/allModules.js";
 
 const router = Router();
 
@@ -51,13 +51,25 @@ router.route("/modules").post(middleware.home, async (req, res) => {
   function updateModule(moduleName) {
     moduleName = eval(moduleName); // wow i cant believe i remembered this at 2am lmfao
 
+    let temp = [];
     if (moduleName) {
-      newModules.push(moduleName);
+      // Make sure the module value matches one of the allModules
+      if (!allModules.find((module) => module.tag === moduleName)) {
+        throw 400;
+      }
+
+      temp.push(moduleName);
     }
+
+    return temp;
   }
 
   for (let { tag } of allModules) {
-    updateModule(tag);
+    try {
+      newModules.push(...updateModule(tag));
+    } catch (e) {
+      return res.redirect(`/error?status=${e}`);
+    }
   }
 
   // Update the user's modules
@@ -70,8 +82,6 @@ router.route("/modules").post(middleware.home, async (req, res) => {
   }
 
   req.session.user.enabledModules = newModules;
-
-  console.log(req.session.user.enabledModules);
 
   res.render("modules", {
     title: "Home",
