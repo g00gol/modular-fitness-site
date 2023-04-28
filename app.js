@@ -45,22 +45,24 @@ app.set("view engine", "handlebars");
 
 const hbs = exphbs.create({});
 
-// Register partials dynamically
+// Helper function to register partials
+function registerPartials(dir, hbsInstance) {
+  fs.readdirSync(dir).forEach((file) => {
+    const fileName = path.basename(file, ".handlebars");
+    const partial = fs.readFileSync(path.join(dir, file), "utf8");
+    const partialPath = path.relative(
+      path.join(__dirname, "views/partials"),
+      dir
+    );
+    hbsInstance.registerPartial(`${partialPath}/${fileName}`, partial);
+  });
+}
+
 const modulesPath = path.join(__dirname, "views/partials/modules");
-
-fs.readdirSync(modulesPath).forEach((file) => {
-  const fileName = path.basename(file, ".handlebars");
-  const partial = fs.readFileSync(path.join(modulesPath, file), "utf8");
-  hbs.handlebars.registerPartial(`modules/${fileName}`, partial);
-});
-
 const panelsPath = path.join(__dirname, "views/partials/panels");
 
-fs.readdirSync(panelsPath).forEach((file) => {
-  const fileName = path.basename(file, ".handlebars");
-  const partial = fs.readFileSync(path.join(panelsPath, file), "utf8");
-  hbs.handlebars.registerPartial(`panels/${fileName}`, partial);
-});
+registerPartials(modulesPath, hbs.handlebars);
+registerPartials(panelsPath, hbs.handlebars);
 
 hbs.handlebars.registerPartial(
   "module",
