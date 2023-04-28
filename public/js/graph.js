@@ -9,7 +9,8 @@ const getSugarData = async () =>
 {
     try
     {
-        let sugarData = await axios.get('/api/sugar')
+        let sugarData = await axios.post('/api/sugar')
+        console.log(sugarData.data)
         return sugarData.data
     }
     catch (e)
