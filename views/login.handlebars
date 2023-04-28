@@ -1,3 +1,5 @@
+{{log this}}
+
 <section class="userContainer" id="login-container">
   <div class="userFormContainer">
     <form class="userForm" id="login-form" action="/login" method="POST">
@@ -13,6 +15,7 @@
         name="usernameInput"
         type="text"
         placeholder="Enter your username"
+        value="{{valid.usernameInput}}"
       />
 
       <label for="passwordInput">Password</label>

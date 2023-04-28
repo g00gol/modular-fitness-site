@@ -25,17 +25,29 @@ loginRouter
   })
   .post(async (req, res) => {
     let { usernameInput, passwordInput } = req.body;
-    console.log(usernameInput, passwordInput);
     usernameInput = xss(usernameInput);
     passwordInput = xss(passwordInput);
+
+    let persistedFields = ["usernameInput"];
 
     try {
       validation.authParam({ usernameInput, passwordInput });
     } catch (e) {
+      // Make an object of the valid inputs by comparing it with which inputs were invalid using e {fullNameInput: "value", usernameInput: "value", ...}
+      let validParams = persistedFields.reduce((acc, field) => {
+        // Check if the field exists in the error array
+        if (!e.includes(field)) {
+          // If not, add it to the validParams object
+          acc[field] = req.body[field];
+        }
+        return acc;
+      }, {});
+
       return res.status(400).render("login", {
         title: "Login",
+        valid: validParams,
         invalid: e,
-        error: ["One or more fields invalid"],
+        error: ["Invalid username or password"],
       });
     }
 
@@ -58,9 +70,20 @@ loginRouter
     }
 
     if (invalidParams.length > 0) {
+      // Make an object of the valid inputs by comparing it with which inputs were invalid and their values {fullNameInput: "value", usernameInput: "value", ...}
+      let validParams = persistedFields.reduce((acc, field) => {
+        // Check if the field exists in the error array
+        if (!invalidParams.includes(field)) {
+          // If not, add it to the validParams object
+          acc[field] = req.body[field];
+        }
+        return acc;
+      }, {});
+
       return res.status(400).render("login", {
         title: "Login",
-        invalid: invalidParams,
+        valid: validParams,
+        invalid: ["usernameInput", "passwordInput"],
         error: ["Username or password is incorrect"],
       });
     }
@@ -73,12 +96,15 @@ loginRouter
       if (e.invalid) {
         return res.status(400).render("login", {
           title: "Login",
-          invalid: e.invalid,
+          valid: { usernameInput },
+          invalid: ["usernameInput", "passwordInput"],
           error: ["Username or password is incorrect"],
         });
       } else if (e.error) {
         return res.status(400).render("login", {
           title: "Login",
+          valid: { usernameInput },
+          invalid: ["usernameInput", "passwordInput"],
           error: e.error,
         });
       } else if (e.serverError) {
@@ -90,7 +116,6 @@ loginRouter
 
     // If the user was successfully logged in, create a session and redirect the user to the modules
     req.session.user = userData;
-    console.log(userData);
     return res.redirect("/modules");
   });
 
@@ -127,6 +152,8 @@ signupRouter
     confirmPasswordInput = xss(confirmPasswordInput);
     DOBInput = xss(DOBInput);
 
+    let persistedFields = ["fullNameInput", "usernameInput", "DOBInput"];
+
     try {
       validation.authParam({
         fullNameInput,
@@ -136,10 +163,19 @@ signupRouter
         DOBInput,
       });
     } catch (e) {
+      // Make an object of the valid inputs by comparing it with which inputs were invalid and their values {fullNameInput: "value", usernameInput: "value", ...}
+      let validParams = persistedFields.reduce((acc, field) => {
+        if (!e.includes(field)) {
+          acc[field] = req.body[field];
+        }
+        return acc;
+      }, {});
+
       return res.render("signup", {
         title,
+        valid: validParams,
         invalid: e,
-        error: ["One or more fields invalid"],
+        error: ["Invalid username or password"],
       });
     }
 
@@ -191,9 +227,18 @@ signupRouter
         error.push(errorMessages[param]);
       }
 
+      // Make an object of the valid inputs by comparing it with which inputs were invalid and their values {fullNameInput: "value", usernameInput: "value", ...}
+      let validParams = persistedFields.reduce((acc, field) => {
+        if (!invalidParams.includes(field)) {
+          acc[field] = req.body[field];
+        }
+        return acc;
+      }, {});
+
       // Render the register page with the invalid parameters and error messages
       return res.status(400).render("signup", {
         title,
+        valid: validParams,
         invalid: invalidParams,
         error,
       });
@@ -216,6 +261,7 @@ signupRouter
       if (e.alreadyExists) {
         return res.status(400).render("signup", {
           title,
+          valid: { fullNameInput, DOBInput },
           invalid: ["usernameInput"],
           error: ["Username already exists"],
         });
@@ -225,8 +271,17 @@ signupRouter
           error.push(errorMessages[param]);
         }
 
+        // Make an object of the valid inputs by comparing it with which inputs were invalid and their values {fullNameInput: "value", usernameInput: "value", ...}
+        let validParams = persistedFields.reduce((acc, field) => {
+          if (!e.invalid.includes(field)) {
+            acc[field] = req.body[field];
+          }
+          return acc;
+        }, {});
+
         return res.status(400).render("signup", {
           title,
+          valid: validParams,
           invalid: e.invalid,
           error,
         });

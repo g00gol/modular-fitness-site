@@ -176,7 +176,7 @@ export const checkUser = async (username, password) => {
   }
 
   // Else case
-  throw { error: ["Invalid username or password"] };
+  throw { error: ["Username or password is incorrect"] };
 };
 
 export const getByUsername = async (username) => {};

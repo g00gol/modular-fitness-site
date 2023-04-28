@@ -42,7 +42,7 @@
   .userFormContainer h1 {
     @apply text-4xl font-bold;
   }
-  .userFormContainer p {
+  .userFormContainer p:not(.error) {
     @apply text-gray-1 mb-8;
   }
   .userForm {
@@ -56,6 +56,11 @@
   }
   .userFeature {
     @apply w-1/2 h-screen;
+  }
+
+  /* Error Container */
+  .errorContainer {
+    @apply space-y-2;
   }
 }
 

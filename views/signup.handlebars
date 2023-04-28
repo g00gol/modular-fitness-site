@@ -1,3 +1,5 @@
+{{log this}}
+
 <section class="userContainer" id="signup-container">
   <div class="userFormContainer">
     <form class="userForm" id="signup-form" action="/signup" method="POST">
@@ -6,23 +8,22 @@
 
       <label for="fullNameInput">Full name</label>
       <input id="fullNameInput" class="{{#ifContains invalid "fullNameInput"}}invalidInput{{/ifContains}}"
-        name="fullNameInput" type="text" placeholder="Enter your full name" />
+        name="fullNameInput" type="text" value="{{valid.fullNameInput}}" placeholder="Enter your full name" />
 
       <label for="usernameInput">Username</label>
       <input id="usernameInput" class="{{#ifContains invalid "usernameInput"}}invalidInput{{/ifContains}}"
-        name="usernameInput" type="text" placeholder="Enter your username" />
+        name="usernameInput" type="text" value="{{valid.usernameInput}}" placeholder="Enter your username" />
 
       <label for="passwordInput">Password</label>
       <input id="passwordInput" class="{{#ifContains invalid "passwordInput"}}invalidInput{{/ifContains}}"
         name="passwordInput" type="password" placeholder="Enter your password" />
 
       <label for="confirmPasswordInput">Confirm password</label>
-      <input id="confirmPasswordInput" class="{{#ifContains invalid "confirmPasswordInput"}}invalidInput{{/ifContains}}" name="confirmPasswordInput" type="password"
-        placeholder="Retype your password" />
+      <input id="confirmPasswordInput" class="{{#ifContains invalid "confirmPasswordInput"}}invalidInput{{/ifContains}}" name="confirmPasswordInput" type="password" placeholder="Retype your password" />
 
       <label for="DOBInput">Date of birth</label>
       <input id="DOBInput" class="{{#ifContains invalid "DOBInput"}}invalidInput{{/ifContains}}" name="DOBInput"
-        type="date" />
+        type="date" value="{{valid.DOBInput}}" />
 
       <input type="submit" />
 
