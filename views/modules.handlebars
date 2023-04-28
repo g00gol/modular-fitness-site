@@ -1,7 +1,7 @@
 <script src="../public/js/editModules.js"></script>
 
-<section>
-  <h1>Hello, <span class="font-bold">{{user}}</span></h1>
+<section class="px-12 py-8">
+  <h1>Hello, <span class="font-bold">{{user.fullName}}</span></h1>
   <div class="flex justify-between w-full">
     <p>Welcome to your modules!</p>
     <button id="editModulesBtn" class="text-frost hover:text-polar underline">Edit Modules</button>
@@ -23,10 +23,10 @@
     {{/modal}}
   </div>
 
-  {{#> module moduleName="Module 1"}}
+  {{#> module moduleName="Timer"}}
     {{#> panels/panel-1}}
-      <h2>Module 1</h2>
-      <p>Module 1 content</p>
+      <h2>Timers</h2>
+      <button>Meditation</button>
     {{/panels/panel-1}}
 
     {{#> panels/panel-2}}

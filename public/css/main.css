@@ -78,3 +78,11 @@ a {
 a:hover {
   color: var(--polar);
 }
+
+.invalidInput {
+  border: 1px solid red;
+}
+
+.error {
+  color: red;
+}

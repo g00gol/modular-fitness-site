@@ -1,38 +1,36 @@
-<section>
-  <form action="/signup" method="POST" id = "registration-form">
-    <label>
-      <input name="name" type="text" value="{{name}}" placeholder="Name" />
-    </label>
+{{log this}}
 
-    <label>
-      <input
-        id = "usernameInput"
-        name="username"
-        type="text"
-        value="{{username}}"
-        placeholder="Username"
-      />
-    </label>
+<section class="userFormContainer" id="signup-container">
+  <form class="userForm" id="signup-form" action="/signup" method="POST">
+    <label for="fullNameInput"></label>
+    <input id="fullNameInput" class="{{#ifContains invalid "fullNameInput"}}invalidInput{{/ifContains}}"
+      name="fullNameInput" type="text" placeholder="Full Name" />
 
-    <label>
-      <input name="password" type="password" placeholder="Password"  id="passwordInput"/>
-    </label>
+    <label for="usernameInput"></label>
+    <input id="usernameInput" class="{{#ifContains invalid "usernameInput"}}invalidInput{{/ifContains}}"
+      name="usernameInput" type="text" placeholder="Username" />
 
-    <label>
-      <input
-        id = "retypePasswordInput"
-        name="retypePassword"
-        type="password"
-        placeholder="Retype Password"
-      />
-    </label>
+    <label for="passwordInput"></label>
+    <input id="passwordInput" class="{{#ifContains invalid "passwordInput"}}invalidInput{{/ifContains}}"
+      name="passwordInput" type="password" placeholder="Password" />
+
+    <label for="confirmPasswordInput"></label>
+    <input id="confirmPasswordInput" class="{{#ifContains invalid "confirmPasswordInput"}}invalidInput{{/ifContains}}"
+      name="confirmPasswordInput" type="password" placeholder="Retype Password" />
+
+    <label for="DOBInput">Date of Birth</label>
+    <input id="DOBInput" class="{{#ifContains invalid "DOBInput"}}invalidInput{{/ifContains}}" name="DOBInput" type="date" />
 
     <input type="submit" />
   </form>
 
-  <div>Signed up already? <a href="/login">Login here</a></div>
+  <div class="errorContainer">
+    {{#each error}}
+    <p class="error">{{this}}</p>
+    {{/each}}
+  </div>
 
-  {{#if error}}
-    <p class="error">{{error}}</p>
-  {{/if}}
+  <p class="error" {{#unless alreadyExists}}hidden{{/unless}}>A user with the e-mail address already exists</p>
+
+  <a href="/login">Already have an account? Click here to log-in</a>
 </section>

@@ -1,20 +1,33 @@
-<section>
-  {{#if success}}
-    <p class="success">{{success}}</p>
-  {{/if}}
+{{log this}}
 
-  <form action="/login" method="POST" id = "login-form">
-    <label>
-      <input id = "userNameInput" name="username" type="text" placeholder="Username" />
-    </label>
+<section class="flex h-screen w-full top-0 left-0" id="login-container">
+  <form class="w-1/2 h-full" id="login-form" action="/login" method="POST">
+    <label for="usernameInput"></label>
+    <input
+      id="usernameInput"
+      class="{{#ifContains invalid "usernameInput"}}invalidInput{{/ifContains}}"
+      name="usernameInput"
+      type="text"
+      placeholder="Username"
+    />
 
-    <label>
-      <input id = "passwordInput" name="password" type="password" placeholder="Password" />
-    </label>
+    <label for="passwordInput"></label>
+    <input
+      id="passwordInput"
+      class="{{#ifContains invalid "passwordInput"}}invalidInput{{/ifContains}}"
+      name="passwordInput"
+      type="password"
+      placeholder="Password"
+    />
     <input type="submit" />
+
+    <div class="errorContainer">
+      {{#each error}}
+        <p class="error">{{this}}</p>
+      {{/each}}
+    </div>
+    <a href="/signup">Click here to sign up!</a>
   </form>
 
-  {{#if error}}
-    <p class="error">{{error}}</p>
-  {{/if}}
+  <span class="w-1/2 h-full bg-black"></span>
 </section>

@@ -26,8 +26,8 @@ import {
 const db = await dbConnection();
 await db.dropDatabase();
 
-let hashedPassword = await bcrypt.hash("password", 10);
-await users.create("John Doe", "johndoe", hashedPassword);
+let testPassword = "!Test123456";
+await users.createUser("John Doe", "johndoe", testPassword, testPassword);
 
 //create some cardio workouts
 await cardio.create("johndoe", "run", 1500, 1, moment(), -1, 60);
@@ -39,8 +39,6 @@ let timer1 = await timers.create("johndoe", "plank", "timer", 50);
 await timers.create("johndoe", "meditation", "timer", 100);
 await timers.create("johndoe", "chill", "timer", 2000);
 
-await users.create("patrick hill", "nycSwag", hashedPassword);
-await users.create("mandeep", "mkaur", hashedPassword);
 await enterWeight("mkaur", 99);
 await enterWeight("mkaur", 1);
 await enterWeight("mkaur", 2);
