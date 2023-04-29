@@ -18,9 +18,9 @@ loginRouter
     let title = "Login";
 
     try {
-      return res.render("login", { title });
+      return res.render("login", { title, disableNav: true });
     } catch (e) {
-      return res.render("/error?500");
+      return res.render("/error?status=500");
     }
   })
   .post(async (req, res) => {
@@ -48,6 +48,7 @@ loginRouter
         valid: validParams,
         invalid: e,
         error: ["Invalid username or password"],
+        disableNav: true,
       });
     }
 
@@ -85,6 +86,7 @@ loginRouter
         valid: validParams,
         invalid: ["usernameInput", "passwordInput"],
         error: ["Username or password is incorrect"],
+        disableNav: true,
       });
     }
 
@@ -99,6 +101,7 @@ loginRouter
           valid: { usernameInput },
           invalid: ["usernameInput", "passwordInput"],
           error: ["Username or password is incorrect"],
+          disableNav: true,
         });
       } else if (e.error) {
         return res.status(400).render("login", {
@@ -106,11 +109,12 @@ loginRouter
           valid: { usernameInput },
           invalid: ["usernameInput", "passwordInput"],
           error: e.error,
+          disableNav: true,
         });
       } else if (e.serverError) {
-        return res.redirect("/error?500");
+        return res.redirect("/error?status=500");
       } else {
-        return res.redirect("/error?500");
+        return res.redirect("/error?status=500");
       }
     }
 
@@ -129,9 +133,9 @@ signupRouter
     let title = "Signup";
 
     try {
-      return res.render("signup", { title });
+      return res.render("signup", { title, disableNav: true });
     } catch (e) {
-      return res.redirect("/error?500");
+      return res.redirect("/error?status=500");
     }
   })
   .post(async (req, res) => {
@@ -176,6 +180,7 @@ signupRouter
         valid: validParams,
         invalid: e,
         error: ["One or more fields are invalid"],
+        disableNav: true,
       });
     }
 
@@ -241,6 +246,7 @@ signupRouter
         valid: validParams,
         invalid: invalidParams,
         error,
+        disableNav: true,
       });
     }
 
@@ -264,6 +270,7 @@ signupRouter
           valid: { fullNameInput, DOBInput },
           invalid: ["usernameInput"],
           error: ["Username already exists"],
+          disableNav: true,
         });
       } else if (e.invalid) {
         let error = [];
@@ -284,17 +291,18 @@ signupRouter
           valid: validParams,
           invalid: e.invalid,
           error,
+          disableNav: true,
         });
       } else if (e.serverError) {
-        return res.redirect("/error?500");
+        return res.redirect("/error?status=500");
       } else {
-        return res.redirect("/error?500");
+        return res.redirect("/error?status=500");
       }
     }
 
     // Check if the user was successfully created
     if (!userCreated.insertedUser) {
-      return res.redirect("/error?500");
+      return res.redirect("/error?status=500");
     }
     // If the user was successfully created, redirect to the login page
     return res.status(200).redirect("/login");
@@ -308,7 +316,7 @@ logoutRouter.route("/").get(middleware.logout, (req, res) => {
   try {
     req.session.destroy();
   } catch (e) {
-    return res.redirect("/error?500");
+    return res.redirect("/error?status=500");
   }
 
   return res.redirect("/");
