@@ -6,7 +6,7 @@ import { invalidNum, invalidStrings, invalidNum } from "../utils/helpers.js";
 
 export const enterCalorie = async (username, datetime, foods) => {
     // enter a meal event into the database
-    // input is a timestamp as well as an array of food objects, each containing fields food_name,
+    // input is a username, a timestamp, as well as an array of food objects, each containing fields food_name,
     // calories (calories per per serving), servings (number of servings)
 
     invalidParams(username, datetime, foods, ...foods);
@@ -55,7 +55,7 @@ export const enterCalorie = async (username, datetime, foods) => {
 
     let createInfo = await calorieCollection.insertOne(calorieEntry);
     if (!createInfo.acknowledged || !createInfo.insertedId)
-        throw [500, "Error: could not add cardio"];
+        throw [500, "Error: could not add calorie entry"];
 
     calorieEntry._id = createInfo.insertedId.toString();
     return calorieEntry;
@@ -95,14 +95,11 @@ export const getCaloriesByUsername = async (username) => {
 };
 
 export const getCalorieByID = async (id) => {
+    invalidParams(id);
     id = invalidID(id);
     let calorieCollection = await calories();
 
-    let calorieEntries = await calorieCollection
-        .find({ _id: new ObjectId(id) })
-        .toArray();
-
-    let entry = await calorieEntries.findOne({ _id: new ObjectId(id) });
+    let entry = await calorieCollection.findOne({ _id: new ObjectId(id) });
     if (!entry) {
         throw [400, "entry not found"];
     }
@@ -123,11 +120,9 @@ export const getFoodByID = async (id) => {
     id = invalidID(id);
     let calorieCollection = await calories();
 
-    let calorieEntries = await calorieCollection
-        .find({ _id: new ObjectId(id) })
-        .toArray();
-
-    let entry = await calorieEntries.findOne({ "foods._id": new ObjectId(id) });
+    let entry = await calorieCollection.findOne({
+        "foods._id": new ObjectId(id),
+    });
     if (!entry) {
         throw [400, "entry not found"];
     }
