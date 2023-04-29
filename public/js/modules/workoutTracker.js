@@ -1,15 +1,15 @@
 import * as validation from "../workoutTrackerValidation.js";
 
 function addExerciseFormHTML(ith) {
-  return `<div id="addExerciseForm${ith}" class="addExerciseForm">
+  return `<div id="addExerciseForm${ith}" class="flex space-x-4 addExerciseForm">
   <button id="removeExerciseBtn${ith}"><i class="text-xl fa-solid fa-circle-minus"></i></button>
 
   <label>
-    <input name="exerciseSets" type="number" />
+    <input name="exerciseSets" type="number" min="1" max="99" />
     sets
   </label>
   <label>
-    <input name="exerciseReps" type="number" />
+    <input name="exerciseReps" type="number" min="1" max="99" />
     Reps
   </label>
   <label>
@@ -19,7 +19,7 @@ function addExerciseFormHTML(ith) {
 
   <div class="flex">
     <label>
-      <input name="exerciseWeight" type="number" step="0.1" />
+      <input name="exerciseWeight" type="number" step="any" min="1" max="999" />
     </label>
     <select name="exerciseWeightUnits">
       <option value="lbs">
@@ -136,15 +136,16 @@ function validateExerciseForm(ith) {
   }
 
   if (invalidParams.length > 0) {
-    console.log(invalidParams);
     // Add error class to invalid params
     invalidParams.forEach((param) => {
-      $(`#addExerciseForm${ith} input[name="${param}"]`).addClass("invalidInput");
+      $(`#addExerciseForm${ith} input[name="${param}"]`).addClass(
+        "invalidInput"
+      );
     });
-    return;
+    return false;
   }
 
-  $("#addExerciseForm").remove();
+  return true;
 }
 
 // Wait for document to load
@@ -164,6 +165,17 @@ document.addEventListener("DOMContentLoaded", () => {
       let ith = $("div[id^='addExerciseForm']").length;
       // Add the new exercise form
       $("#addExerciseBtn").after(addExerciseFormHTML(ith++));
+
+      $("button[id^='removeExerciseBtn']").click((e) => {
+        console.log($(e.target).parent());
+        // Get the id of the button
+        let id = e.target.id;
+        // Get the ith exercise form
+
+        // Remove the ith exercise form
+        $(`#addExerciseForm${ith}`).remove();
+        return;
+      });
     });
   }
 
@@ -171,21 +183,18 @@ document.addEventListener("DOMContentLoaded", () => {
     $("#editWorkoutsForm").submit((e) => {
       e.preventDefault();
 
-      console.log("submitting");
+      let valid = true;
       if ($("div[id^='addExerciseForm']").length > 0) {
         // Get each exercise form
         let exerciseForms = $("div[id^='addExerciseForm']");
         // For each exercise form, validate it
         for (let i = 0; i < exerciseForms.length; i++) {
-          validateExerciseForm(i);
+          valid &= validateExerciseForm(i);
         }
       }
 
-      if (false) {
-        $("#editWorkoutsForm").off("submit").submit();
-      } else {
-        return;
-      }
+      if (!valid) return;
+      $("#editWorkoutsForm").off("submit").submit();
     });
   }
 });

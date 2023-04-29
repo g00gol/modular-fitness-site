@@ -80,14 +80,6 @@
     @apply bg-gray-2 rounded-std;
   }
 
-  /* addExerciseForm */
-  .addExerciseForm {
-    @apply space-x-4;
-  }
-  .addExerciseForm label input[type="number"] {
-    @apply w-8;
-  }
-
   input {
     @apply bg-transparent border border-snow-1 p-2 rounded-md;
   }
@@ -134,4 +126,11 @@ a:hover {
 
 .error {
   color: red !important;
+}
+
+.addExerciseForm input[type="number"] {
+  width: 4rem;
+}
+.addExerciseForm input[step="any"] {
+  width: 6rem;
 }
