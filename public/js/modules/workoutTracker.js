@@ -2,7 +2,7 @@ import * as validation from "../workoutTrackerValidation.js";
 
 function addExerciseFormHTML(ith) {
   return `<div id="addExerciseForm${ith}" class="flex space-x-4 addExerciseForm">
-  <button id="removeExerciseBtn${ith}"><i class="text-xl fa-solid fa-circle-minus"></i></button>
+  <button id="removeExerciseBtn${ith}" value=${ith}><i class="text-xl fa-solid fa-circle-minus"></i></button>
 
   <label>
     <input name="exerciseSets" type="number" min="1" max="99" />
