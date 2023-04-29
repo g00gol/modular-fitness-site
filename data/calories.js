@@ -3,218 +3,218 @@ import { calories } from "../config/mongoCollections.js";
 import { getByUsername } from "./users.js";
 import moment from "moment";
 import {
-    invalidParams,
-    invalidStrings,
-    invalidNum,
-    invalidID,
+  invalidParams,
+  invalidStrings,
+  invalidNum,
+  invalidID,
 } from "../utils/helpers.js";
 
 export const enterCalorie = async (userID, username, dateTime, foods) => {
-    // enter a meal event into the database
-    // input is a username, a timestamp, as well as an array of food objects, each containing fields food_name,
-    // calories (calories per per serving), quantity (number of servings)
+  // enter a meal event into the database
+  // input is a username, a timestamp, as well as an array of food objects, each containing fields food_name,
+  // calories (calories per per serving), quantity (number of servings)
 
-    invalidParams(userID, username, dateTime, foods, ...foods);
-    userID = invalidID(userID);
+  invalidParams(userID, username, dateTime, foods, ...foods);
+  userID = invalidID(userID);
 
-    invalidStrings(username, dateTime);
-    username = username.toLowerCase();
-    await getByUsername(username); //make sure it exists
+  invalidStrings(username, dateTime);
+  username = username.toLowerCase();
+  await getByUsername(username); //make sure it exists
 
-    if (!moment(dateTime).isValid()) {
-        throw [400, "invalid datetime"];
+  if (!moment(dateTime).isValid()) {
+    throw [400, "invalid datetime"];
+  }
+
+  if (foods.length === 0) {
+    throw [400, "Error: no foods provided"];
+  }
+
+  let foodObjects = [];
+  for (const food of foods) {
+    if (typeof food !== "object") {
+      throw [400, "Error: food entry must be an Object"];
     }
-
-    if (foods.length === 0) {
-        throw [400, "Error: no foods provided"];
+    invalidParams(food.food_name, food.calories, food.calories);
+    invalidStrings(food.food_name);
+    invalidNum(food.calories, food.quantity);
+    if (food.calories < 0) {
+      throw [400, "Error: invalid calorie count"];
     }
-
-    let foodObjects = [];
-    for (const food of foods) {
-        if (typeof food !== "object") {
-            throw [400, "Error: food entry must be an Object"];
-        }
-        invalidParams(food.food_name, food.calories, food.calories);
-        invalidStrings(food.food_name);
-        invalidNum(food.calories, food.quantity);
-        if (food.calories < 0) {
-            throw [400, "Error: invalid calorie count"];
-        }
-        if (food.quantity <= 0) {
-            throw [400, "Error: invalid serving count"];
-        }
-        const newFoodObject = {
-            _id: new ObjectId(),
-            food_name: food.food_name, // not trimming the food name since it should be from the API
-            calories: food.calories,
-            quantity: food.quantity,
-        };
-        foodObjects.push(newFoodObject);
+    if (food.quantity <= 0) {
+      throw [400, "Error: invalid serving count"];
     }
-
-    const calorieEntry = {
-        userID: userID,
-        username: username.trim(),
-        dateTime: dateTime,
-        foods: foodObjects,
+    const newFoodObject = {
+      _id: new ObjectId(),
+      food_name: food.food_name, // not trimming the food name since it should be from the API
+      calories: food.calories,
+      quantity: food.quantity,
     };
+    foodObjects.push(newFoodObject);
+  }
 
-    let calorieCollection = await calories();
+  const calorieEntry = {
+    userID: userID,
+    username: username.trim(),
+    dateTime: dateTime,
+    foods: foodObjects,
+  };
 
-    let createInfo = await calorieCollection.insertOne(calorieEntry);
-    if (!createInfo.acknowledged || !createInfo.insertedId)
-        throw [500, "Error: could not add calorie entry"];
+  let calorieCollection = await calories();
 
-    calorieEntry._id = createInfo.insertedId.toString();
-    return calorieEntry;
+  let createInfo = await calorieCollection.insertOne(calorieEntry);
+  if (!createInfo.acknowledged || !createInfo.insertedId)
+    throw [500, "Error: could not add calorie entry"];
+
+  calorieEntry._id = createInfo.insertedId.toString();
+  return calorieEntry;
 };
 
 export const getCaloriesByUserID = async (userID) => {
-    // gets all the calorie entries for a given username
-    // returns as an array of calorie entry objects
-    // if user has no calorie entries it will return an empty array, not throw
+  // gets all the calorie entries for a given username
+  // returns as an array of calorie entry objects
+  // if user has no calorie entries it will return an empty array, not throw
 
-    invalidParams(userID);
-    userID = invalidID(userID);
+  invalidParams(userID);
+  userID = invalidID(userID);
 
-    let calorieCollection = await calories();
+  let calorieCollection = await calories();
 
-    let calorieEntries = await calorieCollection
-        .find({ userID: userID })
-        .toArray();
+  let calorieEntries = await calorieCollection
+    .find({ userID: userID })
+    .toArray();
 
-    if (!calorieEntries || calorieEntries.length == 0) {
-        return [];
-    }
+  if (!calorieEntries || calorieEntries.length == 0) {
+    return [];
+  }
 
-    const entryIDToString = (entry) => {
-        entry._id = entry._id.toString();
-        const foodIDToString = (food) => {
-            food._id = food._id.toString();
-            return food;
-        };
-        entry.foods = entry.foods.map(foodIDToString);
-        return entry;
+  const entryIDToString = (entry) => {
+    entry._id = entry._id.toString();
+    const foodIDToString = (food) => {
+      food._id = food._id.toString();
+      return food;
     };
-    calorieEntries = calorieEntries.map(entryIDToString);
+    entry.foods = entry.foods.map(foodIDToString);
+    return entry;
+  };
+  calorieEntries = calorieEntries.map(entryIDToString);
 
-    return calorieEntries;
+  return calorieEntries;
 };
 
 export const getCalorieByID = async (id) => {
-    invalidParams(id);
-    id = invalidID(id);
-    let calorieCollection = await calories();
+  invalidParams(id);
+  id = invalidID(id);
+  let calorieCollection = await calories();
 
-    let entry = await calorieCollection.findOne({ _id: new ObjectId(id) });
-    if (!entry) {
-        throw [400, "entry not found"];
-    }
+  let entry = await calorieCollection.findOne({ _id: new ObjectId(id) });
+  if (!entry) {
+    throw [400, "entry not found"];
+  }
 
-    entry._id = entry._id.toString();
-    const foodIDToString = (food) => {
-        food._id = food._id.toString();
-        return food;
-    };
-    entry.foods = entry.foods.map(foodIDToString);
+  entry._id = entry._id.toString();
+  const foodIDToString = (food) => {
+    food._id = food._id.toString();
+    return food;
+  };
+  entry.foods = entry.foods.map(foodIDToString);
 
-    return entry;
+  return entry;
 };
 
 export const getFoodByID = async (id) => {
-    /// idk if we will ever have to use this function
+  /// idk if we will ever have to use this function
 
-    id = invalidID(id);
-    let calorieCollection = await calories();
+  id = invalidID(id);
+  let calorieCollection = await calories();
 
-    let entry = await calorieCollection.findOne({
-        "foods._id": new ObjectId(id),
-    });
-    if (!entry) {
-        throw [400, "entry not found"];
-    }
+  let entry = await calorieCollection.findOne({
+    "foods._id": new ObjectId(id),
+  });
+  if (!entry) {
+    throw [400, "entry not found"];
+  }
 
-    let foodEntry = entry.foods.find((food) => (food._id = new ObjectId(id)));
-    foodEntry._id = foodEntry._id.toString();
+  let foodEntry = entry.foods.find((food) => (food._id = new ObjectId(id)));
+  foodEntry._id = foodEntry._id.toString();
 
-    return foodEntry;
+  return foodEntry;
 };
 
 export const updateCalorie = async (id, foods) => {
-    // alows users to update the food objects in their entry
-    // no one should ever have to update the username or datetime
+  // alows users to update the food objects in their entry
+  // no one should ever have to update the username or datetime
 
-    invalidParams(id, foods, ...foods);
-    id = invalidID(id);
+  invalidParams(id, foods, ...foods);
+  id = invalidID(id);
 
-    let entry = await getCalorieByID(id);
+  let entry = await getCalorieByID(id);
 
-    if (!foods.length === 0) {
-        throw [400, "Error: no foods provided"];
+  if (!foods.length === 0) {
+    throw [400, "Error: no foods provided"];
+  }
+
+  let foodObjects = [];
+  for (const food of foods) {
+    if (typeof food !== "object") {
+      throw [400, "Error: food entry must be an Object"];
     }
-
-    let foodObjects = [];
-    for (const food of foods) {
-        if (typeof food !== "object") {
-            throw [400, "Error: food entry must be an Object"];
-        }
-        invalidParams(food.food_name, food.calories, food.calories);
-        invalidStrings(food.food_name);
-        invalidNum(food.calories, food.quantity);
-        if (food.calories < 0) {
-            throw [400, "Error: invalid calorie count"];
-        }
-        if (food.quantity <= 0) {
-            throw [400, "Error: invalid serving count"];
-        }
-        const newFoodObject = {
-            _id: new ObjectId(),
-            food_name: food.food_name, // not trimming the food name since it should be from the API
-            calories: food.calories,
-            quantity: food.quantity,
-        };
-        foodObjects.push(newFoodObject);
+    invalidParams(food.food_name, food.calories, food.calories);
+    invalidStrings(food.food_name);
+    invalidNum(food.calories, food.quantity);
+    if (food.calories < 0) {
+      throw [400, "Error: invalid calorie count"];
     }
-
-    const calorieEntry = {
-        username: entry.username,
-        dateTime: entry.dateTime,
-        foods: foodObjects,
+    if (food.quantity <= 0) {
+      throw [400, "Error: invalid serving count"];
+    }
+    const newFoodObject = {
+      _id: new ObjectId(),
+      food_name: food.food_name, // not trimming the food name since it should be from the API
+      calories: food.calories,
+      quantity: food.quantity,
     };
+    foodObjects.push(newFoodObject);
+  }
 
-    let calorieCollection = await calories();
+  const calorieEntry = {
+    username: entry.username,
+    dateTime: entry.dateTime,
+    foods: foodObjects,
+  };
 
-    let updatedInfo = await calorieCollection.findOneAndReplace(
-        { _id: new ObjectId(id) },
-        calorieEntry,
-        { returnDocument: "after" }
-    );
-    if (updatedInfo.lastErrorObject.n === 0) {
-        throw Error("could not update calorie entry successfully");
-    }
+  let calorieCollection = await calories();
 
-    updatedInfo.value._id = updatedInfo.value._id.toString();
-    let foodIDToString = (food) => {
-        food._id = food._id.toString();
-        return food;
-    };
-    updatedInfo.value.foods = updatedInfo.value.foods.map(foodIDToString);
+  let updatedInfo = await calorieCollection.findOneAndReplace(
+    { _id: new ObjectId(id) },
+    calorieEntry,
+    { returnDocument: "after" }
+  );
+  if (updatedInfo.lastErrorObject.n === 0) {
+    throw Error("could not update calorie entry successfully");
+  }
 
-    return updatedInfo.value;
+  updatedInfo.value._id = updatedInfo.value._id.toString();
+  let foodIDToString = (food) => {
+    food._id = food._id.toString();
+    return food;
+  };
+  updatedInfo.value.foods = updatedInfo.value.foods.map(foodIDToString);
+
+  return updatedInfo.value;
 };
 
 export const deleteCalorie = async (id) => {
-    invalidParams(id);
-    id = invalidID(id);
+  invalidParams(id);
+  id = invalidID(id);
 
-    let calorieCollection = await calories();
+  let calorieCollection = await calories();
 
-    const deletionInfo = await calorieCollection.findOneAndDelete({
-        _id: new ObjectId(id),
-    });
-    if (deletionInfo.lastErrorObject.n === 0) {
-        throw Error(`Could not delete calorie entry with id of ${id}`);
-    }
+  const deletionInfo = await calorieCollection.findOneAndDelete({
+    _id: new ObjectId(id),
+  });
+  if (deletionInfo.lastErrorObject.n === 0) {
+    throw Error(`Could not delete calorie entry with id of ${id}`);
+  }
 
-    return `calorie entry has been successfully deleted!`;
+  return `calorie entry has been successfully deleted!`;
 };
