@@ -1,7 +1,6 @@
 import allModules from "../allModules.js";
 
 function toggleEditModules() {
-  console.log("edit modules button clicked");
   $("#editModulesModal").toggle();
 }
 
@@ -40,5 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Add event listener to edit modules form
   if ($("#editModulesForm").length > 0) {
     validateModuleInputs();
+  }
+
+  if ($("#editModulesCancelBtn").length > 0) {
+    $("#editModulesCancelBtn").click(toggleEditModules);
   }
 });

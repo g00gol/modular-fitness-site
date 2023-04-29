@@ -59,6 +59,9 @@ const hbs = exphbs.create({});
 // Helper function to register partials
 function registerPartials(dir, hbsInstance) {
   fs.readdirSync(dir).forEach((file) => {
+    // Check that it's not a directory
+    if (fs.lstatSync(path.join(dir, file)).isDirectory()) return;
+
     const fileName = path.basename(file, ".handlebars");
     const partial = fs.readFileSync(path.join(dir, file), "utf8");
     const partialPath = path.relative(
@@ -79,6 +82,13 @@ hbs.handlebars.registerPartial(
   "module",
   fs.readFileSync(
     path.join(__dirname, "views/partials/module.handlebars"),
+    "utf8"
+  )
+);
+hbs.handlebars.registerPartial(
+  "modal",
+  fs.readFileSync(
+    path.join(__dirname, "views/partials/modal.handlebars"),
     "utf8"
   )
 );
