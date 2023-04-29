@@ -169,6 +169,7 @@ export const checkUser = async (username, password) => {
     let match = await bcrypt.compare(password, user.password);
     if (match) {
       return {
+        uid: user._id.toString(),
         fullName: user.fullName,
         username: user.username,
         enabledModules: user.enabledModules,
