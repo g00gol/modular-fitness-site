@@ -9,12 +9,13 @@ import {
     invalidID,
 } from "../utils/helpers.js";
 
-export const enterCalorie = async (username, dateTime, foods) => {
+export const enterCalorie = async (userID, username, dateTime, foods) => {
     // enter a meal event into the database
     // input is a username, a timestamp, as well as an array of food objects, each containing fields food_name,
     // calories (calories per per serving), quantity (number of servings)
 
-    invalidParams(username, dateTime, foods, ...foods);
+    invalidParams(userID, username, dateTime, foods, ...foods);
+    userID = invalidID(userID);
 
     invalidStrings(username, dateTime);
     username = username.toLowerCase();
@@ -52,6 +53,7 @@ export const enterCalorie = async (username, dateTime, foods) => {
     }
 
     const calorieEntry = {
+        userID: userID,
         username: username.trim(),
         dateTime: dateTime,
         foods: foodObjects,
@@ -67,20 +69,18 @@ export const enterCalorie = async (username, dateTime, foods) => {
     return calorieEntry;
 };
 
-export const getCaloriesByUsername = async (username) => {
+export const getCaloriesByUserID = async (userID) => {
     // gets all the calorie entries for a given username
     // returns as an array of calorie entry objects
     // if user has no calorie entries it will return an empty array, not throw
 
-    invalidParams(username);
-    invalidStrings(username);
-    username = username.toLowerCase();
-    await getByUsername(username); //make sure it exists
+    invalidParams(userID);
+    userID = invalidID(userID);
 
     let calorieCollection = await calories();
 
     let calorieEntries = await calorieCollection
-        .find({ username: username })
+        .find({ userID: userID })
         .toArray();
 
     if (!calorieEntries || calorieEntries.length == 0) {

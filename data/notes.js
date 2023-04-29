@@ -4,7 +4,7 @@ import { getByUsername } from "./users.js";
 import moment from "moment";
 import { invalidParams, invalidStrings, invalidID } from "../utils/helpers.js";
 
-export const enterNote = async (username, dateTime, title, text) => {
+export const enterNote = async (userID, username, dateTime, title, text) => {
     // enter a new note into the database
     // the following input validation is in line with how apple notes works
     // input is a username, a timestamp, a title, and some text
@@ -12,8 +12,9 @@ export const enterNote = async (username, dateTime, title, text) => {
     // duplicate titles are allowed because they can be identified by date/time
     // text is allowed to be empty or consist of only whitespace, so only the title will be trimmed
     // we only throw if both the title and the text are not given
-    invalidParams(username, dateTime);
+    invalidParams(userID, username, dateTime);
     invalidStrings(username, dateTime);
+    userID = invalidID(userID);
     username = username.toLowerCase();
     await getByUsername(username); //make sure it exists
 
@@ -38,6 +39,7 @@ export const enterNote = async (username, dateTime, title, text) => {
     }
 
     const noteEntry = {
+        userID: userID,
         username: username.trim(),
         lastUpdated: dateTime,
         title: title,
@@ -54,21 +56,17 @@ export const enterNote = async (username, dateTime, title, text) => {
     return noteEntry;
 };
 
-export const getNotesByUsername = async (username) => {
+export const getNotesByUserID = async (userID) => {
     // gets all the notes for a given username
     // returns as an array of note objects
     // if user has no notes it will return an empty array, not throw
 
-    invalidParams(username);
-    invalidStrings(username);
-    username = username.toLowerCase();
-    await getByUsername(username); //make sure it exists
+    invalidParams(userID);
+    userID = invalidID(userID);
 
     let noteCollection = await notes();
 
-    let noteEntries = await noteCollection
-        .find({ username: username })
-        .toArray();
+    let noteEntries = await noteCollection.find({ userID: userID }).toArray();
 
     if (!noteEntries || noteEntries.length == 0) {
         return [];
