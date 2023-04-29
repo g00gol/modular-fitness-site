@@ -55,12 +55,34 @@
     @apply bg-frost text-white;
   }
   .userFeature {
-    @apply w-1/2 h-screen;
+    @apply w-1/2 h-screen bg-[url("../assets/images/userFormsBg.jpg")] bg-cover bg-center;
+  }
+
+  /* Modal Form */
+  .modalForm {
+    @apply w-full h-full flex flex-col justify-center items-start;
   }
 
   /* Error Container */
   .errorContainer {
     @apply space-y-2;
+  }
+
+  /* Panel */
+  .panel {
+    @apply rounded-std h-full w-fit p-8 flex flex-col overflow-y-auto;
+  }
+  .panel h2 {
+    @apply font-bold;
+  }
+  .panel::-webkit-scrollbar {
+    @apply w-2;
+  }
+  .panel::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  .panel::-webkit-scrollbar-thumb {
+    @apply bg-gray-2 rounded-std;
   }
 }
 
