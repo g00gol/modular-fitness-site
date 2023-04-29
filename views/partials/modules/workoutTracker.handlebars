@@ -1,7 +1,12 @@
+<script type="module" src="../../../public/js/modules/workoutTracker.js"></script>
+
 {{#> module moduleName="Workout Tracker"}}
   {{#> panels/panel-1}}
-    <h2>Arm Day</h2>
-    <button>Something</button>
+    <div class="flex justify-between">
+      <h2 class="w-fit">Your Workouts</h2>
+      <button id="editWorkoutsBtn" class="text-xl hover:text-snow-1 transition-colors"><i class="fa-solid fa-plus"></i></button>
+    </div>
+    <button class="w-full rounded-md border border-snow-1 p-2 text-left hover:bg-polar transition-colors">Something</button>
   {{/panels/panel-1}}
 
   {{#> panels/panel-2}}
@@ -9,3 +14,50 @@
     <p>Module 2 content</p>
   {{/panels/panel-2}}
 {{/module}}
+
+{{!-- Edit Workouts Modal --}}
+<div id="editWorkoutsModal" class="fixed top-0 left-nav" hidden>
+  {{#> modal modalName="Edit Workouts"}}
+    <form id="editWorkoutsForm" class="flex flex-col space-y-2 text-lg" action="/modules" method="POST">
+      <label>
+        Workout Name
+        <input name="workoutName" type="text">
+      </label>
+
+      <label>
+        Weekday
+        <select name="workoutDay">
+          <option value="0">Sunday</option>
+          <option value="1">Monday</option>
+          <option value="2">Tuesday</option>
+          <option value="3">Wednesday</option>
+          <option value="4">Thursday</option>
+          <option value="5">Friday</option>
+          <option value="6">Saturday</option>
+        </select>
+      </label>
+
+      <div id="addExerciseContainer">
+        <button id="addExerciseBtn" type="button" class="w-fit text-gray-2 hover:text-gray-1">
+          <i class="text-xl fa-solid fa-circle-plus"></i> Add Exercise
+        </button>
+      </div>
+
+      <div class="!mt-[5vh] space-x-4">
+        <button
+          type="submit"
+          class="w-fit px-6 py-2 text-snow-3 hover:text-snow-1 underline bg-frost rounded-std"
+        >
+          Save
+        </button>
+        <button
+          id="editWorkoutsCancelBtn"
+          type="button"
+          class="w-fit text-gray-2 hover:text-gray-1 underline"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  {{/modal}}
+</div>

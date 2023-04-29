@@ -19,7 +19,6 @@ function validateModuleInputs() {
       }
     }
 
-    console.log(match);
     if (!match) {
       e.preventDefault();
       return alert("Invalid input");
