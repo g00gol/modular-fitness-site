@@ -36,6 +36,10 @@ export const enterCalorie = async (userID, username, dateTime, foods) => {
     }
     invalidParams(food.food_name, food.calories, food.calories);
     invalidStrings(food.food_name);
+    food.food_name = food.food_name.trim();
+    if (food.food_name.length <= 0 || food.food_name.length > 1000) {
+      throw [400, "Error: invalid food name"];
+    }
     invalidNum(food.calories, food.quantity);
     if (food.calories < 0 || food.calories > 30000) {
       throw [400, "Error: invalid calorie count"];
@@ -160,6 +164,10 @@ export const updateCalorie = async (id, foods) => {
     }
     invalidParams(food.food_name, food.calories, food.calories);
     invalidStrings(food.food_name);
+    food.food_name = food.food_name.trim();
+    if (food.food_name.length <= 0 || food.food_name.length > 1000) {
+      throw [400, "Error: invalid food name"];
+    }
     invalidNum(food.calories, food.quantity);
     if (food.calories < 0 || food.calories > 30000) {
       throw [400, "Error: invalid calorie count"];
