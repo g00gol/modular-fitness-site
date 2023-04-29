@@ -4,50 +4,53 @@ import { dbConnection, closeConnection } from "../config/mongoConnection.js";
 import { users } from "../data/index.js";
 import { cardio } from "../data/index.js";
 import { timers } from "../data/index.js";
+import { calories } from "../data/index.js";
+import { notes } from "../data/index.js";
 
 import {
-  enterWeight,
-  deleteAllWeightDataForUser,
-  getAllWeightsObj,
-  getWeightById,
-  deleteOneWeightEnrty,
-  updateWeightEntry,
+    enterWeight,
+    deleteAllWeightDataForUser,
+    getAllWeightsObj,
+    getWeightById,
+    deleteOneWeightEnrty,
+    updateWeightEntry,
 } from "../data/weight.js";
 import {
-  enterSugar,
-  deleteAllSugarDataForUser,
-  deleteOneSugarEnrty,
-  getAllSugarObj,
-  getSugarById,
-  updateSugartEntry,
+    enterSugar,
+    deleteAllSugarDataForUser,
+    deleteOneSugarEnrty,
+    getAllSugarObj,
+    getSugarById,
+    updateSugartEntry,
 } from "../data/sugar.js";
+import { getFoodByID } from "../data/calories.js";
 
 const db = await dbConnection();
 await db.dropDatabase();
 
 let testPassword = "!Test123456";
 await users.createUser(
-  "John Doe",
-  "johndoe",
-  testPassword,
-  testPassword,
-  "2001-01-01"
+    "John Doe",
+    "johndoe",
+    testPassword,
+    testPassword,
+    "2001-01-01"
 );
 
 await users.createUser(
-  "Mandeep Kaur",
-  "mkaur",
-  testPassword,
-  testPassword,
-  "2001-01-01"
+    "Mandeep Kaur",
+    "mkaur",
+    testPassword,
+    testPassword,
+    "2001-01-01"
 );
 
 await users.createUser(
-  "Patrick Hill",
-  "nycSwag",
-  testPassword,
-  testPassword,
-  "2001-01-01"
+    "Patrick Hill",
+    "nycSwag",
+    testPassword,
+    testPassword,
+    "2001-01-01"
 );
 
 //create some cardio workouts
@@ -93,7 +96,65 @@ await updateSugartEntry(ans2[0]._id.toString(), 700, true);
 // console.log(ans)
 // await deleteOneSugarEnrty("mkaur","6438460abb940a8db0c70896!")
 // await deleteAllSugarDataForUser("mkaur")
-
 // await deleteAllWeightDataForUser("mkaur")
+
+await calories.enterCalorie("johndoe", moment().format(), [
+    { food_name: "banana", calories: 100, quantity: 2 },
+    { food_name: "apple", calories: 100, quantity: 2 },
+    { food_name: "watermelon", calories: 100, quantity: 2 },
+]);
+await calories.enterCalorie("johndoe", moment().format(), [
+    { food_name: "water", calories: 0, quantity: 1 },
+    { food_name: "chips", calories: 100, quantity: 2 },
+    { food_name: "soda", calories: 100, quantity: 1 },
+]);
+await calories.enterCalorie("mkaur", moment().format(), [
+    { food_name: "banana", calories: 100, quantity: 2 },
+    { food_name: "apple", calories: 100, quantity: 2 },
+    { food_name: "watermelon", calories: 100, quantity: 2 },
+]);
+await calories.enterCalorie("mkaur", moment().format(), [
+    { food_name: "water", calories: 0, quantity: 1 },
+    { food_name: "chips", calories: 100, quantity: 2 },
+    { food_name: "soda", calories: 100, quantity: 1 },
+]);
+await calories.enterCalorie("nycSwag", moment().format(), [
+    { food_name: "water", calories: 0, quantity: 1 },
+    { food_name: "chips", calories: 100, quantity: 2 },
+    { food_name: "soda", calories: 100, quantity: 1 },
+]);
+await calories.enterCalorie("nycSwag", moment().format(), [
+    { food_name: "banana", calories: 100, quantity: 2 },
+    { food_name: "apple", calories: 100, quantity: 2 },
+    { food_name: "watermelon", calories: 100, quantity: 2 },
+]);
+
+await notes.enterNote("johndoe", moment().format(), "", "\t");
+await notes.enterNote(
+    "johndoe",
+    moment().format(),
+    "log",
+    "i feel pretty fit today ngl"
+);
+await notes.enterNote(
+    "mkaur",
+    moment().format(),
+    "water",
+    "\tdidn't drink enough of it today :("
+);
+await notes.enterNote(
+    "mkaur",
+    moment().format(),
+    "food",
+    "\tdidn't eat enough of it today :((("
+);
+await notes.enterNote(
+    "nycSwag",
+    moment().format(),
+    "",
+    "damn, the sky is mad beautiful today"
+);
+await notes.enterNote("nycSwag", moment().format(), "", "who needs titles lol");
+
 console.log("Done seeding the database!");
 await closeConnection();
