@@ -83,6 +83,9 @@
   input {
     @apply bg-transparent border border-snow-1 p-2 rounded-md;
   }
+  select {
+    @apply bg-transparent border border-snow-1 p-2 rounded-md;
+  }
 }
 
 /* 

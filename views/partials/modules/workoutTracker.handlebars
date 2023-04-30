@@ -17,8 +17,8 @@
 
 {{!-- Edit Workouts Modal --}}
 <div id="editWorkoutsModal" class="fixed top-0 left-nav" hidden>
-  {{#> modal modalName="Edit Workouts"}}
-    <form id="editWorkoutsForm" class="flex flex-col space-y-2 text-lg" action="/modules" method="POST">
+  {{#> modal modalName="Edit Workouts"}} 
+    <form id="editWorkoutsForm" class="flex flex-col space-y-4 text-lg" action="/modules" method="POST">
       <label>
         Workout Name
         <input name="workoutName" type="text">
@@ -27,23 +27,31 @@
       <label>
         Weekday
         <select name="workoutDay">
-          <option value="0">Sunday</option>
-          <option value="1">Monday</option>
-          <option value="2">Tuesday</option>
-          <option value="3">Wednesday</option>
-          <option value="4">Thursday</option>
-          <option value="5">Friday</option>
-          <option value="6">Saturday</option>
+          <option value="Sunday">Sunday</option>
+          <option value="Monday">Monday</option>
+          <option value="Tuesday">Tuesday</option>
+          <option value="Wednesday">Wednesday</option>
+          <option value="Thursday">Thursday</option>
+          <option value="Friday">Friday</option>
+          <option value="Saturday">Saturday</option>
         </select>
       </label>
 
-      <div id="addExerciseContainer">
-        <button id="addExerciseBtn" type="button" class="w-fit text-gray-2 hover:text-gray-1">
-          <i class="text-xl fa-solid fa-circle-plus"></i> Add Exercise
+      <div id="addExerciseContainer" class="space-y-4">
+        <button id="addExerciseBtn" type="button" class="w-fit text-gray-2 hover:text-gray-1 space-x-4">
+          <i class="text-xl fa-solid fa-circle-plus"></i><span>Add Exercise</span>
         </button>
       </div>
 
-      <div class="!mt-[5vh] space-x-4">
+      <div class="errorContainer">
+        {{#each error}}
+          <p class="error">
+            {{this}}
+          </p>
+        {{/each}}
+      </div>
+
+      <div class="editWorkoutsBtns!mt-[5vh] space-x-4">
         <button
           type="submit"
           class="w-fit px-6 py-2 text-snow-3 hover:text-snow-1 underline bg-frost rounded-std"

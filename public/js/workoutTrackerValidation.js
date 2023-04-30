@@ -1,10 +1,14 @@
 /**
- * Checks if a param is a non-empty string
+ * Checks if a param is a non-empty string that is between 1 and 200 characters
  * @param {*} param
  * @returns {boolean} True if param is a non-empty string, false otherwise
  */
 export function isString(param) {
-  return typeof param === "string" && param.trim().length > 0;
+  return (
+    typeof param === "string" &&
+    param.trim().length > 0 &&
+    param.trim().length <= 200
+  );
 }
 
 /**
@@ -15,7 +19,11 @@ export function isString(param) {
 export function paramExists(obj) {
   let invalidParams = [];
   for (let key in obj) {
-    if (typeof obj[key] === "undefined" || obj[key] === null) {
+    if (
+      typeof obj[key] === "undefined" ||
+      obj[key] === null ||
+      obj[key] === ""
+    ) {
       invalidParams.push(key);
     }
   }

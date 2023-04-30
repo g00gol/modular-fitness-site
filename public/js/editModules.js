@@ -1,4 +1,4 @@
-import allModules from "../allModules.js";
+import allModules from "../constants/allModules.js";
 
 function toggleEditModules() {
   $("#editModulesModal").toggle();

@@ -2,7 +2,7 @@ import * as validation from "../workoutTrackerValidation.js";
 
 function addExerciseFormHTML(ith) {
   return `<div id="addExerciseForm${ith}" class="flex space-x-4 addExerciseForm">
-  <button id="removeExerciseBtn${ith}" value=${ith}><i class="text-xl fa-solid fa-circle-minus"></i></button>
+  <button id="removeExerciseBtn${ith}" value="${ith}"><i class="text-xl fa-solid fa-circle-minus"></i></button>
 
   <label>
     <input name="exerciseSets" type="number" min="1" max="99" />
@@ -13,7 +13,7 @@ function addExerciseFormHTML(ith) {
     Reps
   </label>
   <label>
-    <input name="exerciseName" type="text" />
+    <input name="exerciseName" type="text" maxlength="200" />
     Exercise
   </label>
 
@@ -36,6 +36,77 @@ function addExerciseFormHTML(ith) {
 // Toggle the edit modal
 function toggleEditWorkouts() {
   $("#editWorkoutsModal").toggle();
+}
+
+// Validate the workout form
+function validateWorkoutForm() {
+  $("#editWorkoutsForm input").removeClass("invalidInput");
+
+  let workoutName = $("#editWorkoutsForm input[name='workoutName']").val();
+  let workoutDay = $("#editWorkoutsForm select[name='workoutDay']").val();
+
+  console.log(workoutName, workoutDay);
+
+  // Validate workoutName and workoutDate
+  try {
+    validation.paramExists({ workoutName, workoutDay });
+  } catch (e) {
+    // Add invalidInput class to the input fields that are missing
+    e.forEach((param) => {
+      if (param === "workoutName") {
+        $("#editWorkoutsForm input[name='workoutName']").addClass(
+          "invalidInput"
+        );
+      }
+      if (param === "workoutDay") {
+        $("#editWorkoutsForm select[name='workoutDay']").addClass(
+          "invalidInput"
+        );
+      }
+    });
+    return false;
+  }
+
+  let invalidParams = [];
+
+  // Validate workoutName
+  try {
+    validation.paramIsString({ workoutName });
+  } catch (e) {
+    invalidParams = [...invalidParams, ...e];
+  }
+
+  // Validate workoutDay
+  if (
+    workoutDay !== "Sunday" &&
+    workoutDay !== "Monday" &&
+    workoutDay !== "Tuesday" &&
+    workoutDay !== "Wednesday" &&
+    workoutDay !== "Thursday" &&
+    workoutDay !== "Friday" &&
+    workoutDay !== "Saturday"
+  ) {
+    invalidParams.push("workoutDay");
+  }
+
+  // If there are invalid params, add invalidInput class to the input fields that are invalid
+  if (invalidParams.length > 0) {
+    invalidParams.forEach((param) => {
+      if (param === "workoutName") {
+        $("#editWorkoutsForm input[name='workoutName']").addClass(
+          "invalidInput"
+        );
+      }
+      if (param === "workoutDay") {
+        $("#editWorkoutsForm select[name='workoutDay']").addClass(
+          "invalidInput"
+        );
+      }
+    });
+    return false;
+  }
+
+  return true;
 }
 
 // Validate Exercise Form
@@ -74,7 +145,12 @@ function validateExerciseForm(ith) {
       exerciseWeightUnits,
     });
   } catch (e) {
-    invalidParams = [...invalidParams, ...e];
+    e.forEach((param) => {
+      $(`#addExerciseForm${ith} input[name="${param}"]`).addClass(
+        "invalidInput"
+      );
+    });
+    return false;
   }
 
   // Validate exerciseName and exerciseWeightUnits
@@ -167,10 +243,8 @@ document.addEventListener("DOMContentLoaded", () => {
       $("#addExerciseBtn").after(addExerciseFormHTML(ith++));
 
       $("button[id^='removeExerciseBtn']").click((e) => {
-        console.log($(e.target).parent());
-        // Get the id of the button
-        let id = e.target.id;
-        // Get the ith exercise form
+        // Get this button's ith
+        let ith = $(e.target.parentNode).val();
 
         // Remove the ith exercise form
         $(`#addExerciseForm${ith}`).remove();
@@ -182,8 +256,13 @@ document.addEventListener("DOMContentLoaded", () => {
   if ($("#editWorkoutsForm").length > 0) {
     $("#editWorkoutsForm").submit((e) => {
       e.preventDefault();
+      $(".errorContainer").empty();
 
       let valid = true;
+      // Validate workout form
+      valid &= validateWorkoutForm();
+
+      // If there are no exercise forms, error
       if ($("div[id^='addExerciseForm']").length > 0) {
         // Get each exercise form
         let exerciseForms = $("div[id^='addExerciseForm']");
@@ -191,9 +270,22 @@ document.addEventListener("DOMContentLoaded", () => {
         for (let i = 0; i < exerciseForms.length; i++) {
           valid &= validateExerciseForm(i);
         }
+      } else {
+        $(".errorContainer").append(
+          `<p class="error">You must add at least one exercise</p>`
+        );
+        return;
       }
 
-      if (!valid) return;
+      // If there are any invalid fields, error
+      if (!valid) {
+        $(".errorContainer").append(
+          `<p class="error">One or more fields are invalid</p>`
+        );
+        return;
+      }
+
+      // Submit form
       $("#editWorkoutsForm").off("submit").submit();
     });
   }

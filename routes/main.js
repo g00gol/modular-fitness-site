@@ -5,7 +5,7 @@
 import { Router } from "express";
 import * as middleware from "../utils/middleware.js";
 import * as users from "../data/users.js";
-import allModules from "../public/allModules.js";
+import allModules from "../public/constants/allModules.js";
 
 const router = Router();
 
