@@ -4,6 +4,7 @@ import { dbConnection, closeConnection } from "../config/mongoConnection.js";
 import { users } from "../data/index.js";
 import { cardio } from "../data/index.js";
 import { timers } from "../data/index.js";
+import { workouts } from "../data/index.js";
 
 import {
   enterWeight,
@@ -95,5 +96,9 @@ await updateSugartEntry(ans2[0]._id.toString(), 700, true);
 // await deleteAllSugarDataForUser("mkaur")
 
 // await deleteAllWeightDataForUser("mkaur")
+
+// create some workouts
+await workouts.createWorkout();
+
 console.log("Done seeding the database!");
 await closeConnection();

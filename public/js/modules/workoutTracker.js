@@ -45,8 +45,6 @@ function validateWorkoutForm() {
   let workoutName = $("#editWorkoutsForm input[name='workoutName']").val();
   let workoutDay = $("#editWorkoutsForm select[name='workoutDay']").val();
 
-  console.log(workoutName, workoutDay);
-
   // Validate workoutName and workoutDate
   try {
     validation.paramExists({ workoutName, workoutDay });

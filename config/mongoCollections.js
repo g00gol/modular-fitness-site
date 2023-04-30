@@ -21,4 +21,4 @@ export const cardio = getCollectionFn("cardio");
 export const timers = getCollectionFn("timers");
 export const weights = getCollectionFn("weights");
 export const sugar = getCollectionFn("sugar");
-
+export const workouts = getCollectionFn("workouts");
