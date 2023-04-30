@@ -1,6 +1,9 @@
+import { ObjectId } from "mongodb";
+
 import { workouts } from "../config/mongoCollections.js";
 
 import * as validation from "../public/js/workoutTrackerValidation.js";
+import * as helpers from "../utils/helpers.js";
 
 /**
  * Creates a new workout using the following fields:
@@ -8,13 +11,13 @@ import * as validation from "../public/js/workoutTrackerValidation.js";
  * @param {string} username - Used to identify the user
  * @param {string} workoutName - The name of the workout
  * @param {string} workoutDay - The day of the week the workout is for
- * @returns {insertedWorkout: true} if the workout was successfully inserted
+ * @returns {string} id of the newly created workout
  * @throws {object} where the key is the type of error and value is error values
  */
 const createWorkout = async (userId, username, workoutName, workoutDay) => {
-  // Validate workoutName and workoutDate
+  // Check if parameters exists
   try {
-    validation.paramExists({ workoutName, workoutDay });
+    validation.paramExists({ userId, username, workoutName, workoutDay });
   } catch (e) {
     // Add invalidInput class to the input fields that are missing
     // e.forEach((param) => {
@@ -34,9 +37,9 @@ const createWorkout = async (userId, username, workoutName, workoutDay) => {
 
   let invalidParams = [];
 
-  // Validate workoutName
+  // Validate userId, username, workoutName
   try {
-    validation.paramIsString({ workoutName });
+    validation.paramIsString({ userId, username, workoutName });
   } catch (e) {
     invalidParams = [...invalidParams, ...e];
   }
@@ -86,7 +89,7 @@ const createWorkout = async (userId, username, workoutName, workoutDay) => {
   if (insertInfo.insertedCount === 0) {
     throw { serverError: [500, "Internal Server Error"] };
   }
-  return { insertedWorkout: true };
+  return insertInfo.insertedId.toString();
 };
 
 /**
@@ -101,7 +104,6 @@ const createWorkout = async (userId, username, workoutName, workoutDay) => {
  * @returns {insertedExercise: true} if the exercise was successfully inserted
  */
 const createExercise = async (
-  userId,
   workoutId,
   exerciseName,
   exerciseSets,
@@ -109,9 +111,10 @@ const createExercise = async (
   exerciseWeight,
   exerciseWeightUnits
 ) => {
-  // Validate exerciseName, exerciseSets, exerciseReps, exerciseWeight, and exerciseWeightUnits
+  // Check if parameters exists
   try {
     validation.paramExists({
+      workoutId,
       exerciseName,
       exerciseSets,
       exerciseReps,
@@ -151,6 +154,13 @@ const createExercise = async (
   }
 
   let invalidParams = [];
+
+  // Validate workoutId
+  try {
+    workoutId = helpers.invalidID(workoutId);
+  } catch (e) {
+    invalidParams = [...invalidParams, ...e];
+  }
 
   // Validate exerciseName and exerciseWeightUnits
   try {
@@ -232,8 +242,13 @@ const createExercise = async (
     throw { invalid: invalidParams };
   }
 
+  // Trim all string parameters
+  exerciseName = exerciseName.trim();
+  exerciseWeightUnits = exerciseWeightUnits.trim();
+
   // Create the exercise
   let exercise = {
+    _id: new ObjectId(),
     exerciseName,
     exerciseSets,
     exerciseReps,
@@ -244,7 +259,7 @@ const createExercise = async (
   // Add the exercise to the database
   const workoutCollection = await workouts();
   const updateInfo = await workoutCollection.updateOne(
-    { _id: workoutId, userId },
+    { _id: new ObjectId(workoutId) },
     { $push: { exercises: exercise } }
   );
 
@@ -256,7 +271,7 @@ const createExercise = async (
 
 /**
  * Gets all workouts for a user
- * @param {string} userId - id of the user 
+ * @param {string} userId - id of the user
  * @returns {array} workouts - array of workouts
  */
 const getWorkouts = async (userId) => {

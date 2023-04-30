@@ -103,7 +103,62 @@ await updateSugartEntry(ans2[0]._id.toString(), 700, true);
 // await deleteAllWeightDataForUser("mkaur")
 
 // create some workouts
-await workouts.createWorkout(userJohn.uid, "johndoe", "workout1", "Sunday");
+let workout1 = await workouts.createWorkout(
+  userPat.uid,
+  userPat.username,
+  "workout1",
+  "Sunday"
+);
+await workouts.createExercise(workout1.toString(), "pushups", 3, 10, 60, "kg");
+await workouts.createExercise(
+  workout1.toString(),
+  "bench press",
+  3,
+  10,
+  70,
+  "kg"
+);
+await workouts.createExercise(
+  workout1.toString(),
+  "pike pushups ",
+  3,
+  10,
+  60,
+  "lbs"
+);
+
+let workout2 = await workouts.createWorkout(
+  userPat.uid,
+  userPat.username,
+  "workout2",
+  "Monday"
+);
+await workouts.createExercise(workout2.toString(), "squats", 3, 10, 60, "kg");
+await workouts.createExercise(workout2.toString(), "lunges", 3, 10, 70, "kg");
+
+let workout3 = await workouts.createWorkout(
+  userJohn.uid,
+  userJohn.username,
+  "workout1",
+  "Sunday"
+);
+await workouts.createExercise(workout3.toString(), "pushups", 3, 10, 60, "kg");
+await workouts.createExercise(
+  workout3.toString(),
+  "bench press",
+  3,
+  10,
+  70,
+  "kg"
+);
+await workouts.createExercise(
+  workout3.toString(),
+  "pike pushups ",
+  3,
+  10,
+  60,
+  "lbs"
+);
 
 await calories.enterCalorie(userJohn.uid, "johndoe", moment().format(), [
   { food_name: "banana", calories: 100, quantity: 2 },
