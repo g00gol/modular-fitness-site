@@ -5,6 +5,8 @@ import { users } from "../data/index.js";
 import { cardio } from "../data/index.js";
 import { timers } from "../data/index.js";
 import { workouts } from "../data/index.js";
+import { calories } from "../data/index.js";
+import { notes } from "../data/index.js";
 
 import {
   enterWeight,
@@ -22,6 +24,7 @@ import {
   getSugarById,
   updateSugartEntry,
 } from "../data/sugar.js";
+import { getFoodByID } from "../data/calories.js";
 
 const db = await dbConnection();
 await db.dropDatabase();
@@ -34,6 +37,7 @@ await users.createUser(
   testPassword,
   "2001-01-01"
 );
+let userJohn = await users.checkUser("johndoe", testPassword);
 
 await users.createUser(
   "Mandeep Kaur",
@@ -42,6 +46,7 @@ await users.createUser(
   testPassword,
   "2001-01-01"
 );
+let userMandeep = await users.checkUser("mkaur", testPassword);
 
 await users.createUser(
   "Patrick Hill",
@@ -50,6 +55,7 @@ await users.createUser(
   testPassword,
   "2001-01-01"
 );
+let userPat = await users.checkUser("nycswag", testPassword);
 
 //create some cardio workouts
 await cardio.create("johndoe", "run", 1500, 1, moment(), -1, 60);
@@ -94,11 +100,78 @@ await updateSugartEntry(ans2[0]._id.toString(), 700, true);
 // console.log(ans)
 // await deleteOneSugarEnrty("mkaur","6438460abb940a8db0c70896!")
 // await deleteAllSugarDataForUser("mkaur")
-
 // await deleteAllWeightDataForUser("mkaur")
 
 // create some workouts
-await workouts.createWorkout();
+await workouts.createWorkout(userJohn.uid, "johndoe", "workout1", "Sunday");
+
+await calories.enterCalorie(userJohn.uid, "johndoe", moment().format(), [
+  { food_name: "banana", calories: 100, quantity: 2 },
+  { food_name: "apple", calories: 100, quantity: 2 },
+  { food_name: "watermelon", calories: 100, quantity: 2 },
+]);
+await calories.enterCalorie(userJohn.uid, "johndoe", moment().format(), [
+  { food_name: "water", calories: 0, quantity: 1 },
+  { food_name: "chips", calories: 100, quantity: 2 },
+  { food_name: "soda", calories: 100, quantity: 1 },
+]);
+await calories.enterCalorie(userMandeep.uid, "mkaur", moment().format(), [
+  { food_name: "banana", calories: 100, quantity: 2 },
+  { food_name: "apple", calories: 100, quantity: 2 },
+  { food_name: "watermelon", calories: 100, quantity: 2 },
+]);
+await calories.enterCalorie(userMandeep.uid, "mkaur", moment().format(), [
+  { food_name: "water", calories: 0, quantity: 1 },
+  { food_name: "chips", calories: 100, quantity: 2 },
+  { food_name: "soda", calories: 100, quantity: 1 },
+]);
+await calories.enterCalorie(userPat.uid, "nycSwag", moment().format(), [
+  { food_name: "water", calories: 0, quantity: 1 },
+  { food_name: "chips", calories: 100, quantity: 2 },
+  { food_name: "soda", calories: 100, quantity: 1 },
+]);
+await calories.enterCalorie(userPat.uid, "nycSwag", moment().format(), [
+  { food_name: "banana", calories: 100, quantity: 2 },
+  { food_name: "apple", calories: 100, quantity: 2 },
+  { food_name: "watermelon", calories: 100, quantity: 2 },
+]);
+
+await notes.enterNote(userJohn.uid, "johndoe", moment().format(), "", "\t");
+await notes.enterNote(
+  userJohn.uid,
+  "johndoe",
+  moment().format(),
+  "log",
+  "i feel pretty fit today ngl"
+);
+await notes.enterNote(
+  userMandeep.uid,
+  "mkaur",
+  moment().format(),
+  "water",
+  "\tdidn't drink enough of it today :("
+);
+await notes.enterNote(
+  userMandeep.uid,
+  "mkaur",
+  moment().format(),
+  "food",
+  "\tdidn't eat enough of it today :((("
+);
+await notes.enterNote(
+  userPat.uid,
+  "nycSwag",
+  moment().format(),
+  "",
+  "damn, the sky is mad beautiful today"
+);
+await notes.enterNote(
+  userPat.uid,
+  "nycSwag",
+  moment().format(),
+  "",
+  "who needs titles lol"
+);
 
 console.log("Done seeding the database!");
 await closeConnection();
