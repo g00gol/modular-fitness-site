@@ -219,6 +219,7 @@ const getAllSugarObj = async (username) =>
         throw `Error: username must be a non empty string.`
     }
     username = username.trim();
+    // console.log("username in data function is "+username)
     let user
     try 
     {
