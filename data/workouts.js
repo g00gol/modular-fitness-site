@@ -15,31 +15,26 @@ import * as helpers from "../utils/helpers.js";
  * @throws {object} where the key is the type of error and value is error values
  */
 const createWorkout = async (userId, username, workoutName, workoutDay) => {
+  // Check if userId and username are valid
+  try {
+    validation.paramExists({ userId, username });
+    validation.paramIsString({ userId, username });
+  } catch (e) {
+    throw { serverError: [500, "Internal Server Error"] };
+  }
+
   // Check if parameters exists
   try {
-    validation.paramExists({ userId, username, workoutName, workoutDay });
+    validation.paramExists({ workoutName, workoutDay });
   } catch (e) {
-    // Add invalidInput class to the input fields that are missing
-    // e.forEach((param) => {
-    //   if (param === "workoutName") {
-    //     $("#editWorkoutsForm input[name='workoutName']").addClass(
-    //       "invalidInput"
-    //     );
-    //   }
-    //   if (param === "workoutDay") {
-    //     $("#editWorkoutsForm select[name='workoutDay']").addClass(
-    //       "invalidInput"
-    //     );
-    //   }
-    // });
     throw { invalid: e };
   }
 
   let invalidParams = [];
 
-  // Validate userId, username, workoutName
+  // Validate workoutName
   try {
-    validation.paramIsString({ userId, username, workoutName });
+    validation.paramIsString({ workoutName });
   } catch (e) {
     invalidParams = [...invalidParams, ...e];
   }
@@ -59,18 +54,6 @@ const createWorkout = async (userId, username, workoutName, workoutDay) => {
 
   // If there are invalid params, add invalidInput class to the input fields that are invalid
   if (invalidParams.length > 0) {
-    // invalidParams.forEach((param) => {
-    //   if (param === "workoutName") {
-    //     $("#editWorkoutsForm input[name='workoutName']").addClass(
-    //       "invalidInput"
-    //     );
-    //   }
-    //   if (param === "workoutDay") {
-    //     $("#editWorkoutsForm select[name='workoutDay']").addClass(
-    //       "invalidInput"
-    //     );
-    //   }
-    // });
     throw { invalid: invalidParams };
   }
 
@@ -94,7 +77,6 @@ const createWorkout = async (userId, username, workoutName, workoutDay) => {
 
 /**
  * Creates a new exercise using the following fields:
- * @param {string} userId - id of the user
  * @param {string} workoutId - id of the workout
  * @param {string} exerciseName - name of the exercise
  * @param {number} exerciseSets - number of sets per exercise
@@ -122,34 +104,6 @@ const createExercise = async (
       exerciseWeightUnits,
     });
   } catch (e) {
-    // Add invalidInput class to the input fields that are missing
-    // e.forEach((param) => {
-    //   if (param === "exerciseName") {
-    //     $("#addExerciseForm input[name='exerciseName']").addClass(
-    //       "invalidInput"
-    //     );
-    //   }
-    //   if (param === "exerciseSets") {
-    //     $("#addExerciseForm input[name='exerciseSets']").addClass(
-    //       "invalidInput"
-    //     );
-    //   }
-    //   if (param === "exerciseReps") {
-    //     $("#addExerciseForm input[name='exerciseReps']").addClass(
-    //       "invalidInput"
-    //     );
-    //   }
-    //   if (param === "exerciseWeight") {
-    //     $("#addExerciseForm input[name='exerciseWeight']").addClass(
-    //       "invalidInput"
-    //     );
-    //   }
-    //   if (param === "exerciseWeightUnits") {
-    //     $("#addExerciseForm select[name='exerciseWeightUnits']").addClass(
-    //       "invalidInput"
-    //     );
-    //   }
-    // });
     throw { invalid: e };
   }
 
@@ -159,7 +113,7 @@ const createExercise = async (
   try {
     workoutId = helpers.invalidID(workoutId);
   } catch (e) {
-    invalidParams = [...invalidParams, ...e];
+    invalidParams.push("workoutId");
   }
 
   // Validate exerciseName and exerciseWeightUnits
@@ -212,33 +166,6 @@ const createExercise = async (
   }
 
   if (invalidParams.length > 0) {
-    // invalidParams.forEach((param) => {
-    //   if (param === "exerciseName") {
-    //     $("#addExerciseForm input[name='exerciseName']").addClass(
-    //       "invalidInput"
-    //     );
-    //   }
-    //   if (param === "exerciseSets") {
-    //     $("#addExerciseForm input[name='exerciseSets']").addClass(
-    //       "invalidInput"
-    //     );
-    //   }
-    //   if (param === "exerciseReps") {
-    //     $("#addExerciseForm input[name='exerciseReps']").addClass(
-    //       "invalidInput"
-    //     );
-    //   }
-    //   if (param === "exerciseWeight") {
-    //     $("#addExerciseForm input[name='exerciseWeight']").addClass(
-    //       "invalidInput"
-    //     );
-    //   }
-    //   if (param === "exerciseWeightUnits") {
-    //     $("#addExerciseForm select[name='exerciseWeightUnits']").addClass(
-    //       "invalidInput"
-    //     );
-    //   }
-    // });
     throw { invalid: invalidParams };
   }
 

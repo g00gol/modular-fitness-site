@@ -18,7 +18,7 @@
 {{!-- Edit Workouts Modal --}}
 <div id="editWorkoutsModal" class="fixed top-0 left-nav" hidden>
   {{#> modal modalName="Edit Workouts"}} 
-    <form id="editWorkoutsForm" class="flex flex-col space-y-4 text-lg" action="/modules" method="POST">
+    <form id="editWorkoutsForm" class="flex flex-col space-y-4 text-lg" action="/modules/workouts" method="POST">
       <label>
         Workout Name
         <input name="workoutName" type="text">

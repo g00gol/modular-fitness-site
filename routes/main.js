@@ -5,6 +5,8 @@
 import { Router } from "express";
 import * as middleware from "../utils/middleware.js";
 import * as users from "../data/users.js";
+import workoutsRoutes from "./modules/workouts.js";
+
 import allModules from "../public/constants/allModules.js";
 
 const router = Router();
@@ -78,17 +80,22 @@ router.route("/modules").post(middleware.home, async (req, res) => {
     newModules
   );
   if (!updatedUser.updated) {
-    return res.redirect("/error" + "?500");
+    return res.redirect("/error?status=500");
   }
 
   req.session.user.enabledModules = newModules;
 
-  res.render("modules", {
+  return res.render("modules", {
     title: "Home",
     user: req.session.user,
     allModules,
     enabledModules: req.session.user.enabledModules,
   });
+});
+
+router.use("/modules/workouts", middleware.home, workoutsRoutes);
+router.use("/modules/*", (req, res) => {
+  return res.redirect("/error?status=404");
 });
 
 export default router;

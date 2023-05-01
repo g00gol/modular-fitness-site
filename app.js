@@ -4,6 +4,7 @@ import exphbs from "express-handlebars";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+import bodyparser from "body-parser";
 import fs from "fs";
 import path from "path";
 

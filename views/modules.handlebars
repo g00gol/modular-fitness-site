@@ -1,5 +1,9 @@
 <script type="module" src="../public/js/editModules.js"></script>
 
+{{#if invalid}}
+<script>alert("Invalid input")</script>
+{{/if}}
+
 <section class="px-12 py-8">
   <h1>Hello, <span class="font-bold">{{user.fullName}}</span></h1>
   <div class="flex justify-between w-full">
