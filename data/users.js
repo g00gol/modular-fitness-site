@@ -169,6 +169,7 @@ export const checkUser = async (username, password) => {
     let match = await bcrypt.compare(password, user.password);
     if (match) {
       return {
+        uid: user._id.toString(),
         fullName: user.fullName,
         username: user.username,
         enabledModules: user.enabledModules,
@@ -218,4 +219,38 @@ export const getByUsername = async (username) => {
     DOB: user.DOB,
     enabledModules: user.enabledModules,
   };
+};
+
+export const updateEnabledModulesByUsername = async (
+  username,
+  enabledModules
+) => {
+  try {
+    validation.authParam({ username });
+  } catch (e) {
+    throw e;
+  }
+
+  try {
+    validation.authUsername({ usernameInput: username });
+  } catch (e) {
+    throw e;
+  }
+
+  // Edit the user with the new data
+  const usersCollection = await users();
+  let updateInfo;
+  try {
+    updateInfo = await usersCollection.updateOne(
+      { username },
+      { $set: { enabledModules } }
+    );
+  } catch (e) {
+    throw { error: [500, "Internal Server Error"] };
+  }
+
+  if (!updateInfo.acknowledged) {
+    throw { error: [500, "Internal Server Error"] };
+  }
+  return { updated: true };
 };

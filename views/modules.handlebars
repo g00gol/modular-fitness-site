@@ -1,4 +1,4 @@
-<script src="../public/js/editModules.js"></script>
+<script type="module" src="../public/js/editModules.js"></script>
 
 <section class="px-12 py-8">
   <h1>Hello, <span class="font-bold">{{user.fullName}}</span></h1>
@@ -7,31 +7,26 @@
     <button id="editModulesBtn" class="text-frost hover:text-polar underline">Edit Modules</button>
   </div>
 
-  {{!-- Edit Modules Modal --}}
-  <div id="editModulesModal" class="fixed top-0 left-nav" hidden>
-    {{#> modal modalName="Edit Modules"}}
-      <form class="flex flex-col space-y-2 text-lg" action="/modules" method="POST">
-        {{#each allModules}}
-        <label class="w-fit">
-          <input type="checkbox" name="{{this.tag}}" id="{{this.tag}}" value="{{this.tag}}">
-          {{this.name}}
-        </label>
-        {{/each}}
-
-        <button type="submit" class="!mt-[5vh] w-fit px-6 py-2 text-snow-3 hover:text-snow-1 underline bg-frost rounded-std">Save</button>
-      </form>
-    {{/modal}}
-  </div>
-
-  {{#> module moduleName="Timer"}}
-    {{#> panels/panel-1}}
-      <h2>Timers</h2>
-      <button>Meditation</button>
-    {{/panels/panel-1}}
-
-    {{#> panels/panel-2}}
-      <h2>Module 2</h2>
-      <p>Module 2 content</p>
-    {{/panels/panel-2}}
-  {{/module}}
+  {{#each enabledModules}}
+    {{{renderModule this}}}
+  {{/each}}
 </section>
+
+{{!-- Edit Modules Modal --}}
+<div id="editModulesModal" class="fixed top-0 left-nav" hidden>
+  {{#> modal modalName="Edit Modules"}}
+    <form id="editModulesForm" class="flex flex-col space-y-2 text-lg" action="/modules" method="POST">
+      {{#each allModules}}
+      <label class="w-fit">
+        <input class="moduleInput" type="checkbox" name="{{this.tag}}" id="{{this.tag}}" value="{{this.tag}}" {{#ifContains ../enabledModules this.tag}}checked{{/ifContains}} >
+        {{this.name}}
+      </label>
+      {{/each}}
+
+      <div class="!mt-[5vh] space-x-4">
+        <button type="submit" class="w-fit px-6 py-2 text-snow-3 hover:text-snow-1 underline bg-frost rounded-std">Save</button>
+        <button type="button" id="editModulesCancelBtn" class="w-fit text-gray-2 hover:text-gray-1 underline">Cancel</button>
+      </div>
+    </form>
+  {{/modal}}
+</div>
