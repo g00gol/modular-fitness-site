@@ -1,6 +1,7 @@
 <script src="../public/js/editModules.js"></script>
 <script src="../public/js/timer-select.js"></script>
 <script src="../public/js/cardio-select.js"></script>
+<script type="module" src="../public/js/editModules.js"></script>
 
 <section class="px-12 py-8">
   <h1>Hello, <span class="font-bold">{{user.fullName}}</span></h1>
@@ -8,102 +9,27 @@
     <p>Welcome to your modules!</p>
     <button id="editModulesBtn" class="text-frost hover:text-polar underline">Edit Modules</button>
   </div>
+  {{#each enabledModules}}
+    {{{renderModule this}}}
+  {{/each}}
 
-
-{{!-- Add Timer Modal --}}
-  <div id="addTimerModal" class="fixed top-0 left-nav" hidden>
-    {{#> modal modalName="Edit Modules"}}
-      <form class="flex flex-col space-y-2 text-lg" action="/modules" method="POST">
-        
-        {{!form here}}
-
-        <button type="submit" class="!mt-[5vh] w-fit px-6 py-2 text-snow-3 hover:text-snow-1 underline bg-frost rounded-std">Save</button>
-      </form>
-    {{/modal}}
-  </div>
-  {{!----}}
-
-  {{!-- Edit Modules Modal --}}
-  <div id="editModulesModal" class="fixed top-0 left-nav" hidden>
-    {{#> modal modalName="Edit Modules"}}
-      <form class="flex flex-col space-y-2 text-lg" action="/modules" method="POST">
-        {{#each allModules}}
-        <label class="w-fit">
-          <input type="checkbox" name="{{this.tag}}" id="{{this.tag}}" value="{{this.tag}}">
-          {{this.name}}
-        </label>
-        {{/each}}
-
-        <button type="submit" class="!mt-[5vh] w-fit px-6 py-2 text-snow-3 hover:text-snow-1 underline bg-frost rounded-std">Save</button>
-      </form>
-    {{/modal}}
-  </div>
-  {{!----}}
-
-
-  {{!-- Timers Module --}}
-  <div class="modules" id="timers-module-div">
-    {{#> module moduleName="Timers"}}
-      {{#> panels/timers-1}}
-      <div class="left-panel" id="select-timer">
-        <h2>All Timers</h2>
-        <button class="new-item" id="new-timer">New</button>
-        <div id="saved-timers">
-        {{#each allTimers}}
-          <button class="timer-select-button" id="{{this._id}}" data-title="{{this.title}}" data-duration="{{this.durationFormat}}" data-seconds="{{this.duration}}">
-            <p class="timer-title">{{this.title}}</p> <p class="timer-duration">{{this.durationFormat}}</p>
-          </button>
-        {{/each}}
-        </div>
-      </div>
-      {{/panels/timers-1}}
-
-      {{#> panels/timers-2}}
-      <div class="right-panel" id="timer-counter" data-paused="false" data-seconds="">
-        <h2 id="timer-name">Select a timer!</h2>
-        {{!-- <p id="timer-duration"></p> --}}
-        <p id="countdown" data-timeLeft=""></p>
-        <progress id="countdown-progress" value="" max=""></progress> 
-        <p id="play-pause-p"></p>
-      </div>
-      {{/panels/timers-2}}
-    {{/module}}
-  </div>
-  {{!----}}
-
-
-  {{!-- Cardio Module --}}
-  <div class="modules" id="cardio-module-div">
-    {{#> module moduleName="Cardio Tracker"}}
-      {{#> panels/cardio-1}}
-      <div class="left-panel" id="select-cardio">
-        <h2>All Cardio Workouts</h2>
-        <button class="new-item" id="new-cardio">New</button>
-
-        <div id="saved-cardios">
-        {{#each allCardio}}
-          <button class="cardio-select-button" id="{{this._id}}" data-type="{{this.type}}" data-date="{{this.date}}" data-duration="{{this.duration}}" data-distance="{{this.distance}}" data-calories="{{this.caloriesBurned}}">
-            <p class="cardio-type">{{this.type}}</p> <p class="cardio.date">{{this.date}}</p>
-          </button>
-        {{/each}}
-        </div>
-
-
-      </div>
-      {{/panels/cardio-1}}
-
-      {{#> panels/cardio-2}}
-      <div class="right-panel" id="cardio-info-div">
-        <h2 id="cardio-date">Select a cardio workout!</h2>
-        <p id="cardio-type-distance-duration" class="cardio-info"></p>
-        <p id="cardio-pace" class="cardio-info"></p>
-        <p id="cardio-calories-burned" class="cardio-info"></p>
-
-      </div>
-      {{/panels/cardio-2}}
-    {{/module}}
-  </div>
-  {{!----}}
-
+{{!-- HOW TO PASS DATA INTO THIS???? --}}
 
 </section>
+{{!-- Edit Modules Modal --}}
+<div id="editModulesModal" class="fixed top-0 left-nav" hidden>
+  {{#> modal modalName="Edit Modules"}}
+    <form id="editModulesForm" class="flex flex-col space-y-2 text-lg" action="/modules" method="POST">
+      {{#each allModules}}
+      <label class="w-fit">
+        <input class="moduleInput" type="checkbox" name="{{this.tag}}" id="{{this.tag}}" value="{{this.tag}}" {{#ifContains ../enabledModules this.tag}}checked{{/ifContains}} >
+        {{this.name}}
+      </label>
+      {{/each}}
+      <div class="!mt-[5vh] space-x-4">
+        <button type="submit" class="w-fit px-6 py-2 text-snow-3 hover:text-snow-1 underline bg-frost rounded-std">Save</button>
+        <button type="button" id="editModulesCancelBtn" class="w-fit text-gray-2 hover:text-gray-1 underline">Cancel</button>
+      </div>
+    </form>
+  {{/modal}}
+</div>

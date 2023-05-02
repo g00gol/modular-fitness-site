@@ -1,0 +1,30 @@
+{{!-- Cardio Module --}}
+    {{#> module moduleName="Cardio Tracker"}}
+      {{#> panels/cardio-1}}
+      <div class="left-panel" id="select-cardio">
+        <h2>All Cardio Workouts</h2>
+        <button class="new-item" id="new-cardio">New</button>
+
+        <div id="saved-cardios">
+        {{#each allCardio}}
+          <button class="cardio-select-button" id="{{this._id}}" data-type="{{this.type}}" data-date="{{this.date}}" data-duration="{{this.duration}}" data-distance="{{this.distance}}" data-calories="{{this.caloriesBurned}}">
+            <p class="cardio-type">{{this.type}}</p> <p class="cardio.date">{{this.date}}</p>
+          </button>
+        {{/each}}
+        </div>
+
+
+      </div>
+      {{/panels/cardio-1}}
+
+      {{#> panels/cardio-2}}
+      <div class="right-panel" id="cardio-info-div">
+        <h2 id="cardio-date">Select a cardio workout!</h2>
+        <p id="cardio-type-distance-duration" class="cardio-info"></p>
+        <p id="cardio-pace" class="cardio-info"></p>
+        <p id="cardio-calories-burned" class="cardio-info"></p>
+
+      </div>
+      {{/panels/cardio-2}}
+    {{/module}}
+  {{!----}}
