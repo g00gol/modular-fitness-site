@@ -224,6 +224,56 @@ function validateExerciseForm(ith) {
 
 // Wait for document to load
 document.addEventListener("DOMContentLoaded", () => {
+  if ($("[id^='selectWorkout']").length > 0) {
+    const workoutButtons = $("[id^='selectWorkout']");
+
+    workoutButtons.each(function () {
+      $(this).click(async function (event) {
+        let workoutId = event.target.id?.split("?");
+        if (!workoutId) return;
+        workoutId = workoutId[1];
+
+        // Get workout data based on the workoutId
+        let workoutData;
+        try {
+          let res = await axios.get(`/modules/workouts/${workoutId}`, {
+            headers: { "X-Client-Side-Request": "true" },
+          });
+          if (res.data.error) {
+            alert(res.data.error);
+          }
+          workoutData = res.data;
+        } catch (e) {
+          return;
+        }
+
+        // Helper function to generate the HTML
+        function generateExercisesHTML(exercises) {
+          return exercises
+            .map(
+              (exercise) => `
+              <div class="exercise">
+                <h3>${exercise.exerciseName}</h3>
+                <p>Reps: ${exercise.exerciseReps}</p>
+                <p>Sets: ${exercise.exerciseSets}</p>
+              </div>
+              `
+            )
+            .join("");
+        }
+
+        // Update panel content using the workout data
+        const panel2ContentHTML = generateExercisesHTML(workoutData.exercises);
+
+        const exercisesContainer = $("#exercisesContainer");
+        exercisesContainer.html(panel2ContentHTML);
+
+        // Log the content of exercisesContainer
+        console.log(exercisesContainer.html());
+      });
+    });
+  }
+
   // Add event listener to edit modules button
   if ($("#editWorkoutsBtn").length > 0) {
     $("#editWorkoutsBtn").click(toggleEditWorkouts);

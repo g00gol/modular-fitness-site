@@ -222,6 +222,86 @@ const getWorkouts = async (userId) => {
   return allWorkouts;
 };
 
-const editWorkout = async (workoutId, ) => {};
+/**
+ * Gets a workout by the workoutId
+ * @param {*} workoutId - id of the workout
+ * @returns {object} workout object
+ */
+const getWorkoutById = async (workoutId) => {
+  // Validate workoutId
+  try {
+    validation.paramExists({ workoutId });
+    validation.paramIsString({ workoutId });
+    workoutId = helpers.invalidID(workoutId);
+  } catch (e) {
+    throw { invalid: ["workoutId"] };
+  }
 
-export { createWorkout, createExercise, getWorkouts };
+  // Get the workout from the database
+  const workoutCollection = await workouts();
+  const workout = await workoutCollection.findOne({
+    _id: new ObjectId(workoutId),
+  });
+  if (!workout) {
+    throw { invalid: ["workoutId"] };
+  }
+
+  workout._id = workout._id.toString();
+  return workout;
+};
+
+/**
+ * Uses the workoutId to get the workout from the database and edits the workoutName and workoutDay
+ * @param {*} workoutId - id of the workout
+ * @param {*} workoutName - new name of the workout
+ * @param {*} workoutDay - new day of the workout
+ * @returns {updatedWorkout: true} if the workout was successfully updated
+ */
+const editWorkout = async (workoutId, workoutName, workoutDay) => {
+  // Validate workoutId, workoutName, and workoutDay
+  try {
+    validation.paramExists({ workoutId, workoutName, workoutDay });
+    validation.paramIsString({ workoutId, workoutName, workoutDay });
+  } catch (e) {
+    throw { invalid: e };
+  }
+
+  try {
+    workoutId = helpers.invalidID(workoutId);
+  } catch (e) {
+    throw { invalid: ["workoutId"] };
+  }
+
+  // Validate workoutDay
+  if (
+    workoutDay !== "Sunday" &&
+    workoutDay !== "Monday" &&
+    workoutDay !== "Tuesday" &&
+    workoutDay !== "Wednesday" &&
+    workoutDay !== "Thursday" &&
+    workoutDay !== "Friday" &&
+    workoutDay !== "Saturday"
+  ) {
+    throw { invalid: ["workoutDay"] };
+  }
+
+  // Update the workout in the database
+  const workoutCollection = await workouts();
+  const updateInfo = await workoutCollection.updateOne(
+    { _id: new ObjectId(workoutId) },
+    { $set: { workoutName, workoutDay } }
+  );
+
+  if (updateInfo.modifiedCount === 0) {
+    throw { serverError: [500, "Internal Server Error"] };
+  }
+  return { updatedWorkout: true };
+};
+
+export {
+  createWorkout,
+  createExercise,
+  getWorkouts,
+  getWorkoutById,
+  editWorkout,
+};

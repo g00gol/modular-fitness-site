@@ -3,6 +3,7 @@ import xss from "xss";
 
 import * as workouts from "../../data/workouts.js";
 import * as validation from "../../public/js/workoutTrackerValidation.js";
+import * as helpers from "../../utils/helpers.js";
 
 const router = Router();
 
@@ -255,6 +256,65 @@ router.route("/").post(async (req, res) => {
   }
 
   return res.redirect("/modules");
+});
+
+router.route("/:workoutId").get(async (req, res) => {
+  let isClientSideRequest = req.header("X-Client-Side-Request") === "true";
+  if (!isClientSideRequest) {
+    return res.redirect("/error?status=403");
+  }
+
+  let { uid, username } = req.session.user;
+  // Check if userId and username are valid
+  try {
+    validation.paramExists({ uid, username });
+    validation.paramIsString({ uid, username });
+  } catch (e) {
+    if (e.invalid) {
+      return res.json({ error: "Invalid parameters" });
+    } else {
+      return res.json({ error: "Internal server error" });
+    }
+  }
+
+  let { workoutId } = req.params;
+  // Check if workoutId is valid
+  try {
+    validation.paramExists({ workoutId });
+    validation.paramIsString({ workoutId });
+  } catch (e) {
+    if (e.invalid) {
+      return res.json({ error: "Invalid parameters" });
+    } else {
+      return res.json({ error: "Internal server error" });
+    }
+  }
+
+  // Check if workoutId is a valid ObjectId
+  try {
+    helpers.invalidID(workoutId);
+  } catch (e) {
+    return res.json({ error: "Invalid parameters" });
+  }
+
+  // Check if the workout exists
+  let workout;
+  try {
+    workout = await workouts.getWorkoutById(workoutId);
+  } catch (e) {
+    if (e.invalid) {
+      return res.json({ error: "Invalid parameters" });
+    } else {
+      return res.json({ error: "Internal server error" });
+    }
+  }
+
+  // IMPORTANT: make sure the current user is the owner of the workout
+  if (workout.userId !== uid) {
+    return res.json({ error: "User mismatch!" });
+  }
+
+  return res.json(workout);
 });
 
 export default router;

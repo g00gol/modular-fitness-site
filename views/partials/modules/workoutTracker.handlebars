@@ -1,3 +1,7 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"
+></script>
 <script type="module" src="../../../public/js/modules/workoutTracker.js"></script>
 
 {{#> module moduleName="Workout Tracker"}}
@@ -7,13 +11,14 @@
       <button id="editWorkoutsBtn" class="text-xl hover:text-snow-1 transition-colors"><i class="fa-solid fa-plus"></i></button>
     </div>
     {{#each allWorkouts}}
-      <button id="{{this._id}}" class="w-full rounded-md border border-snow-1 p-2 text-left hover:bg-polar transition-colors">{{this.workoutName}}</button>
+      <button id="selectWorkout?{{this._id}}" class="w-full rounded-md border border-snow-1 p-2 text-left hover:bg-polar transition-colors">{{this.workoutName}}</button>
     {{/each}}
   {{/panels/panel-1}}
 
   {{#> panels/panel-2}}
-    <h2>Module 2</h2>
-    <p>Module 2 content</p>
+    <div id="exercisesContainer">
+      <p>Select a workout to view.</p>
+    </div>
   {{/panels/panel-2}}
 {{/module}}
 
