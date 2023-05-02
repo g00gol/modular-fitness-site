@@ -213,7 +213,7 @@ const getWorkouts = async (userId) => {
   // Get the workouts from the database
   const workoutCollection = await workouts();
   const allWorkouts = await workoutCollection.find({ userId }).toArray();
-  if (allWorkouts.length !== 0) {
+  if (allWorkouts.length === 0) {
     return [];
   }
   allWorkouts.forEach((workout) => {
