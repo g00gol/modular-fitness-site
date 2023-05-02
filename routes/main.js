@@ -7,6 +7,8 @@ import * as middleware from "../utils/middleware.js";
 import * as users from "../data/users.js";
 import * as workouts from "../data/workouts.js";
 import workoutsRoutes from "./modules/workouts.js";
+import weightRoutes from "./modules/weight.js";
+import sugarRoutes from "./modules/sugar.js"
 
 import allModules from "../public/constants/allModules.js";
 
@@ -100,6 +102,8 @@ router.route("/modules").post(middleware.home, async (req, res) => {
 });
 
 router.use("/modules/workouts", middleware.home, workoutsRoutes);
+router.use("/modules/weight", middleware.home, weightRoutes);
+router.use("/modules/sugar", middleware.home, sugarRoutes);
 router.use("/modules/*", (req, res) => {
   return res.redirect("/error?status=404");
 });

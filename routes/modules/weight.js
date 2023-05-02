@@ -9,9 +9,11 @@ router.route("/").post(async (req, res) =>
     let weightEntry = req.body.weightInput;
     let username = req.session.user.username;
     username = xss(username);
-    weightEntry = xss(weightEntry);
+    weightEntry = parseFloat(xss(weightEntry)); // if this is undefined, parseFloat will make it NaN and that will cause redirect to error page
     if(!weightEntry || typeof weightEntry != 'number'  || isNaN(weightEntry))
     {
+        console.log(weightEntry);
+        console.log(typeof weightEntry);
         return res.redirect("/error?status=400");
     }
     if (weightEntry <= 0)

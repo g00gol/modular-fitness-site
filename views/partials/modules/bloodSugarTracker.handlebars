@@ -3,14 +3,15 @@
 
    {{#> panels/panel-2}}
     <h2>Blood Sugar Tracker</h2>
-    <form id = "sugarTrackerForm">
+    <form id = "sugarTrackerForm"  action = '/modules/sugar' method="POST">
       <label>
        Sugar Reading
-        <input name="sugarInput" type="text">
+        <input name="sugarInput" type="number">
       </label>
       <label>
         Fasting status
-        <input name="fastingInput" type="checkbox">
+        <input name="fastingInput" type="checkbox" value="true">
+        <input name="fastingInput" type="hidden" value="false">
       </label>
       <button type="submit">Submit</button>
     </form>

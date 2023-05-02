@@ -8,14 +8,20 @@ const router = Router();
 router.route("/").post(async (req, res) => 
 {
     let sugarEntry = req.body.sugarInput;
-    let fasting = req.body.fastingInput;
+    console.log("req.body.fastingInput is ======="+req.body.fastingInput)
+    let fasting = req.body.fastingInput === "on";
     let username = req.session.user.username;
     username = xss(username);
-    sugarEntry = xss(sugarEntry);
-    fasting = xss(fasting)
+    sugarEntry = parseFloat(xss(sugarEntry));
+    fasting = Boolean(xss(fasting))
 
-    if(!sugarEntry || typeof sugarEntry != 'number'  || isNaN(sugarEntry) || !fasting || typeof fasting != "boolean")
+
+    if(!sugarEntry || typeof sugarEntry != 'number'  || isNaN(sugarEntry) || typeof fasting != "boolean")
     {
+        console.log(sugarEntry);
+        console.log(fasting);
+        console.log(typeof sugarEntry)
+        console.log(typeof fasting)
         return res.redirect("/error?status=400");
     }
     if (sugarEntry <= 0)

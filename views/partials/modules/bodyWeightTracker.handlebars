@@ -2,11 +2,11 @@
 {{#> module moduleName="Body Weight Tracker"}}
 
    {{#> panels/panel-2}}
-    <h2>Body Weight Tracker</h2>
-    <form id = "weightTrackerForm">
+   <h2>Body Weight Tracker</h2>
+    <form id = "weightTrackerForm" action = '/modules/weight' method="POST">
       <label>
         Weight
-        <input name="weightInput" type="text">
+        <input name="weightInput" type="number">
       </label>
       <button type="submit">Submit</button>
     </form>
