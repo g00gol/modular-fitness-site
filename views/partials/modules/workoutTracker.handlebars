@@ -1,14 +1,14 @@
 <script type="module" src="../../../public/js/modules/workoutTracker.js"></script>
 
-{{log allWorkouts}}
-
 {{#> module moduleName="Workout Tracker"}}
   {{#> panels/panel-1}}
     <div class="flex justify-between">
       <h2 class="w-fit">Your Workouts</h2>
       <button id="editWorkoutsBtn" class="text-xl hover:text-snow-1 transition-colors"><i class="fa-solid fa-plus"></i></button>
     </div>
-    <button class="w-full rounded-md border border-snow-1 p-2 text-left hover:bg-polar transition-colors">Something</button>
+    {{#each allWorkouts}}
+      <button id="{{this._id}}" class="w-full rounded-md border border-snow-1 p-2 text-left hover:bg-polar transition-colors">{{this.workoutName}}</button>
+    {{/each}}
   {{/panels/panel-1}}
 
   {{#> panels/panel-2}}

@@ -130,7 +130,6 @@ function validateExercise(
 }
 
 router.route("/").post(async (req, res) => {
-  console.log(req.body);
   let { uid, username } = req.session.user;
   // Check if userId and username are valid
   try {

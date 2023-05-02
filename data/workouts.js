@@ -216,7 +216,12 @@ const getWorkouts = async (userId) => {
   if (allWorkouts.length === 0) {
     throw { serverError: [500, "Internal Server Error"] };
   }
+  allWorkouts.forEach((workout) => {
+    workout._id = workout._id.toString();
+  });
   return allWorkouts;
 };
+
+const editWorkout = async (workoutId, ) => {};
 
 export { createWorkout, createExercise, getWorkouts };
