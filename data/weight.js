@@ -196,6 +196,7 @@ const updateWeightEntry = async (id, weight) =>
     }
 
 }
+//this function is used to delete a weight entry from the weights collection.
 const deleteOneWeightEnrty  = async(username, id) =>
 {
     if(!username)
