@@ -117,8 +117,17 @@ export const updateRating = (band) => {
 };
 
 
-export const formatDuration = (secs) => {
-  if(secs<60){return `${secs}s`}
-  if(secs<3600)return `${Math.floor(secs/60)}m${secs%60}s`
-  return `${Math.floor(secs/3600)}h${secs%3600}m`
+export const formatDuration = (s) => {
+  let hours = Math.floor(s/3600)
+  s = s-(hours*3600)
+  let minutes = Math.floor(s/60)
+  s = s-(minutes * 60)
+  
+  minutes = String(minutes)
+  s = String(s)
+
+  if(minutes.length == 1){minutes = "0"+minutes}
+  if(s.length == 1){s = "0"+s}
+
+  return `${hours}:${minutes}:${s}`
 }

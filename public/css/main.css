@@ -21,6 +21,10 @@
     margin-right: 10px;
   }
 
+  .module-bar{
+    padding-top: 10px;
+  }
+
   /* Standard rounded border */
   .rounded-std {
     border: 0;
@@ -49,18 +53,13 @@
     @apply w-1/2 flex flex-col justify-center items-start;
   }
   .userForm input {
-    @apply w-full bg-transparent border border-snow-1 p-2 mb-4 rounded-md;
+    @apply w-full mb-4;
   }
   .userForm input[type="submit"] {
     @apply bg-frost text-white;
   }
   .userFeature {
     @apply w-1/2 h-screen bg-[url("../assets/images/userFormsBg.jpg")] bg-cover bg-center;
-  }
-
-  /* Modal Form */
-  .modalForm {
-    @apply w-full h-full flex flex-col justify-center items-start;
   }
 
   /* Error Container */
@@ -83,6 +82,13 @@
   }
   .panel::-webkit-scrollbar-thumb {
     @apply bg-gray-2 rounded-std;
+  }
+
+  input {
+    @apply bg-transparent border border-snow-1 p-2 rounded-md;
+  }
+  select {
+    @apply bg-transparent border border-snow-1 p-2 rounded-md;
   }
 }
 
@@ -129,83 +135,31 @@ a:hover {
   color: red !important;
 }
 
-/* .left-panel{
-  background-color: var(--polar);
-  border: 0;
-  border-radius: 20px;
-  color: white;
-  padding: 10px;
-  width: 35%;
-  margin-top: 7px;
+.addExerciseForm input[type="number"] {
+  width: 4rem;
+}
+.addExerciseForm input[step="any"] {
+  width: 6rem;
 }
 
-.right-panel{
-  background-color: white;
-  border: 0;
-  border-radius: 20px;
-  padding: 10px;
-  width: 25%;
-  margin-top: 7px;
+ #countdown{
+  font-size: x-large;
+ }
+
+ #countdown-progress{
+  width: 100%;
+ }
+
+ #countdown-progress::-webkit-progress-bar{
+  background-color: #eee;
+  border-radius: 5px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25) inset;
+  position: relative;
 }
 
-.timer-select-button{
-  background-color: var(--frost);
-  border: 0;
-  border-radius: 10px;
-  display: block;
-  width: 90%;
-  height: 20%;
-  margin-bottom: 5px;
-  margin-left: 15px;
-  padding-left: 5px;
-  padding-right: 5px;
-  text-align: left;
+#countdown-progress::-webkit-progress-value {
+  background-color: #5e81ac;
+  border-radius: 5px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25) inset;
+  position: relative;
 }
-
-.cardio-select-button{
-  background-color: var(--frost);
-  border: 0;
-  border-radius: 10px;
-  display: block;
-  width: 90%;
-  height: 20%;
-  margin-bottom: 5px;
-  margin-left: 15px;
-  padding-left: 5px;
-  padding-right: 5px;
-  text-align: left;
-}
-
-.timer-duration{
-  text-align: right;
-  display: inline;
-}
-
-.timer-title{
-  text-align: left;
-  display: inline;
-}
-
-.modules{
-  margin-top: 5px;
-}
-
-#countdown{
-  font-size: xx-large;
-  text-align: center;
-}
-
-#countdown-progress{
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width:100%;
-
-  color: var(--frost);
-  background: var(--snow-3);
-}
-
-#play-pause-p{
-  font-size: small;
-} */

@@ -1,16 +1,16 @@
 {{!-- Timers Module --}}
     {{#> module moduleName="Timer" data=allTimers}}
       {{#> panels/timers-1}}
-      <div class="left-panel" id="select-timer">
+      <div class="flex justify-between">
         <h2>All Timers</h2>
-        <button class="new-item" id="new-timer">New</button>
-        <div id="saved-timers">
+        <button id="editTimersBtn" class="text-xl hover:text-snow-1 transition-colors"><i class="fa-solid fa-plus"></i></button>
+      </div>
+      <div id="saved-timers">
         {{#each allTimers}}
-          <button class="timer-select-button" id="{{this._id}}" data-title="{{this.title}}" data-duration="{{this.durationFormat}}" data-seconds="{{this.duration}}">
+          <button class="timer-select-button w-full rounded-md border border-snow-1 p-2 text-left hover:bg-polar transition-colors" id="{{this._id}}" data-title="{{this.title}}" data-duration="{{this.durationFormat}}" data-seconds="{{this.duration}}">
             <p class="timer-title">{{this.title}}</p> <p class="timer-duration">{{this.durationFormat}}</p>
           </button>
         {{/each}}
-        </div>
       </div>
       {{/panels/timers-1}}
 
@@ -19,9 +19,68 @@
         <h2 id="timer-name">Select a timer!</h2>
         {{!-- <p id="timer-duration"></p> --}}
         <p id="countdown" data-timeLeft=""></p>
+         
+        
+        
         <progress id="countdown-progress" value="" max=""></progress> 
+        
+
+        
         <p id="play-pause-p"></p>
       </div>
       {{/panels/timers-2}}
     {{/module}}
   {{!----}}
+
+
+<div id="editTimersModal" class="fixed top-0 left-nav" hidden>
+  {{#> modal modalName="Add Timer"}} 
+    <form id="editTimersForm" class="flex flex-col space-y-4 text-lg" action="/modules/timers" method="POST">
+      <label>
+        Timer Name
+        <input name="title" type="text">
+      </label>
+
+      <label>
+        Timer Duration (hours)
+        <input name="duration_hr" type="number" min="0" value="0">
+      </label>
+
+      <label>
+        Timer Duration (minutes)
+        <input name="duration_min" type="number" min="0" max="59" value="0">
+      </label>
+
+      <label>
+        Timer Duration (seconds)
+        <input name="duration_sec" type="number" min="0" max="59" value="0">
+      </label>
+
+      
+
+      <div class="errorContainer">
+        {{#each error}}
+          <p class="error">
+            {{this}}
+          </p>
+        {{/each}}
+      </div>
+
+      <div class="editTimersBtns!mt-[5vh] space-x-4">
+        <button
+          type="submit"
+          class="w-fit px-6 py-2 text-snow-3 hover:text-snow-1 underline bg-frost rounded-std"
+        >
+          Save
+        </button>
+        <button
+          id="editTimersCancelBtn"
+          type="button"
+          class="w-fit text-gray-2 hover:text-gray-1 underline"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  {{/modal}}
+</div>

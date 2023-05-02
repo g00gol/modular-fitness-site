@@ -1,20 +1,18 @@
 {{!-- Cardio Module --}}
     {{#> module moduleName="Cardio Tracker"}}
       {{#> panels/cardio-1}}
-      <div class="left-panel" id="select-cardio">
+      <div class="flex justify-between">
         <h2>All Cardio Workouts</h2>
-        <button class="new-item" id="new-cardio">New</button>
+        <button id="editCardioBtn" class="text-xl hover:text-snow-1 transition-colors"><i class="fa-solid fa-plus"></i></button>
+      </div>
 
         <div id="saved-cardios">
         {{#each allCardio}}
-          <button class="cardio-select-button" id="{{this._id}}" data-type="{{this.type}}" data-date="{{this.date}}" data-duration="{{this.duration}}" data-distance="{{this.distance}}" data-calories="{{this.caloriesBurned}}">
+          <button class="cardio-select-button w-full rounded-md border border-snow-1 p-2 text-left hover:bg-polar transition-colors" id="{{this._id}}" data-type="{{this.type}}" data-date="{{this.date}}" data-duration="{{this.duration}}" data-distance="{{this.distance}}" data-calories="{{this.caloriesBurned}}">
             <p class="cardio-type">{{this.type}}</p> <p class="cardio.date">{{this.date}}</p>
           </button>
         {{/each}}
         </div>
-
-
-      </div>
       {{/panels/cardio-1}}
 
       {{#> panels/cardio-2}}
@@ -28,3 +26,72 @@
       {{/panels/cardio-2}}
     {{/module}}
   {{!----}}
+
+
+<div id="editCardioModal" class="fixed top-0 left-nav" hidden>
+  {{#> modal modalName="Add Cardio Workout"}} 
+    <form id="editCardioForm" class="flex flex-col space-y-4 text-lg" action="/modules/cardio" method="POST">
+      <label>
+        Cardio Type
+        <select name="cardioType">
+          <option value="walk">Walk</option>
+          <option value="run">Run</option>
+          <option value="cycle">Cycle</option>
+          <option value="jog">Jog</option>
+        </select>
+      </label>
+
+      <label>
+        Distance (miles)
+        <input name="distance" type="number">
+      </label>
+
+      <label>
+        Duration (minutes)
+        <input name="duration" type="number">
+      </label>
+
+      <label>
+        Date
+        <input name="date" type="date">
+      </label>
+
+      <label>
+        Weight (optional)
+        <input name="weight" type="number"> 
+        {{!-- add a default value --}}
+      </label>
+
+      <label>
+        Calories Burned (optional)
+        <input name="calories" type="number"> 
+        {{!-- add a default value --}}
+      </label>
+      
+
+      <div class="errorContainer">
+        {{#each error}}
+          <p class="error">
+            {{this}}
+          </p>
+        {{/each}}
+      </div>
+
+      <div class="editCardioBtns!mt-[5vh] space-x-4">
+        <button
+          type="submit"
+          class="w-fit px-6 py-2 text-snow-3 hover:text-snow-1 underline bg-frost rounded-std"
+        >
+          Save
+        </button>
+        <button
+          id="editCardioCancelBtn"
+          type="button"
+          class="w-fit text-gray-2 hover:text-gray-1 underline"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  {{/modal}}
+</div>
