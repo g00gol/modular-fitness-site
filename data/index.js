@@ -3,5 +3,6 @@ import * as cardio from "./cardio.js";
 import * as timers from "./timers.js";
 import * as calories from "./calories.js";
 import * as notes from "./notes.js";
+import * as workouts from "./workouts.js";
 
-export { users, cardio, timers, calories, notes };
+export { users, cardio, timers, calories, notes, workouts };

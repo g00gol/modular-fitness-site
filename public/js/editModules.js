@@ -1,4 +1,4 @@
-import allModules from "../allModules.js";
+import allModules from "../constants/allModules.js";
 
 function toggleEditModules() {
   $("#editModulesModal").toggle();
@@ -19,7 +19,6 @@ function validateModuleInputs() {
       }
     }
 
-    console.log(match);
     if (!match) {
       e.preventDefault();
       return alert("Invalid input");

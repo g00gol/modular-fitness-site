@@ -5,7 +5,10 @@
 import { Router } from "express";
 import * as middleware from "../utils/middleware.js";
 import * as users from "../data/users.js";
-import allModules from "../public/allModules.js";
+import * as workouts from "../data/workouts.js";
+import workoutsRoutes from "./modules/workouts.js";
+
+import allModules from "../public/constants/allModules.js";
 
 const router = Router();
 
@@ -18,9 +21,17 @@ router.route("/").get(middleware.root, (req, res) => {
 router.route("/modules").get(middleware.home, async (req, res) => {
   let user = await users.getByUsername(req.session.user.username);
   if (!user) {
-    return res.redirect("/error" + "?500");
+    return res.redirect("/error?status=500");
   }
   req.session.user.enabledModules = user.enabledModules;
+
+  let allWorkouts = [];
+  try {
+    allWorkouts = await workouts.getWorkouts(req.session.user.uid);
+  } catch (e) {
+    console.log(e);
+    return res.redirect("/error?status=500");
+  }
 
   try {
     return res.render("modules", {
@@ -28,9 +39,11 @@ router.route("/modules").get(middleware.home, async (req, res) => {
       user: req.session.user,
       allModules,
       enabledModules: req.session.user.enabledModules,
+      invalid: req.query?.invalid,
+      allWorkouts,
     });
   } catch (e) {
-    return res.redirect("/error" + "?500");
+    return res.redirect("/error?status=500");
   }
 });
 
@@ -78,17 +91,17 @@ router.route("/modules").post(middleware.home, async (req, res) => {
     newModules
   );
   if (!updatedUser.updated) {
-    return res.redirect("/error" + "?500");
+    return res.redirect("/error?status=500");
   }
 
   req.session.user.enabledModules = newModules;
 
-  res.render("modules", {
-    title: "Home",
-    user: req.session.user,
-    allModules,
-    enabledModules: req.session.user.enabledModules,
-  });
+  return res.redirect("/modules");
+});
+
+router.use("/modules/workouts", middleware.home, workoutsRoutes);
+router.use("/modules/*", (req, res) => {
+  return res.redirect("/error?status=404");
 });
 
 export default router;
