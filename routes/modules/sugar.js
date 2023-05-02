@@ -8,20 +8,34 @@ const router = Router();
 router.route("/").post(async (req, res) => 
 {
     let sugarEntry = req.body.sugarInput;
-    console.log("req.body.fastingInput is ======="+req.body.fastingInput)
-    let fasting = req.body.fastingInput === "on";
+    // console.log("req.body.fastingInput is ======="+req.body.fastingInput)
+    let fasting;
+    if(!req.body.fastingInput)
+    {
+        fasting = false;
+    }
+    else
+    {
+        fasting = true;
+    }
     let username = req.session.user.username;
     username = xss(username);
     sugarEntry = parseFloat(xss(sugarEntry));
-    fasting = Boolean(xss(fasting))
-
-
-    if(!sugarEntry || typeof sugarEntry != 'number'  || isNaN(sugarEntry) || typeof fasting != "boolean")
+    
+    
+    if(fasting != true && fasting != false) // fasting is not a boolean value, so it will be true if it is a string
     {
-        console.log(sugarEntry);
-        console.log(fasting);
-        console.log(typeof sugarEntry)
-        console.log(typeof fasting)
+        // console.log("fasting value is ::::::::::::::::::::: "+fasting)
+        return res.redirect("/error?status=400");
+    }
+
+
+    if(!sugarEntry || typeof sugarEntry != 'number'  || isNaN(sugarEntry))
+    {
+        // console.log(sugarEntry);
+        // console.log(fasting);
+        // console.log(typeof sugarEntry)
+        // console.log(typeof fasting)
         return res.redirect("/error?status=400");
     }
     if (sugarEntry <= 0)
