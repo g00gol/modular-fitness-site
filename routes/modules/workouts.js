@@ -137,7 +137,11 @@ router.route("/").post(async (req, res) => {
     validation.paramExists({ uid, username });
     validation.paramIsString({ uid, username });
   } catch (e) {
-    return res.redirect("/error?status=500");
+    if (e.invalid) {
+      return res.redirect("/error?status=400");
+    } else {
+      return res.redirect("/error?status=500");
+    }
   }
 
   let { workoutName, workoutDay } = req.body;
@@ -148,7 +152,7 @@ router.route("/").post(async (req, res) => {
     validateWorkout(workoutName, workoutDay);
   } catch (e) {
     if (e.invalid) {
-      return res.render("modules", { title: "Home", invalid: true });
+      return res.redirect("/modules?invalid=true");
     } else {
       return res.redirect("/error?status=500");
     }
@@ -202,7 +206,7 @@ router.route("/").post(async (req, res) => {
   );
 
   if (!sameLength) {
-    return res.redirect("/error?status=400");
+    return res.redirect("/modules?invalid=true");
   }
 
   // For each exercise, validate the parameters
@@ -217,7 +221,7 @@ router.route("/").post(async (req, res) => {
         exerciseWeightUnits[i]
       );
     } catch (e) {
-      return res.redirect("/error?status=400");
+      return res.redirect("/modules?invalid=true");
     }
 
     exercises.push({
@@ -248,7 +252,7 @@ router.route("/").post(async (req, res) => {
       );
     }
   } catch (e) {
-    return res.redirect("/error?status=400");
+    return res.redirect("/modules?invalid=true");
   }
 
   return res.redirect("/modules");

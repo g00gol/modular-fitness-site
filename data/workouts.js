@@ -212,11 +212,11 @@ const getWorkouts = async (userId) => {
 
   // Get the workouts from the database
   const workoutCollection = await workouts();
-  const workouts = await workoutCollection.find({ userId }).toArray();
-  if (workouts.length === 0) {
+  const allWorkouts = await workoutCollection.find({ userId }).toArray();
+  if (allWorkouts.length === 0) {
     throw { serverError: [500, "Internal Server Error"] };
   }
-  return workouts;
+  return allWorkouts;
 };
 
 export { createWorkout, createExercise, getWorkouts };

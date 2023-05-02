@@ -4,7 +4,6 @@ import exphbs from "express-handlebars";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
-import bodyparser from "body-parser";
 import fs from "fs";
 import path from "path";
 
@@ -102,7 +101,8 @@ hbs.handlebars.registerHelper("renderModule", function (module, options) {
   if (!partial) return `${module} not found`;
 
   let compile = hbs.handlebars.compile(partial);
-  return new hbs.handlebars.SafeString(compile(this));
+  const data = options.data.root;
+  return new hbs.handlebars.SafeString(compile(data));
 });
 
 // Custom handlebar function to check if an array contains an item
