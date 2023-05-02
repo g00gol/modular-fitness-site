@@ -214,7 +214,7 @@ const getWorkouts = async (userId) => {
   const workoutCollection = await workouts();
   const allWorkouts = await workoutCollection.find({ userId }).toArray();
   if (allWorkouts.length === 0) {
-    throw { serverError: [500, "Internal Server Error"] };
+    return [];
   }
   return allWorkouts;
 };
