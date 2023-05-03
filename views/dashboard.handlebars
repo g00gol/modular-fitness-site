@@ -1,4 +1,11 @@
-<section>
-  <h1>Dashboard</h1>
-  <p>{{user.fullName}}</p>
+<section class="px-12 py-8">
+  <h1>
+    Dashboard
+  </h1>
+  <label>
+    <input name="dashboardFullName" value="{{user.fullName}}" readonly />
+  </label>
+  <label>
+    <input name="dashboardUsername" value="{{user.username}}" readonly />
+  </label>
 </section>
