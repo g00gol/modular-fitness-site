@@ -81,10 +81,6 @@ const getAll = async (username) => {
     .find({ username: username })
     .toArray();
 
-  if (!allCardios || allCardios.length == 0) {
-    throw { errorCode: 400, errorMessage: "Error: user has no cardios" };
-  }
-
   for (let i = 0; i < allCardios.length; i++) {
     allCardios[i]._id = allCardios[i]._id.toString();
   }
