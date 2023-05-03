@@ -59,3 +59,18 @@ export function paramIsNum(obj) {
   }
   if (invalidParams.length > 0) throw invalidParams;
 }
+
+/**
+ * Checks if the parameters are all valid arrays
+ * @param {*} obj An object of parameters whose key is the name of the parameter and the value is the value of the parameter
+ * @throws {array} An array of which parameters are invalid
+ */
+export function paramIsArray(obj) {
+  let invalidParams = [];
+  for (let key in obj) {
+    if (!Array.isArray(obj[key])) {
+      invalidParams.push(key);
+    }
+  }
+  if (invalidParams.length > 0) throw invalidParams;
+}

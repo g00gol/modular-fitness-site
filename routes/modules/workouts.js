@@ -3,6 +3,7 @@ import xss from "xss";
 
 import * as workouts from "../../data/workouts.js";
 import * as validation from "../../public/js/workoutTrackerValidation.js";
+import * as helpers from "../../utils/helpers.js";
 
 const router = Router();
 
@@ -130,7 +131,6 @@ function validateExercise(
 }
 
 router.route("/").post(async (req, res) => {
-  console.log(req.body);
   let { uid, username } = req.session.user;
   // Check if userId and username are valid
   try {
@@ -253,6 +253,215 @@ router.route("/").post(async (req, res) => {
     }
   } catch (e) {
     return res.redirect("/modules?invalid=true");
+  }
+
+  return res.redirect("/modules");
+});
+
+router.route("/:workoutId").get(async (req, res) => {
+  let isClientSideRequest = req.header("X-Client-Side-Request") === "true";
+  if (!isClientSideRequest) {
+    return res.redirect("/error?status=403");
+  }
+
+  let { uid, username } = req.session.user;
+  // Check if userId and username are valid
+  try {
+    validation.paramExists({ uid, username });
+    validation.paramIsString({ uid, username });
+  } catch (e) {
+    if (e.invalid) {
+      return res.json({ error: "Invalid parameters" });
+    } else {
+      return res.json({ error: "Internal server error" });
+    }
+  }
+
+  let { workoutId } = req.params;
+  // Check if workoutId is valid
+  try {
+    validation.paramExists({ workoutId });
+    validation.paramIsString({ workoutId });
+  } catch (e) {
+    if (e.invalid) {
+      return res.json({ error: "Invalid parameters" });
+    } else {
+      return res.json({ error: "Internal server error" });
+    }
+  }
+
+  // Check if workoutId is a valid ObjectId
+  try {
+    helpers.invalidID(workoutId);
+  } catch (e) {
+    return res.json({ error: "Invalid parameters" });
+  }
+
+  // Check if the workout exists
+  let workout;
+  try {
+    workout = await workouts.getWorkoutById(workoutId);
+  } catch (e) {
+    if (e.invalid) {
+      return res.json({ error: "Invalid parameters" });
+    } else {
+      return res.json({ error: "Internal server error" });
+    }
+  }
+
+  // IMPORTANT: make sure the current user is the owner of the workout
+  if (workout.userId !== uid) {
+    return res.json({ error: "User mismatch!" });
+  }
+
+  return res.json(workout);
+});
+
+router.route("/:workoutId").post(async (req, res) => {
+  let { uid, username } = req.session.user;
+  // Check if userId and username are valid
+  try {
+    validation.paramExists({ uid, username });
+    validation.paramIsString({ uid, username });
+  } catch (e) {
+    if (e.invalid) {
+      return res.redirect("/error?status=400");
+    } else {
+      return res.redirect("/error?status=500");
+    }
+  }
+
+  let { workoutId } = req.params;
+  // Check if workoutId is valid
+  try {
+    validation.paramExists({ workoutId });
+    validation.paramIsString({ workoutId });
+  } catch (e) {
+    if (e.invalid) {
+      return res.redirect("/error?status=400");
+    } else {
+      return res.redirect("/error?status=500");
+    }
+  }
+
+  // Check if workoutId is a valid ObjectId
+  try {
+    helpers.invalidID(workoutId);
+  } catch (e) {
+    return res.redirect("/error?status=400");
+  }
+
+  // Check if the workout exists
+  let workout;
+  try {
+    workout = await workouts.getWorkoutById(workoutId);
+  } catch (e) {
+    return res.redirect("/error?status=500");
+  }
+
+  // IMPORTANT: make sure the current user is the owner of the workout
+  if (workout.userId !== uid) {
+    return res.redirect("/error?status=403");
+  }
+
+  let { workoutName, workoutDay } = req.body;
+  workoutName = xss(workoutName);
+  workoutDay = xss(workoutDay);
+  // Check if workoutName and workoutDay are valid
+  try {
+    validateWorkout(workoutName, workoutDay);
+  } catch (e) {
+    if (e.invalid) {
+      return res.redirect("/modules?invalid=true");
+    } else {
+      return res.redirect("/error?status=500");
+    }
+  }
+
+  let {
+    exerciseName,
+    exerciseSets,
+    exerciseReps,
+    exerciseWeight,
+    exerciseWeightUnits,
+  } = req.body;
+  // XSS to sanitize the inputs
+  function sanitizeInput(input) {
+    if (!Array.isArray(input)) {
+      return xss(input);
+    }
+    return input.map((item) => xss(item));
+  }
+
+  exerciseName = sanitizeInput(exerciseName);
+  exerciseSets = sanitizeInput(exerciseSets);
+  exerciseReps = sanitizeInput(exerciseReps);
+  exerciseWeight = sanitizeInput(exerciseWeight);
+  exerciseWeightUnits = sanitizeInput(exerciseWeightUnits);
+
+  // Check if all the fields have the same number of elements
+  // Convert all the fields to arrays if they are not already
+  let exerciseFields = [
+    exerciseName,
+    exerciseSets,
+    exerciseReps,
+    exerciseWeight,
+    exerciseWeightUnits,
+  ];
+  const arrayFields = exerciseFields.map((field) =>
+    Array.isArray(field) ? field : [field]
+  );
+
+  [
+    exerciseName,
+    exerciseSets,
+    exerciseReps,
+    exerciseWeight,
+    exerciseWeightUnits,
+  ] = arrayFields;
+
+  // Check if all fields have the same length
+  const sameLength = arrayFields.every(
+    (field) => field.length === exerciseName.length
+  );
+
+  if (!sameLength) {
+    return res.redirect("/modules?invalid=true");
+  }
+
+  // For each exercise, validate the parameters
+  let exercises = [];
+  for (let i = 0; i < exerciseName.length; i++) {
+    try {
+      validateExercise(
+        exerciseName[i],
+        exerciseSets[i],
+        exerciseReps[i],
+        exerciseWeight[i],
+        exerciseWeightUnits[i]
+      );
+    } catch (e) {
+      return res.redirect("/modules?invalid=true");
+    }
+
+    exercises.push({
+      exerciseName: exerciseName[i],
+      exerciseSets: exerciseSets[i],
+      exerciseReps: exerciseReps[i],
+      exerciseWeight: exerciseWeight[i],
+      exerciseWeightUnits: exerciseWeightUnits[i],
+    });
+  }
+
+  // Update the workout
+  try {
+    workouts.editWorkout(workoutId, workoutName, workoutDay, exercises);
+  } catch (e) {
+    if (e.invalid) {
+      return res.redirect("/modules?invalid=true");
+    } else {
+      return res.redirect("/error?status=500");
+    }
   }
 
   return res.redirect("/modules");

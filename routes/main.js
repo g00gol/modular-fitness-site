@@ -26,11 +26,13 @@ router.route("/modules").get(middleware.home, async (req, res) => {
   req.session.user.enabledModules = user.enabledModules;
 
   let allWorkouts = [];
-  try {
-    allWorkouts = await workouts.getWorkouts(req.session.user.uid);
-  } catch (e) {
-    console.log(e);
-    return res.redirect("/error?status=500");
+  if (req.session.user.enabledModules.includes("workoutTracker")) {
+    try {
+      allWorkouts = await workouts.getWorkouts(req.session.user.uid);
+    } catch (e) {
+      console.log(e);
+      return res.redirect("/error?status=500");
+    }
   }
 
   try {
