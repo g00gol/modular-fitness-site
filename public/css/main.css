@@ -49,18 +49,13 @@
     @apply w-1/2 flex flex-col justify-center items-start;
   }
   .userForm input {
-    @apply w-full bg-transparent border border-snow-1 p-2 mb-4 rounded-md;
+    @apply w-full mb-4;
   }
   .userForm input[type="submit"] {
     @apply bg-frost text-white;
   }
   .userFeature {
     @apply w-1/2 h-screen bg-[url("../assets/images/userFormsBg.jpg")] bg-cover bg-center;
-  }
-
-  /* Modal Form */
-  .modalForm {
-    @apply w-full h-full flex flex-col justify-center items-start;
   }
 
   /* Error Container */
@@ -83,6 +78,13 @@
   }
   .panel::-webkit-scrollbar-thumb {
     @apply bg-gray-2 rounded-std;
+  }
+
+  input {
+    @apply bg-transparent border border-snow-1 p-2 rounded-md;
+  }
+  select {
+    @apply bg-transparent border border-snow-1 p-2 rounded-md;
   }
 }
 
@@ -127,4 +129,11 @@ a:hover {
 
 .error {
   color: red !important;
+}
+
+.addExerciseForm input[type="number"] {
+  width: 4rem;
+}
+.addExerciseForm input[step="any"] {
+  width: 6rem;
 }
