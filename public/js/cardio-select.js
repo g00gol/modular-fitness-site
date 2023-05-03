@@ -7,6 +7,24 @@ document.addEventListener("DOMContentLoaded", () => {
         $('#cardio-pace').html(`Pace: ${Math.floor((parseInt($(this).attr("data-duration"))/parseInt($(this).attr("data-distance")))*10)/10} minutes/mile`);
         $('#cardio-calories-burned').html(`You burned ${$(this).attr("data-calories")} calories!`);
     });
+
+    $("#sort-cardio").on("click", function(){
+      //console.log($("#sort-cardio").val())
+      $('#cardio-heading').html(`${$("#sort-cardio").val()} Cardio Workouts`);
+      if($("#sort-cardio").val() != "all"){
+        $("button.cardio-select-button").each(function(){
+          if ($(this).attr("data-type") != $("#sort-cardio").val()){
+            $(this).hide();
+          }else{
+            $(this).show();
+          }
+        })
+      }else{
+        $("button.cardio-select-button").each(function(){
+          $(this).show();
+        })
+      }
+    });
 });
 
 function paramExists(obj) {
