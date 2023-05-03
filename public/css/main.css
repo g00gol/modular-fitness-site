@@ -163,3 +163,21 @@ a:hover {
 .sort-cardio-option{
   color: black;
 }
+
+#stopwatch-counter{
+  font-size: x-large;
+}
+
+#stopwatch-pause-play{
+  background-color: #5e81ac;
+  color: white;
+  padding: 3px;
+  border-radius: 3px;
+}
+
+#stopwatch-reset{
+  background-color: #5e81ac;
+  color: white;
+  padding: 3px;
+  border-radius: 3px;
+}

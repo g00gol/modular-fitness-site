@@ -17,16 +17,24 @@
       {{#> panels/timers-2}}
       <div class="right-panel" id="timer-counter" data-paused="false" data-seconds="">
         <h2 id="timer-name">Select a timer!</h2>
+        <select id="timer-stopwatch-select">
+          <option name="timer">Timer</option>
+          <option name="stopwatch">Stopwatch</option>
+        </select>
+
+
         {{!-- <p id="timer-duration"></p> --}}
-        <p id="countdown" data-timeLeft=""></p>
-         
-        
-        
-        <progress id="countdown-progress" value="" max=""></progress> 
+        <p id="countdown" data-timeLeft="" hidden ></p>
+        <progress id="countdown-progress" value="" max="" hidden></progress> 
+
+
+        <p id="stopwatch-counter" data-time="" hidden>0:00:00</p>
+        <button id="stopwatch-pause-play" data-state="pause" hidden>Play</button>
+        <button id="stopwatch-reset" hidden >Reset</button>
         
 
         
-        <p id="play-pause-p"></p>
+        <p id="play-pause-p" hidden></p>
       </div>
       {{/panels/timers-2}}
     {{/module}}
