@@ -30,15 +30,40 @@ router.route("/modules").get(middleware.home, async (req, res) => {
   req.session.user.enabledModules = user.enabledModules;
 
   let allWorkouts = [];
-  try {
-    allWorkouts = await dataModules.workouts.getWorkouts(req.session.user.uid);
-  } catch (e) {
-    return res.redirect("/error?status=500");
+  if (req.session.user.enabledModules.includes("workoutTracker")) {
+    try {
+      allWorkouts = await dataModules.workouts.getWorkouts(req.session.user.uid);
+    } catch (e) {
+      console.log(e);
+      return res.redirect("/error?status=500");
+    }
   }
 
+  let allCardio = [];
+
+  if (req.session.user.enabledModules.includes("cardioTracker")) {
+    try {
+      allCardio = await dataModules.cardio.getAll(req.session.user.username);
+    } catch (e) {
+      console.log(e);
+      return res.redirect("/error?status=500");
+    }
+  }
+
+  let allTimers = [];
+
+  if (req.session.user.enabledModules.includes("timer")) {
+    try {
+      allTimers = await dataModules.timers.getAll(req.session.user.username);
+    } catch (e) {
+      console.log(e);
+      return res.redirect("/error?status=500");
+    }
+  }
+
+
+
   try {
-    let allTimers = await dataModules.timers.getAll(req.session.user.username);
-    let allCardio = await dataModules.cardio.getAll(req.session.user.username);
     
     return res.render("modules", {
       title: "Home",

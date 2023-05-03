@@ -15,14 +15,16 @@
       {{/panels/timers-1}}
 
       {{#> panels/timers-2}}
-      <div class="right-panel" id="timer-counter" data-paused="false" data-seconds="">
-        <h2 id="timer-name">Select a timer!</h2>
+      <div class="flex justify-between">
+        <h2 id="timer-name" data-id="">Select a timer!</h2>
         <select id="timer-stopwatch-select">
           <option name="timer">Timer</option>
           <option name="stopwatch">Stopwatch</option>
         </select>
+        <button hidden id="updateTimerBtn" class="text-xl hover:text-snow-1 transition-colors"><i class="fa-solid fa-plus"></i></button>
+      </div>
 
-
+      <div class="right-panel" id="timer-counter" data-paused="false" data-seconds="">
         {{!-- <p id="timer-duration"></p> --}}
         <p id="countdown" data-timeLeft="" hidden ></p>
         <progress id="countdown-progress" value="" max="" hidden></progress> 
@@ -64,6 +66,10 @@
         <input name="duration_sec" type="number" min="0" max="59" value="0">
       </label>
 
+      <label id="delete-timer-option" hidden>
+        Delete Timer
+        <input name="deleteTimer" type="checkbox">
+      </label>
       
 
       <div class="errorContainer">

@@ -269,7 +269,7 @@ let calculateCaloriesBurned = (weight, distance, time, type) => {
     },
   };
 
-  return mets[type](distance / time) * weight * time;
+  return (mets[type](distance / time) * weight * time).toFixed(0);
 };
 
 export { create, getByID, getByDate, getAll, getByType, remove, update };

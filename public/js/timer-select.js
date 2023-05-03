@@ -48,6 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
             $("#countdown").show();
             $("#countdown-progress").show();
             $("#play-pause-p").show();
+            $("#updateTimerBtn").show();
+            $("#timer-name").attr("data-id", $(this).attr("id"))
         }
     });
   });
@@ -73,12 +75,6 @@ document.addEventListener("DOMContentLoaded", () => {
             clearInterval(timer);
             $('#play-pause-p').html("Click to resume!")
         }
-    });
-  });
-  
-document.addEventListener("DOMContentLoaded", () => {
-    $("#new-timer").on("click", function(){
-        console.log("add new timer")
     });
   });
 
@@ -150,9 +146,22 @@ function toggleEditTimers() {
   // Wait for document to load
   document.addEventListener("DOMContentLoaded", () => {
     // Add event listener to edit modules button
+    // if ($("#editTimersBtn").length > 0) {
+    //   $("#editTimersBtn").click(toggleEditTimers);
+    // }
     if ($("#editTimersBtn").length > 0) {
-      $("#editTimersBtn").click(toggleEditTimers);
-    }
+        $("#editTimersBtn").on("click", function(){
+          $("#editTimersForm").attr("action", `/modules/timers/`);
+
+          $("#delete-timer-option").hide();
+          $("#editTimersForm input[name='title']").val("")
+          $("#editTimersForm input[name='duration_hr']").attr("value", "0")
+          $("#editTimersForm input[name='duration_min']").attr("value", "0")
+          $("#editTimersForm input[name='duration_sec']").attr("value", "0")
+
+          toggleEditTimers();
+        });
+      }
   
     if ($("#editTimersCancelBtn").length > 0) {
       $("#editTimersCancelBtn").click(toggleEditTimers);
@@ -208,6 +217,7 @@ const doStopwatch = () => {
     $("#play-pause-p").hide();
     $("#timer-stopwatch-select").val("Stopwatch").change()
     $("#stopwatch-counter").html("0:00:00")
+    $("#updateTimerBtn").hide();
 
 
     $("#stopwatch-counter").attr("data-time","")
@@ -217,6 +227,7 @@ const doStopwatch = () => {
     $("#stopwatch-pause-play").html("Play");
     $("#stopwatch-pause-play").show();
 
+
     return;
     
   }
@@ -225,6 +236,7 @@ const doStopwatch = () => {
     $("#stopwatch-counter").hide();
     clearInterval(stopwatch);
     $("#timer-name").html("Select a Timer!");
+    $("#timer-name").attr("data-id", "")
     $("#countdown").attr("data-timeLeft", "");
     $("#countdown-progress").attr("value", "");
     $("#countdown-progress").attr("max", "");
@@ -275,6 +287,28 @@ const doStopwatch = () => {
       $("#stopwatch-counter").html("0:00:00")
 
     })
+  })
 
 
+    document.addEventListener("DOMContentLoaded", () => {
+      // Add event listener to edit modules button
+      $("#updateTimerBtn").on("click", function(){ 
+        let s = ($("#timer-counter").attr("data-seconds"))
+        s=parseInt(s);
+
+        let hours = Math.floor(s/3600)
+        s = s-(hours*3600)
+        let minutes = Math.floor(s/60)
+        s = s-(minutes * 60)
+
+        $("#editTimersForm").attr("action", `/modules/timers/${$("#timer-name").attr("data-id")}/`)
+        $("#delete-timer-option").show();
+        $("#editTimersForm input[name='title']").val($("#timer-name").html())
+        $("#editTimersForm input[name='duration_hr']").attr("value", String(hours))
+        $("#editTimersForm input[name='duration_min']").attr("value", String(minutes))
+        $("#editTimersForm input[name='duration_sec']").attr("value", String(s))
+          
+        toggleEditTimers();
+      })
   });
+  
