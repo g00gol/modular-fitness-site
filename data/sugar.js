@@ -244,4 +244,41 @@ const getAllSugarObj = async (username) =>
     }
 };
 
-export {enterSugar, deleteAllSugarDataForUser, deleteOneSugarEnrty, getSugarById, getAllSugarObj, updateSugartEntry};
+const getLastSugarReading = async (username) =>
+{
+    if(!username)
+    {
+        throw `Error: username not provided.`
+    }
+    if(typeof username != 'string' || username.trim().length === 0)
+    {
+        throw `Error: username must be a non empty string.`
+    }
+    username = username.trim();
+    let user
+    try 
+    {
+        let userCollection = await users();
+        user = await getByUsername(username)
+    }
+    catch (e)
+    {
+        console.log(e)
+        throw `error user does not exists in the users collection.`
+    }
+    try 
+    {
+        let sugarCollection = await sugar();
+        let record = await sugarCollection.findOne({username: username});
+        let data = record.data;
+        let ans = data[data.length - 1];
+        return ans; 
+    }
+    catch (e) 
+    {
+        console.log(e);
+        throw `Error: could not find.`;
+    }
+
+};
+export {enterSugar, deleteAllSugarDataForUser, getLastSugarReading, deleteOneSugarEnrty, getSugarById, getAllSugarObj, updateSugartEntry};

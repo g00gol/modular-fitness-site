@@ -8,7 +8,7 @@ const router = Router();
 router.route("/").post(async (req, res) => 
 {
     let sugarEntry = req.body.sugarInput;
-    // console.log("req.body.fastingInput is ======="+req.body.fastingInput)
+    console.log("req.body.fastingInput is ======="+req.body.fastingInput)
     let fasting;
     if(!req.body.fastingInput)
     {
@@ -28,7 +28,10 @@ router.route("/").post(async (req, res) =>
         // console.log("fasting value is ::::::::::::::::::::: "+fasting)
         return res.redirect("/error?status=400");
     }
-
+    console.log(sugarEntry);
+    console.log(fasting);
+    console.log(typeof sugarEntry)
+    console.log(typeof fasting)
 
     if(!sugarEntry || typeof sugarEntry != 'number'  || isNaN(sugarEntry))
     {
@@ -45,6 +48,8 @@ router.route("/").post(async (req, res) =>
     try
     {
         let newSugar = await sugars.enterSugar(username,sugarEntry,fasting)
+        // const lastReading = await getLastSugarReading(username);
+        // res.render('bloodSugarTracker', { lastReading });
     }
     catch (e)
     {
