@@ -79,6 +79,10 @@
   .panel::-webkit-scrollbar-thumb {
     @apply bg-gray-2 rounded-std;
   }
+  
+  .modalContainer {
+    @apply fixed top-0 left-nav z-10;
+  }
 
   input {
     @apply bg-transparent border border-snow-1 p-2 rounded-md;
