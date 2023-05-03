@@ -104,7 +104,7 @@ function toggleEditTimers() {
   function validateTimersForm() {
     $("#editTimersForm input").removeClass("invalidInput");
   
-    let title = $("#editTimersForm input[name='title']").val();
+    let title = $("#editTimersForm input[name='title']").val().trim();
     let duration_hr = $("#editTimersForm input[name='duration_hr']").val();
     let duration_min = $("#editTimersForm input[name='duration_min']").val();
     let duration_sec = $("#editTimersForm input[name='duration_sec']").val();
