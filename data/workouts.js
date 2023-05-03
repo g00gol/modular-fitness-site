@@ -255,9 +255,10 @@ const getWorkoutById = async (workoutId) => {
  * @param {*} workoutId - id of the workout
  * @param {*} workoutName - new name of the workout
  * @param {*} workoutDay - new day of the workout
+ * @param {array} exercises - exercises of the workout
  * @returns {updatedWorkout: true} if the workout was successfully updated
  */
-const editWorkout = async (workoutId, workoutName, workoutDay) => {
+const editWorkout = async (workoutId, workoutName, workoutDay, exercises) => {
   // Validate workoutId, workoutName, and workoutDay
   try {
     validation.paramExists({ workoutId, workoutName, workoutDay });
@@ -285,14 +286,113 @@ const editWorkout = async (workoutId, workoutName, workoutDay) => {
     throw { invalid: ["workoutDay"] };
   }
 
-  // Update the workout in the database
+  // Validate exercises
+  try {
+    validation.paramExists({ exercises });
+    validation.paramIsArray({ exercises });
+  } catch (e) {
+    throw { invalid: ["exercises"] };
+  }
+
+  // Validate each exercise
+  for (let i = 0; i < exercises.length; i++) {
+    let exercise = exercises[i];
+    try {
+      validation.paramExists({ exercise });
+    } catch (e) {
+      throw { invalid: ["exercises"] };
+    }
+
+    let {
+      exerciseName,
+      exerciseSets,
+      exerciseReps,
+      exerciseWeight,
+      exerciseWeightUnits,
+    } = exercise;
+
+    // Check if parameters exists
+    try {
+      validation.paramExists({
+        workoutId,
+        exerciseName,
+        exerciseSets,
+        exerciseReps,
+        exerciseWeight,
+        exerciseWeightUnits,
+      });
+    } catch (e) {
+      throw { invalid: e };
+    }
+
+    let invalidParams = [];
+
+    // Validate exerciseName and exerciseWeightUnits
+    try {
+      validation.paramIsString({ exerciseName, exerciseWeightUnits });
+
+      if (exerciseWeightUnits !== "lbs" && exerciseWeightUnits !== "kg") {
+        invalidParams.push("exerciseWeightUnits");
+      }
+    } catch (e) {
+      invalidParams = [...invalidParams, ...e];
+    }
+
+    // Validate exerciseSets, exerciseReps, and exerciseWeight
+    try {
+      validation.paramIsNum({ exerciseSets, exerciseReps, exerciseWeight });
+
+      /** Further validation for the specific fields */
+      exerciseSets = Number(exerciseSets);
+      exerciseReps = Number(exerciseReps);
+      exerciseWeight = Number(exerciseWeight);
+      let invalidParams = [];
+
+      // Check if exercise sets is a positive integer between 1 and 99
+      if (
+        !Number.isInteger(exerciseSets) ||
+        exerciseSets < 1 ||
+        exerciseSets > 99
+      ) {
+        invalidParams.push("exerciseSets");
+      }
+
+      // Check if exercise reps is a positive integer between 1 and 99
+      if (
+        !Number.isInteger(exerciseReps) ||
+        exerciseReps < 1 ||
+        exerciseReps > 99
+      ) {
+        invalidParams.push("exerciseReps");
+      }
+
+      // Check if exercise weight is a positive number between 0 and 9999
+      if (
+        isNaN(exerciseWeight) ||
+        exerciseWeight <= 0 ||
+        exerciseWeight > 9999
+      ) {
+        invalidParams.push("exerciseWeight");
+      }
+
+      if (invalidParams.length > 0) throw invalidParams;
+    } catch (e) {
+      invalidParams = [...invalidParams, ...e];
+    }
+
+    if (invalidParams.length > 0) {
+      throw { invalid: invalidParams };
+    }
+  }
+
   const workoutCollection = await workouts();
+  // Update the workout in the database with the exercises too
   const updateInfo = await workoutCollection.updateOne(
     { _id: new ObjectId(workoutId) },
-    { $set: { workoutName, workoutDay } }
+    { $set: { workoutName, workoutDay, exercises } }
   );
 
-  if (updateInfo.modifiedCount === 0) {
+  if (updateInfo.matchedCount === 0) {
     throw { serverError: [500, "Internal Server Error"] };
   }
   return { updatedWorkout: true };

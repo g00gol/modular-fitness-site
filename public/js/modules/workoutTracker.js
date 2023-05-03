@@ -1,5 +1,7 @@
 import * as validation from "../workoutTrackerValidation.js";
 
+let workoutId;
+
 function addExerciseFormHTML(ith) {
   return `<div id="addExerciseForm${ith}" class="flex space-x-4 addExerciseForm">
   <button id="removeExerciseBtn${ith}" value="${ith}"><i class="text-xl fa-solid fa-circle-minus"></i></button>
@@ -34,16 +36,71 @@ function addExerciseFormHTML(ith) {
 }
 
 // Toggle the edit modal
-function toggleEditWorkouts() {
-  $("#editWorkoutsModal").toggle();
+function toggleAddWorkouts() {
+  $("#workoutsModal").toggle();
+}
+
+// Toggle the edit modal
+async function toggleEditWorkouts() {
+  $("#workoutsModal").toggle();
+  $("#workoutsForm").attr("action", `/modules/workouts/${workoutId}`);
+
+  // Get the workout data
+  let workoutData;
+  try {
+    let res = await axios.get(`/modules/workouts/${workoutId}`, {
+      headers: { "X-Client-Side-Request": "true" },
+    });
+    if (res.data.error) {
+      alert(res.data.error);
+    }
+    workoutData = res.data;
+  } catch (e) {
+    return;
+  }
+
+  // Fill out the form with the existing data
+  $("#workoutsForm input[name='workoutName']").val(workoutData.workoutName);
+  $("#workoutsForm select[name='workoutDay']").val(workoutData.workoutDay);
+
+  // Remove all the existing exercise forms
+  $(".addExerciseForm").remove();
+
+  // Add the exercise forms
+  for (let i = 0; i < workoutData.exercises.length; i++) {
+    $("#addExerciseBtn").before(addExerciseFormHTML(i));
+    $(`#addExerciseForm${i} input[name='exerciseSets']`).val(
+      workoutData.exercises[i].exerciseSets
+    );
+    $(`#addExerciseForm${i} input[name='exerciseReps']`).val(
+      workoutData.exercises[i].exerciseReps
+    );
+    $(`#addExerciseForm${i} input[name='exerciseName']`).val(
+      workoutData.exercises[i].exerciseName
+    );
+    $(`#addExerciseForm${i} input[name='exerciseWeight']`).val(
+      workoutData.exercises[i].exerciseWeight
+    );
+    $(`#addExerciseForm${i} select[name='exerciseWeightUnits']`).val(
+      workoutData.exercises[i].exerciseWeightUnits
+    );
+  }
+
+  // Add the event listeners to the remove exercise buttons
+  $(".addExerciseForm button").click(function () {
+    let ith = $(this).val();
+    $(`#addExerciseForm${ith}`).remove();
+  });
+
+  // Add the event listener to the add exercise button
 }
 
 // Validate the workout form
 function validateWorkoutForm() {
-  $("#editWorkoutsForm input").removeClass("invalidInput");
+  $("#workoutsForm input").removeClass("invalidInput");
 
-  let workoutName = $("#editWorkoutsForm input[name='workoutName']").val();
-  let workoutDay = $("#editWorkoutsForm select[name='workoutDay']").val();
+  let workoutName = $("#workoutsForm input[name='workoutName']").val();
+  let workoutDay = $("#workoutsForm select[name='workoutDay']").val();
 
   // Validate workoutName and workoutDate
   try {
@@ -52,14 +109,10 @@ function validateWorkoutForm() {
     // Add invalidInput class to the input fields that are missing
     e.forEach((param) => {
       if (param === "workoutName") {
-        $("#editWorkoutsForm input[name='workoutName']").addClass(
-          "invalidInput"
-        );
+        $("#workoutsForm input[name='workoutName']").addClass("invalidInput");
       }
       if (param === "workoutDay") {
-        $("#editWorkoutsForm select[name='workoutDay']").addClass(
-          "invalidInput"
-        );
+        $("#workoutsForm select[name='workoutDay']").addClass("invalidInput");
       }
     });
     return false;
@@ -91,14 +144,10 @@ function validateWorkoutForm() {
   if (invalidParams.length > 0) {
     invalidParams.forEach((param) => {
       if (param === "workoutName") {
-        $("#editWorkoutsForm input[name='workoutName']").addClass(
-          "invalidInput"
-        );
+        $("#workoutsForm input[name='workoutName']").addClass("invalidInput");
       }
       if (param === "workoutDay") {
-        $("#editWorkoutsForm select[name='workoutDay']").addClass(
-          "invalidInput"
-        );
+        $("#workoutsForm select[name='workoutDay']").addClass("invalidInput");
       }
     });
     return false;
@@ -223,13 +272,13 @@ function validateExerciseForm(ith) {
 }
 
 // Wait for document to load
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   if ($("[id^='selectWorkout']").length > 0) {
     const workoutButtons = $("[id^='selectWorkout']");
 
     workoutButtons.each(function () {
       $(this).click(async function (event) {
-        let workoutId = event.target.id?.split("?");
+        workoutId = event.target.id?.split("?");
         if (!workoutId) return;
         workoutId = workoutId[1];
 
@@ -268,19 +317,27 @@ document.addEventListener("DOMContentLoaded", () => {
         const exercisesContainer = $("#exercisesContainer");
         exercisesContainer.html(panel2ContentHTML);
 
-        // Log the content of exercisesContainer
-        console.log(exercisesContainer.html());
+        if ($("#editWorkoutsBtn").length > 0) {
+          $("#editWorkoutsBtn").show();
+        }
       });
     });
   }
 
   // Add event listener to edit modules button
-  if ($("#editWorkoutsBtn").length > 0) {
-    $("#editWorkoutsBtn").click(toggleEditWorkouts);
+  if ($("#addWorkoutsBtn").length > 0) {
+    $("#addWorkoutsBtn").click(toggleAddWorkouts);
   }
 
-  if ($("#editWorkoutsCancelBtn").length > 0) {
-    $("#editWorkoutsCancelBtn").click(toggleEditWorkouts);
+  if ($("#workoutsFormCancelBtn").length > 0) {
+    $("#workoutsFormCancelBtn").click(toggleAddWorkouts);
+  }
+
+  // Add event listener to edit exercises button
+  if ($("#editWorkoutsBtn").length > 0) {
+    $("#editWorkoutsBtn").click(async () => {
+      await toggleEditWorkouts();
+    });
   }
 
   if ($("#addExerciseBtn").length > 0) {
@@ -301,8 +358,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if ($("#editWorkoutsForm").length > 0) {
-    $("#editWorkoutsForm").submit((e) => {
+  if ($("#workoutsForm").length > 0) {
+    $("#workoutsForm").submit((e) => {
       e.preventDefault();
       $(".errorContainer").empty();
 
@@ -334,7 +391,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Submit form
-      $("#editWorkoutsForm").off("submit").submit();
+      $("#workoutsForm").off("submit").submit();
     });
   }
 });
