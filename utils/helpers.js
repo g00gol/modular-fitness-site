@@ -115,3 +115,19 @@ export const updateRating = (band) => {
 
   return Number((sumRatings / albums.length).toFixed(1));
 };
+
+
+export const formatDuration = (s) => {
+  let hours = Math.floor(s/3600)
+  s = s-(hours*3600)
+  let minutes = Math.floor(s/60)
+  s = s-(minutes * 60)
+  
+  minutes = String(minutes)
+  s = String(s)
+
+  if(minutes.length == 1){minutes = "0"+minutes}
+  if(s.length == 1){s = "0"+s}
+
+  return `${hours}:${minutes}:${s}`
+}

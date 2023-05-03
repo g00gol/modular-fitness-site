@@ -45,6 +45,7 @@ router.route("/").post(async (req, res) =>
     try
     {
         let newSugar = await sugars.enterSugar(username,sugarEntry,fasting)
+        
     }
     catch (e)
     {
