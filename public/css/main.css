@@ -80,6 +80,10 @@
     @apply bg-gray-2 rounded-std;
   }
 
+  .modalContainer {
+    @apply fixed top-0 left-nav z-10;
+  }
+
   input {
     @apply bg-transparent border border-snow-1 p-2 rounded-md;
   }
@@ -136,4 +140,48 @@ a:hover {
 }
 .addExerciseForm input[step="any"] {
   width: 6rem;
+}
+
+#countdown {
+  font-size: x-large;
+}
+
+#countdown-progress {
+  width: 100%;
+}
+
+#countdown-progress::-webkit-progress-bar {
+  background-color: #eee;
+  border-radius: 5px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25) inset;
+  position: relative;
+}
+
+#countdown-progress::-webkit-progress-value {
+  background-color: #5e81ac;
+  border-radius: 5px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25) inset;
+  position: relative;
+}
+
+.sort-cardio-option {
+  color: black;
+}
+
+#stopwatch-counter {
+  font-size: x-large;
+}
+
+#stopwatch-pause-play {
+  background-color: #5e81ac;
+  color: white;
+  padding: 3px;
+  border-radius: 3px;
+}
+
+#stopwatch-reset {
+  background-color: #5e81ac;
+  color: white;
+  padding: 3px;
+  border-radius: 3px;
 }

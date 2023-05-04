@@ -1,7 +1,12 @@
 import { ObjectId } from "mongodb";
 import { timers } from "../config/mongoCollections.js";
 import { getByUsername } from "./users.js";
-import { invalidParams, invalidStrings, invalidID } from "../utils/helpers.js";
+import {
+  invalidParams,
+  invalidStrings,
+  invalidID,
+  formatDuration,
+} from "../utils/helpers.js";
 
 const create = async (username, title, type, duration) => {
   invalidParams(title, type, duration);
@@ -26,6 +31,7 @@ const create = async (username, title, type, duration) => {
     title: title,
     type: type,
     duration: duration,
+    durationFormat: formatDuration(duration),
   };
   let createInfo = await timerCollection.insertOne(newTimer);
   if (!createInfo.acknowledged || !createInfo.insertedId)
@@ -41,7 +47,8 @@ const getAll = async (username) => {
   let allTimers = await timerCollection.find({ username: username }).toArray();
 
   if (!allTimers || allTimers.length == 0) {
-    throw { errorCode: 400, errorMessage: "Error: user has no timers" };
+    //throw { errorCode: 400, errorMessage: "Error: user has no timers" };
+    return [];
   }
 
   for (let i = 0; i < allTimers.length; i++) {
@@ -104,6 +111,7 @@ const update = async (id, username, title, type, duration) => {
     title: title,
     type: type,
     duration: duration,
+    durationFormat: formatDuration(duration),
   };
   let updateInfo = await timerCollection.findOneAndUpdate(
     { _id: new ObjectId(id) },
