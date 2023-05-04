@@ -186,11 +186,12 @@ a:hover {
   border-radius: 3px;
 }
 
-.container {
+.drag-drop-container {
   margin: 0 auto;
   padding: 0 20px;
   max-width: 900px;
   min-width: 300px;
+  min-height: 500px;
 }
 .row {
   width:100%;
