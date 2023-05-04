@@ -1,6 +1,6 @@
 {{!-- Cardio Module --}}
     {{#> module moduleName="Cardio Tracker"}}
-      {{#> panels/cardio-1}}
+      {{#> panels/panel-1}}
       <div class="flex justify-between">
         <h2 id="cardio-heading">all Cardio Workouts</h2>
         <select id="sort-cardio" name="sort-cardio">
@@ -20,9 +20,9 @@
           </button>
         {{/each}}
         </div>
-      {{/panels/cardio-1}}
+      {{/panels/panel-1}}
 
-      {{#> panels/cardio-2}}
+      {{#> panels/panel-2}}
       <div class="right-panel" id="cardio-info-div">
         <div class="flex justify-between">
         <h2 id="cardio-date">Select a cardio workout!</h2>
@@ -34,7 +34,7 @@
         <p id="cardio-data" data-type="" data-distance="" data-duration="" data-date="" data-id="" data-calories=""  hidden></p>
 
       </div>
-      {{/panels/cardio-2}}
+      {{/panels/panel-2}}
     {{/module}}
   {{!----}}
 
