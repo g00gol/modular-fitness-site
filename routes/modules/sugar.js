@@ -41,7 +41,7 @@ router.route("/").post(async (req, res) =>
         // console.log(typeof fasting)
         return res.redirect("/error?status=400");
     }
-    if (sugarEntry <= 0)
+    if (sugarEntry <= 0 || sugarEntry >= 300)
     {
         return res.redirect("/error?status=400");
     }

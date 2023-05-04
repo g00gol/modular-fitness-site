@@ -33,3 +33,28 @@ if (weight_form)
         }
     })
 }
+
+async function getLastWeight() {
+    let weight;
+    try {
+        let res = await axios.get("/modules/weight/last", {
+            headers: { "X-Client-Side-Request": "true" },
+        })
+
+        if (res.data.error) {
+            alert(res.data.error);
+        }
+
+        weight = res.data;
+    } catch (e) {
+        return;
+    }
+    $("#lastWeight").text(weight.weight);
+}
+
+// Listen for document load
+document.addEventListener("DOMContentLoaded", async () => {
+    if ($("#lastWeight").length > 0) {
+        await getLastWeight();
+    }
+});

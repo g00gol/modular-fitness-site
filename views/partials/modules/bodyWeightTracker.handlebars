@@ -1,7 +1,8 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
 
 {{#> module moduleName="Body Weight Tracker"}}
 
-   {{#> panels/panel-2}}
+   {{#> panels/panel-1}}
    <h2>Body Weight Tracker</h2>
     <form id = "weightTrackerForm" action = '/modules/weight' method="POST">
       <label>
@@ -12,6 +13,12 @@
     </form>
     <p id = "weightError"></p>
   
+  {{/panels/panel-1}}
+
+  {{#> panels/panel-2}}
+    <h2>Your last weight Entry</h2>
+    <p id = "lastWeight"></p>
+
   {{/panels/panel-2}}
 
 <script src = "../../../public/js/modules/weights.js"></script>

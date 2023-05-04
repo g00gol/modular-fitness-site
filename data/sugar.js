@@ -26,7 +26,7 @@ const enterSugar = async (username, sugarReading, fasting) =>
     {
         throw `SugarReading must be a valid number`
     }
-    if (sugarReading <= 0)
+    if (sugarReading <= 0 || sugarReading >= 300)
     {
         throw `sugarReading does not seem to be correct. `
     }

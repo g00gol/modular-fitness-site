@@ -1,7 +1,7 @@
 
 {{#> module moduleName="Blood Sugar Tracker"}}
 
-   {{#> panels/panel-2}}
+   {{#> panels/panel-1}}
     <h2>Blood Sugar Tracker</h2>
     <form action = '/modules/sugar' method="POST" id = "sugarTrackerForm">
       <label>
@@ -15,9 +15,13 @@
       <button type="submit">Submit</button>
     </form>
     <p id = "sugarError"></p>
-     {{!-- {{#if lastReading}}
-      <h3>Your last blood sugar entry: {{lastReading}}</h3>
-    {{/if}} --}}
+     
+  {{/panels/panel-1}}
+
+  {{#> panels/panel-2}}
+    <h2>Your last reading</h2>
+    <p id = "lastSugar"></p>
+
   {{/panels/panel-2}}
 <script src = "../../../public/js/modules/sugar.js"></script>
 
