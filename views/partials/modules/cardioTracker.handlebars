@@ -1,0 +1,114 @@
+{{!-- Cardio Module --}}
+    {{#> module moduleName="Cardio Tracker"}}
+      {{#> panels/cardio-1}}
+      <div class="flex justify-between">
+        <h2 id="cardio-heading">all Cardio Workouts</h2>
+        <select id="sort-cardio" name="sort-cardio">
+          <option class="sort-cardio-option" value="all">All</option>
+          <option class="sort-cardio-option" value="walk">Walks</option>
+          <option class="sort-cardio-option" value="run">Runs</option>
+          <option class="sort-cardio-option" value="cycle">Cycles</option>
+          <option class="sort-cardio-option" value="swim">Swims</option>
+        </select>
+        <button id="editCardioBtn" class="text-xl hover:text-snow-1 transition-colors"><i class="fa-solid fa-plus"></i></button>
+      </div>
+
+        <div id="saved-cardios">
+        {{#each allCardio}}
+          <button class="cardio-select-button w-full rounded-md border border-snow-1 p-2 text-left hover:bg-polar transition-colors" id="{{this._id}}" data-type="{{this.type}}" data-date="{{this.date}}" data-dateTime="{{this.dateTime}}" data-duration="{{this.duration}}" data-distance="{{this.distance}}" data-calories="{{this.caloriesBurned}}">
+            <p class="cardio-type">{{this.type}}</p> <p class="cardio.date">{{this.date}}</p>
+          </button>
+        {{/each}}
+        </div>
+      {{/panels/cardio-1}}
+
+      {{#> panels/cardio-2}}
+      <div class="right-panel" id="cardio-info-div">
+        <div class="flex justify-between">
+        <h2 id="cardio-date">Select a cardio workout!</h2>
+        <button hidden id="updateCardioBtn" class="text-xl hover:text-snow-1 transition-colors"><i class="fa-solid fa-plus"></i></button>
+        </div>
+        <p id="cardio-type-distance-duration" class="cardio-info"></p>
+        <p id="cardio-pace" class="cardio-info"></p>
+        <p id="cardio-calories-burned" class="cardio-info"></p>
+        <p id="cardio-data" data-type="" data-distance="" data-duration="" data-date="" data-id="" data-calories=""  hidden></p>
+
+      </div>
+      {{/panels/cardio-2}}
+    {{/module}}
+  {{!----}}
+
+
+<div id="editCardioModal" class="modalContainer" hidden>
+  {{#> modal modalName="Add Cardio Workout"}} 
+    <form id="editCardioForm" class="flex flex-col space-y-4 text-lg" action="/modules/cardio" method="POST">
+      <label>
+        Cardio Type
+        <select name="cardioType">
+          <option value="walk">Walk</option>
+          <option value="run">Run</option>
+          <option value="cycle">Cycle</option>
+          <option value="swim">swim</option>
+        </select>
+      </label>
+
+      <label>
+        Distance (miles)
+        <input name="distance" type="number" min="0">
+      </label>
+
+      <label>
+        Duration (minutes)
+        <input name="duration" type="number" min="0">
+      </label>
+
+      <label>
+        Date
+        <input name="date" type="date">
+      </label>
+
+      <label>
+        Weight (optional)
+        <input name="weight" type="number" min="0"> 
+        {{!-- add a default value --}}
+      </label>
+
+      <label>
+        Calories Burned (optional)
+        <input name="calories" type="number" min="0"> 
+        {{!-- add a default value --}}
+      </label>
+
+      <label id="delete-cardio-option" hidden>
+        Delete
+        <input name="deleteCardio" type="checkbox"> 
+        {{!-- add a default value --}}
+      </label>
+      
+
+      <div class="errorContainer">
+        {{#each error}}
+          <p class="error">
+            {{this}}
+          </p>
+        {{/each}}
+      </div>
+
+      <div class="editCardioBtns!mt-[5vh] space-x-4">
+        <button
+          type="submit"
+          class="w-fit px-6 py-2 text-snow-3 hover:text-snow-1 underline bg-frost rounded-std"
+        >
+          Save
+        </button>
+        <button
+          id="editCardioCancelBtn"
+          type="button"
+          class="w-fit text-gray-2 hover:text-gray-1 underline"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  {{/modal}}
+</div>

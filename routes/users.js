@@ -120,6 +120,7 @@ loginRouter
 
     // If the user was successfully logged in, create a session and redirect the user to the modules
     req.session.user = userData;
+    req.session.username = usernameInput;
     return res.redirect("/modules");
   });
 

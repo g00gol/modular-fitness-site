@@ -4,9 +4,13 @@
 
 import { Router } from "express";
 import * as middleware from "../utils/middleware.js";
+import * as dataModules from "../data/index.js"
+//import allModules from "../data/allModules.js";
 import * as users from "../data/users.js";
-import * as workouts from "../data/workouts.js";
+//import * as workouts from "../data/workouts.js";
 import workoutsRoutes from "./modules/workouts.js";
+import cardioRoutes from "./modules/cardio.js";
+import timerRoutes from "./modules/timers.js";
 
 import allModules from "../public/constants/allModules.js";
 
@@ -28,18 +32,45 @@ router.route("/modules").get(middleware.home, async (req, res) => {
   let allWorkouts = [];
   if (req.session.user.enabledModules.includes("workoutTracker")) {
     try {
-      allWorkouts = await workouts.getWorkouts(req.session.user.uid);
+      allWorkouts = await dataModules.workouts.getWorkouts(req.session.user.uid);
     } catch (e) {
       console.log(e);
       return res.redirect("/error?status=500");
     }
   }
 
+  let allCardio = [];
+
+  if (req.session.user.enabledModules.includes("cardioTracker")) {
+    try {
+      allCardio = await dataModules.cardio.getAll(req.session.user.username);
+    } catch (e) {
+      console.log(e);
+      return res.redirect("/error?status=500");
+    }
+  }
+
+  let allTimers = [];
+
+  if (req.session.user.enabledModules.includes("timer")) {
+    try {
+      allTimers = await dataModules.timers.getAll(req.session.user.username);
+    } catch (e) {
+      console.log(e);
+      return res.redirect("/error?status=500");
+    }
+  }
+
+
+
   try {
+    
     return res.render("modules", {
       title: "Home",
       user: req.session.user,
       allModules,
+      allTimers,
+      allCardio,
       enabledModules: req.session.user.enabledModules,
       invalid: req.query?.invalid,
       allWorkouts,
@@ -102,6 +133,8 @@ router.route("/modules").post(middleware.home, async (req, res) => {
 });
 
 router.use("/modules/workouts", middleware.home, workoutsRoutes);
+router.use("/modules/cardio", middleware.home, cardioRoutes);
+router.use("/modules/timers", middleware.home, timerRoutes);
 router.use("/modules/*", (req, res) => {
   return res.redirect("/error?status=404");
 });

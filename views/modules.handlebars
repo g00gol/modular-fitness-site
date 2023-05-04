@@ -1,3 +1,6 @@
+<script src="../public/js/editModules.js"></script>
+<script src="../public/js/timer-select.js"></script>
+<script src="../public/js/cardio-select.js"></script>
 <script type="module" src="../public/js/editModules.js"></script>
 
 {{#if invalid}}
@@ -10,12 +13,13 @@
     <p>Welcome to your modules!</p>
     <button id="editModulesBtn" class="text-frost hover:text-polar underline">Edit Modules</button>
   </div>
-
   {{#each enabledModules}}
     {{{renderModule this}}}
   {{/each}}
-</section>
 
+{{!-- HOW TO PASS DATA INTO THIS???? --}}
+
+</section>
 {{!-- Edit Modules Modal --}}
 <div id="editModulesModal" class="fixed top-0 left-nav" hidden>
   {{#> modal modalName="Edit Modules"}}
@@ -26,7 +30,6 @@
         {{this.name}}
       </label>
       {{/each}}
-
       <div class="!mt-[5vh] space-x-4">
         <button type="submit" class="w-fit px-6 py-2 text-snow-3 hover:text-snow-1 underline bg-frost rounded-std">Save</button>
         <button type="button" id="editModulesCancelBtn" class="w-fit text-gray-2 hover:text-gray-1 underline">Cancel</button>
