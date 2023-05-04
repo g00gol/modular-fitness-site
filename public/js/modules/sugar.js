@@ -41,3 +41,29 @@ if (sugar_form)
         }
     })
 }
+
+
+async function getLastSugar() {
+    let sugar;
+    try {
+        let res = await axios.get("/modules/sugar/last", {
+            headers: { "X-Client-Side-Request": "true" },
+        })
+
+        if (res.data.error) {
+            alert(res.data.error);
+        }
+
+        sugar = res.data;
+    } catch (e) {
+        return;
+    }
+    $("#lastSugar").text(sugar.sugarReading);
+}
+
+// Listen for document load
+document.addEventListener("DOMContentLoaded", async () => {
+    if ($("#lastSugar").length > 0) {
+        await getLastSugar();
+    }
+});
