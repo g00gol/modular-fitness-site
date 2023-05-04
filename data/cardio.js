@@ -46,7 +46,8 @@ const create = async (
   if (typeof weight != "number") {
     throw "weight must be a number";
   }
-  if (caloriesBurned <= 0) {
+  console.log(caloriesBurned);
+  if (caloriesBurned < 0) {
     if (weight <= 0) {
       throw "invalid weight";
     }
@@ -63,6 +64,7 @@ const create = async (
     duration: duration,
     dateTime: dateTime,
     caloriesBurned: caloriesBurned,
+    date: moment(dateTime).format("MM/DD/YYYY"),
   };
   let createInfo = await cardioCollection.insertOne(newCardio);
   if (!createInfo.acknowledged || !createInfo.insertedId)
@@ -78,10 +80,6 @@ const getAll = async (username) => {
   let allCardios = await cardioCollection
     .find({ username: username })
     .toArray();
-
-  if (!allCardios || allCardios.length == 0) {
-    throw { errorCode: 400, errorMessage: "Error: user has no cardios" };
-  }
 
   for (let i = 0; i < allCardios.length; i++) {
     allCardios[i]._id = allCardios[i]._id.toString();
@@ -230,6 +228,7 @@ const update = async (
     duration: duration,
     dateTime: dateTime,
     caloriesBurned: caloriesBurned,
+    date: moment(dateTime).format("MM/DD/YYYY"),
   };
   let updateInfo = await cardioCollection.findOneAndUpdate(
     { _id: new ObjectId(id) },
@@ -270,7 +269,7 @@ let calculateCaloriesBurned = (weight, distance, time, type) => {
     },
   };
 
-  return mets[type](distance / time) * weight * time;
+  return (mets[type](distance / time) * weight * time).toFixed(0);
 };
 
 export { create, getByID, getByDate, getAll, getByType, remove, update };
