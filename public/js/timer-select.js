@@ -112,6 +112,7 @@ function toggleEditTimers() {
     
     try {
       paramExists({ title, duration_hr, duration_min, duration_sec});
+      if(parseInt(duration_hr) + parseInt(duration_min) + parseInt(duration_sec) <= 0) {return false};
       return true;
     } catch (e) {
       // Add invalidInput class to the input fields that are missing

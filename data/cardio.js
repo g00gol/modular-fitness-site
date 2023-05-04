@@ -228,7 +228,7 @@ const update = async (
     duration: duration,
     dateTime: dateTime,
     caloriesBurned: caloriesBurned,
-    date: dateTime.format("MM/DD/YYYY")
+    date: moment(dateTime).format("MM/DD/YYYY")
   };
   let updateInfo = await cardioCollection.findOneAndUpdate(
     { _id: new ObjectId(id) },

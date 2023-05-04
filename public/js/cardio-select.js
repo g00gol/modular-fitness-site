@@ -6,6 +6,19 @@ document.addEventListener("DOMContentLoaded", () => {
         $("#cardio-type-distance-duration").html(`${$(this).attr("data-type")} for ${$(this).attr("data-distance")} miles, taking ${$(this).attr("data-duration")} minutes`);
         $('#cardio-pace').html(`Pace: ${Math.floor((parseInt($(this).attr("data-duration"))/parseInt($(this).attr("data-distance")))*10)/10} minutes/mile`);
         $('#cardio-calories-burned').html(`You burned ${$(this).attr("data-calories")} calories!`);
+
+
+        let dateFormat = `${($(this).attr("data-date")).slice(6)}-${($(this).attr("data-date")).slice(0,2)}-${($(this).attr("data-date")).slice(3,5)}`;
+        $("#cardio-data").attr("data-type", $(this).attr("data-type"))
+        $("#cardio-data").attr("data-distance", $(this).attr("data-distance"))
+        $("#cardio-data").attr("data-duration", $(this).attr("data-duration"))
+        $("#cardio-data").attr("data-date", dateFormat)
+        $("#cardio-data").attr("data-calories", $(this).attr("data-calories"))
+        $("#cardio-data").attr("data-id", $(this).attr("id"))
+
+        $("#updateCardioBtn").show();
+
+
     });
 
     $("#sort-cardio").on("click", function(){
@@ -114,8 +127,37 @@ function toggleEditCardio() {
   // Wait for document to load
   document.addEventListener("DOMContentLoaded", () => {
     // Add event listener to edit modules button
+    // if ($("#editCardioBtn").length > 0) {
+    //   $("#editCardioBtn").click(toggleEditCardio);
+    // }
+    $("#updateCardioBtn").on("click", function(){
+
+      $("#delete-cardio-option").show();
+      $("#editCardioForm select[name='type']").val($("#cardio-data").attr("data-type")).change()
+      $("#editCardioForm input[name='distance']").attr("value", $("#cardio-data").attr("data-distance"))
+      $("#editCardioForm input[name='duration']").attr("value", $("#cardio-data").attr("data-duration"))
+      $("#editCardioForm input[name='date']").attr("value" , ($("#cardio-data").attr("data-date")))
+      $("#editCardioForm input[name='weight']").attr("value", "")
+      $("#editCardioForm input[name='calories']").attr("value", $("#cardio-data").attr("data-calories"))
+
+      $("#editCardioForm").attr("action", `/modules/cardio/${$("#cardio-data").attr("data-id")}`);
+
+      toggleEditCardio();
+    })
+
     if ($("#editCardioBtn").length > 0) {
-      $("#editCardioBtn").click(toggleEditCardio);
+      $("#editCardioBtn").on("click", function(){
+        $("#delete-cardio-option").hide();
+        $("#editCardioForm select[name='title']").val("walk").change()
+        $("#editCardioForm input[name='distance']").attr("value", "")
+        $("#editCardioForm input[name='duration']").attr("value", "")
+        $("#editCardioForm input[name='date']").attr("value", "")
+        $("#editCardioForm input[name='weight']").attr("value", "")
+        $("#editCardioForm input[name='calories']").attr("value", "")
+        $("#editCardioForm").attr("action", `/modules/cardio`)
+
+        toggleEditCardio();
+      });
     }
   
     if ($("#editCardioCancelBtn").length > 0) {
