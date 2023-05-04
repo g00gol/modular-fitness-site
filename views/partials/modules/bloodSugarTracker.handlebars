@@ -3,22 +3,23 @@
 
    {{#> panels/panel-2}}
     <h2>Blood Sugar Tracker</h2>
-    <form id = "sugarTrackerForm"  action = '/modules/sugar' method="POST">
+    <form action = '/modules/sugar' method="POST" id = "sugarTrackerForm">
       <label>
        Sugar Reading
         <input name="sugarInput" type="number" id = "sugarInput">
       </label>
       <label>
         Fasting status
-        <input name="fastingInput" id= "sugarInput" type="checkbox" value="true">
+        <input name="fastingInput" id= "fastingInput" type="checkbox" value="true">
       </label>
       <button type="submit">Submit</button>
     </form>
+    <p id = "sugarError"></p>
      {{!-- {{#if lastReading}}
       <h3>Your last blood sugar entry: {{lastReading}}</h3>
     {{/if}} --}}
   {{/panels/panel-2}}
-
+<script src = "../../../public/js/modules/sugar.js"></script>
 
 
 {{/module}} 

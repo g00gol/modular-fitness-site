@@ -6,13 +6,15 @@
     <form id = "weightTrackerForm" action = '/modules/weight' method="POST">
       <label>
         Weight
-        <input name="weightInput" type="number">
+        <input name="weightInput" type="number" id = "weightInput">
       </label>
       <button type="submit">Submit</button>
     </form>
+    <p id = "weightError"></p>
+  
   {{/panels/panel-2}}
 
-
+<script src = "../../../public/js/modules/weights.js"></script>
 
 {{/module}} 
 
