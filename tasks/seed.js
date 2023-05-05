@@ -195,7 +195,6 @@ await calories.enterCalorie(userPat.uid, "nycSwag", moment().toISOString(), [
   { food_name: "apple", calories: 100, quantity: 2 },
   { food_name: "watermelon", calories: 100, quantity: 2 },
 ]);
-console.log(await calories.getCaloriesByUserID(userPat.uid));
 
 await notes.enterNote(userJohn.uid, "johndoe", moment().format(), "", "\t");
 await notes.enterNote(

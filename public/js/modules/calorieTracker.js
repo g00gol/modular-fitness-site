@@ -43,9 +43,8 @@ function toggleAddCalories() {
 
 // Toggle the edit modal
 async function toggleEditCalories() {
-  console.log(calorieId);
-  $("#caloriesModal").toggle();
-  $("#caloriesForm").attr("action", `/modules/calories/${calorieId}`);
+  $("#calorieModal").toggle();
+  $("#calorieForm").attr("action", `/modules/calories/${calorieId}`);
 
   // Get the calorie data
   let calorieData;
@@ -94,7 +93,7 @@ async function toggleEditCalories() {
 function validateFoodForm(ith) {
   let foodName = $(`#addFoodForm${ith} input[name="foodName"]`).val();
   let calories = $(`#addFoodForm${ith} input[name="calories"]`).val();
-  let servings = $(`#addFoodForm${ith} select[name="servings"]`).val();
+  let servings = $(`#addFoodForm${ith} input[name="servings"]`).val();
 
   // Reset invalidInput class
   $(`#addFoodForm${ith} input`).removeClass("invalidInput");
@@ -109,7 +108,6 @@ function validateFoodForm(ith) {
     });
   } catch (e) {
     e.forEach((param) => {
-      console.log(param);
       $(`#addFoodForm${ith} input[name="${param}"]`).addClass("invalidInput");
     });
     return false;
@@ -172,7 +170,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     calorieEntryButtons.each(function () {
       $(this).click(async function (event) {
-        let calorieId = event.target.id?.split("?");
+        calorieId = event.target.id?.split("?");
         if (!calorieId) return;
         calorieId = calorieId[1];
 
@@ -231,8 +229,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Add event listener to edit foods button
-  if ($("#editCaloriesBtn").length > 0) {
-    $("#editCaloriesBtn").click(async () => {
+  if ($("#editCalorieBtn").length > 0) {
+    $("#editCalorieBtn").click(async () => {
       await toggleEditCalories();
     });
   }
