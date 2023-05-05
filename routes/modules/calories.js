@@ -240,16 +240,9 @@ router.route("/:calorieId").post(async (req, res) => {
     return res.redirect("/modules?invalid=true");
   }
 
-  // Create the calorie
-  try {
-    await calories.enterCalorie(uid, username, moment().toISOString(), foods);
-  } catch (e) {
-    return res.redirect("/modules?invalid=true");
-  }
-
   // Update the calorie
   try {
-    calories.updateCalorie(calorieId, foods);
+    await calories.updateCalorie(calorieId, foods);
   } catch (e) {
     return res.redirect(`/error?status=${e[0]}`);
   }

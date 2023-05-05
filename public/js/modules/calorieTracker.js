@@ -1,5 +1,7 @@
 import * as validation from "../workoutTrackerValidation.js";
 
+let calorieId;
+
 function addFoodFormHTML(ith) {
   return `<div id="addFoodForm${ith}" class="flex space-x-4 addFoodForm">
   <button id="removeFoodBtn${ith}" value="${ith}"><i class="text-xl fa-solid fa-circle-minus"></i></button>
