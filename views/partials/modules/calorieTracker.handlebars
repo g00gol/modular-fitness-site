@@ -1,0 +1,73 @@
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"
+></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+<script type="module" src="../public/js/modules/calorieTracker.js"></script>
+
+{{#> module moduleName="Calorie Tracker"}}
+  {{#> panels/panel-1}}
+  <div class="flex justify-between">
+      <h2 class="w-fit">Past Meals</h2>
+      <button id="addCalorieBtn" class="text-xl hover:text-snow-1 transition-colors"><i class="fa-solid fa-plus"></i></button>
+  </div>
+  <div id="saved-calories">
+    {{#each allCalories}}
+      <button id="selectCalorie?{{this._id}}" class="calorie-select-button w-full rounded-md border border-snow-1 p-2 text-left flex justify-between hover:bg-polar transition-colors">
+        <div>{{this.date}}</div> <div><span class="font-semibold">{{this.totalCalories}}</span> Cal</div>
+      </button>
+    {{/each}}
+  </div>
+  {{/panels/panel-1}}
+  {{#> panels/panel-2}}
+    <div class="flex justify-between">
+      <h2 id="caloriePanel2Title" class="w-fit">
+        Food and Beverages
+      </h2>
+      <button
+        id="editCalorieBtn"
+        class="text-xl hover:text-snow-1 transition-colors"
+        hidden>
+        <i class="fa-solid fa-pencil"></i>
+      </button>
+    </div>
+    <div id="foodsContainer">
+      <p>Select a meal to view.</p>
+    </div>
+  {{/panels/panel-2}}
+{{/module}}
+
+{{!-- Edit Calorie Entry Modal --}}
+<div id="calorieModal" class="fixed top-0 left-nav" hidden>
+  {{#> modal modalName="Edit Calorie Tracker Entry"}} 
+    <form id="calorieForm" class="flex flex-col space-y-4 text-lg" action="/modules/calories" method="POST">
+      <div id="addFoodContainer" class="space-y-4">
+        <button id="addFoodBtn" type="button" class="w-fit text-gray-2 hover:text-gray-1 space-x-4">
+          <i class="text-xl fa-solid fa-circle-plus"></i><span>Add Food or Beverage</span>
+        </button>
+      </div>
+
+      <div class="errorContainer">
+        {{#each error}}
+          <p class="error">
+            {{this}}
+          </p>
+        {{/each}}
+      </div>
+
+      <div class="calorieFormBtns !mt-[5vh] space-x-4">
+        <button
+          type="submit"
+          class="w-fit px-6 py-2 text-snow-3 hover:text-snow-1 underline bg-frost rounded-std"
+        >
+          Save
+        </button>
+        <button
+          id="calorieFormCancelBtn"
+          type="button"
+          class="w-fit text-gray-2 hover:text-gray-1 underline">
+          Cancel
+        </button>
+      </div>
+    </form>
+  {{/modal}}
+</div>

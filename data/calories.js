@@ -35,7 +35,7 @@ export const enterCalorie = async (userID, username, dateTime, foods) => {
     if (typeof food !== "object") {
       throw [400, "Error: food entry must be an Object"];
     }
-    invalidParams(food.food_name, food.calories, food.calories);
+    invalidParams(food.food_name, food.calories, food.quantity);
     invalidStrings(food.food_name);
     food.food_name = food.food_name.trim();
     if (food.food_name.length <= 0 || food.food_name.length > 1000) {
@@ -167,7 +167,7 @@ export const updateCalorie = async (id, foods) => {
     if (typeof food !== "object") {
       throw [400, "Error: food entry must be an Object"];
     }
-    invalidParams(food.food_name, food.calories, food.calories);
+    invalidParams(food.food_name, food.calories, food.quantity);
     invalidStrings(food.food_name);
     food.food_name = food.food_name.trim();
     if (food.food_name.length <= 0 || food.food_name.length > 1000) {
