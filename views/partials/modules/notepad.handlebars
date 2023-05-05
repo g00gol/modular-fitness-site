@@ -12,8 +12,8 @@
   </div>
   <div id="saved-notes">
     {{#each allNotes}}
-      <button id="selectNote?{{this._id}}" class="note-select-button w-full rounded-md border border-snow-1 p-2 text-left hover:bg-polar transition-colors">
-        <p class="font-semibold">{{this.title}}</p> <p>{{this.date}}</p>
+      <button id="selectNote?{{this._id}}" class="note-select-button [&>span]:pointer-events-none flex justify-between w-full rounded-md border border-snow-1 p-2 text-left hover:bg-polar transition-colors">
+        <span class="font-semibold">{{this.title}}</span> <span>{{this.date}}</span>
       </button>
     {{/each}}
   </div>
@@ -26,12 +26,12 @@
     <form id="noteForm" class="flex flex-col space-y-4 text-lg" action="/modules/notes" method="POST">
       <label>
         Title
-        <input name="noteTitle" type="text" maxlength="300">
+        <input name="title" type="text" maxlength="300">
       </label>
 
       <label>
         Text
-        <textarea name="noteText" maxlength="25000"></textarea>
+        <textarea name="text" maxlength="25000"></textarea>
       </label>
 
       <div class="errorContainer">
@@ -53,7 +53,7 @@
           id="noteFormCancelBtn"
           type="button"
           class="w-fit text-gray-2 hover:text-gray-1 underline">
-          Cancel
+          Close
         </button>
       </div>
     </form>

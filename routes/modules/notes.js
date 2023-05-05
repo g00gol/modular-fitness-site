@@ -129,9 +129,10 @@ router.route("/:noteID").post(async (req, res) => {
     }
   }
 
-  // Check if noteId is a valid ObjectId
+  // Check if uid and noteId are a valid ObjectIds
   try {
-    helpers.invalidID(noteID);
+    uid = helpers.invalidID(uid);
+    noteID = helpers.invalidID(noteID);
   } catch (e) {
     return res.redirect("/error?status=400");
   }
@@ -145,7 +146,7 @@ router.route("/:noteID").post(async (req, res) => {
   }
 
   // IMPORTANT: make sure the current user is the owner of the calorie
-  if (note.userId !== uid) {
+  if (note.userID !== uid) {
     return res.redirect("/error?status=403");
   }
 
@@ -161,7 +162,7 @@ router.route("/:noteID").post(async (req, res) => {
 
   // store note object in database
   try {
-    await notes.updateNote(uid, moment().toISOString(), title, text);
+    await notes.updateNote(noteID, moment().toISOString(), title, text);
   } catch (e) {
     return res.redirect(`/error?status=${e[0]}`);
   }

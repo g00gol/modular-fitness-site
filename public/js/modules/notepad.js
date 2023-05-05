@@ -1,38 +1,29 @@
-import * as validation from "../workoutTrackerValidation.js";
-
 let noteId;
 
 function validateNoteForm() {
   $("#noteForm input").removeClass("invalidInput");
+  $("#noteForm textarea").removeClass("invalidInput");
 
   let title = $("#noteForm input[name='title']").val();
   let text = $("#noteForm textarea[name='text']").val();
 
-  // Validate workoutName and workoutDate
-  try {
-    validation.paramExists({ title, text });
-  } catch (e) {
-    // Add invalidInput class to the input fields that are missing
-    e.forEach((param) => {
-      if (param === "title") {
-        $("#workoutsForm input[name='title']").addClass("invalidInput");
-      }
-      if (param === "text") {
-        $("#workoutsForm textarea[name='text']").addClass("invalidInput");
-      }
-    });
-    return false;
-  }
-
+  // Validate title and text
   let invalidParams = [];
 
-  // Validate title
-  let validTitle = typeof title === "string" && title.trim().length <= 300;
-  if (!validTitle) {
+  if (!text) {
+    text = "";
+  } else if (typeof text !== "string") {
+    invalidParams.push("text");
+  } else if (typeof title !== "string") {
     invalidParams.push("title");
+  } else if (title.length > 300) {
+    invalidParams.push("title");
+  } else if (text.length > 25000) {
+    invalidParams.push("text");
   }
-  let validText = typeof text === "string" && text.trim().length <= 25000;
-  if (!validText) {
+
+  if ((!title || title.trim().length === 0) && text.length === 0) {
+    invalidParams.push("title");
     invalidParams.push("text");
   }
 
@@ -40,126 +31,11 @@ function validateNoteForm() {
   if (invalidParams.length > 0) {
     invalidParams.forEach((param) => {
       if (param === "title") {
-        $("#workoutsForm input[name='title']").addClass("invalidInput");
+        $("#noteForm input[name='title']").addClass("invalidInput");
       }
       if (param === "text") {
-        $("#workoutsForm textarea[name='text']").addClass("invalidInput");
+        $("#noteForm textarea[name='text']").addClass("invalidInput");
       }
-    });
-    return false;
-  }
-
-  return true;
-}
-
-// Validate Exercise Form
-/**
- * Validatese the ith exercise form
- * @param {number} ith The ith exercise form
- */
-function validateExerciseForm(ith) {
-  let exerciseSets = $(
-    `#addExerciseForm${ith} input[name="exerciseSets"]`
-  ).val();
-  let exerciseReps = $(
-    `#addExerciseForm${ith} input[name="exerciseReps"]`
-  ).val();
-  let exerciseName = $(
-    `#addExerciseForm${ith} input[name="exerciseName"]`
-  ).val();
-  let exerciseWeight = $(
-    `#addExerciseForm${ith} input[name="exerciseWeight"]`
-  ).val();
-  let exerciseWeightUnits = $(
-    `#addExerciseForm${ith} select[name="exerciseWeightUnits"]`
-  ).val();
-
-  // Reset invalidInput class
-  $(`#addExerciseForm${ith} input`).removeClass("invalidInput");
-
-  let invalidParams = [];
-  // Check if all params exist
-  try {
-    validation.paramExists({
-      exerciseSets,
-      exerciseReps,
-      exerciseName,
-      exerciseWeight,
-      exerciseWeightUnits,
-    });
-  } catch (e) {
-    e.forEach((param) => {
-      $(`#addExerciseForm${ith} input[name="${param}"]`).addClass(
-        "invalidInput"
-      );
-    });
-    return false;
-  }
-
-  // Validate exerciseName and exerciseWeightUnits
-  try {
-    validation.paramIsString({
-      exerciseName,
-      exerciseWeightUnits,
-    });
-
-    if (exerciseWeightUnits !== "lbs" && exerciseWeightUnits !== "kg") {
-      invalidParams.push("exerciseWeightUnits");
-    }
-  } catch (e) {
-    invalidParams = [...invalidParams, ...e];
-  }
-
-  // Validate exerciseSets, exerciseReps, and exerciseWeight
-  try {
-    validation.paramIsNum({
-      exerciseSets,
-      exerciseReps,
-      exerciseWeight,
-    });
-
-    /**
-     * Further validation for the specific fields
-     */
-    exerciseSets = Number(exerciseSets);
-    exerciseReps = Number(exerciseReps);
-    exerciseWeight = Number(exerciseWeight);
-    let invalidParams = [];
-
-    // Check if exercise sets is a positive integer between 1 and 99
-    if (
-      !Number.isInteger(exerciseSets) ||
-      exerciseSets < 1 ||
-      exerciseSets > 99
-    ) {
-      invalidParams.push("exerciseSets");
-    }
-
-    // Check if exercise reps is a positive integer between 1 and 99
-    if (
-      !Number.isInteger(exerciseReps) ||
-      exerciseReps < 1 ||
-      exerciseReps > 99
-    ) {
-      invalidParams.push("exerciseReps");
-    }
-
-    // Check if exercise weight is a positive number between 0 and 9999
-    if (isNaN(exerciseWeight) || exerciseWeight <= 0 || exerciseWeight > 9999) {
-      invalidParams.push("exerciseWeight");
-    }
-
-    if (invalidParams.length > 0) throw invalidParams;
-  } catch (e) {
-    invalidParams = [...invalidParams, ...e];
-  }
-
-  if (invalidParams.length > 0) {
-    // Add error class to invalid params
-    invalidParams.forEach((param) => {
-      $(`#addExerciseForm${ith} input[name="${param}"]`).addClass(
-        "invalidInput"
-      );
     });
     return false;
   }
@@ -171,6 +47,11 @@ function validateExerciseForm(ith) {
 function toggleAddNote() {
   $("#noteModal").toggle();
 
+  // reset errors
+  $(".errorContainer").empty();
+  $("#noteForm input").removeClass("invalidInput");
+  $("#noteForm textarea").removeClass("invalidInput");
+
   // Reset the form
   $("#noteForm").attr("action", "/modules/notes");
 }
@@ -179,6 +60,11 @@ function toggleAddNote() {
 async function toggleEditNotes() {
   $("#noteModal").toggle();
   $("#noteForm").attr("action", `/modules/notes/${noteId}`);
+
+  // reset errors
+  $(".errorContainer").empty();
+  $("#noteForm input").removeClass("invalidInput");
+  $("#noteForm textarea").removeClass("invalidInput");
 
   // Get the calorie data
   let noteData;
@@ -207,7 +93,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     noteEntryButtons.each(function () {
       $(this).click(async function (event) {
-        let noteId = event.target.id?.split("?");
+        noteId = event.target.id?.split("?");
         if (!noteId) return;
         noteId = noteId[1];
 
@@ -228,6 +114,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if ($("#noteForm").length > 0) {
     $("#noteForm").submit((e) => {
       e.preventDefault();
+
       $(".errorContainer").empty();
 
       let valid = true;
@@ -244,7 +131,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       // Submit form
-      $("#calorieForm").off("submit").submit();
+      $("#noteForm").off("submit").submit();
     });
   }
 });

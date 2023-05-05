@@ -196,39 +196,45 @@ await calories.enterCalorie(userPat.uid, "nycSwag", moment().toISOString(), [
   { food_name: "watermelon", calories: 100, quantity: 2 },
 ]);
 
-await notes.enterNote(userJohn.uid, "johndoe", moment().format(), "", "\t");
 await notes.enterNote(
   userJohn.uid,
   "johndoe",
-  moment().format(),
+  moment().toISOString(),
+  "",
+  "\t"
+);
+await notes.enterNote(
+  userJohn.uid,
+  "johndoe",
+  moment().toISOString(),
   "log",
   "i feel pretty fit today ngl"
 );
 await notes.enterNote(
   userMandeep.uid,
   "mkaur",
-  moment().format(),
+  moment().toISOString(),
   "water",
   "\tdidn't drink enough of it today :("
 );
 await notes.enterNote(
   userMandeep.uid,
   "mkaur",
-  moment().format(),
+  moment().toISOString(),
   "food",
   "\tdidn't eat enough of it today :((("
 );
 await notes.enterNote(
   userPat.uid,
   "nycSwag",
-  moment().format(),
+  moment().toISOString(),
   "",
   "damn, the sky is mad beautiful today"
 );
 await notes.enterNote(
   userPat.uid,
   "nycSwag",
-  moment().format(),
+  moment().toISOString(),
   "",
   "who needs titles lol"
 );

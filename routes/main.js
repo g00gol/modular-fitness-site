@@ -149,7 +149,7 @@ router.use("/modules/workouts", middleware.home, workoutsRoutes);
 router.use("/modules/cardio", middleware.home, cardioRoutes);
 router.use("/modules/timers", middleware.home, timerRoutes);
 router.use("/modules/calories", middleware.home, calorieRoutes);
-router.use("modules/notes", middleware.home, noteRoutes);
+router.use("/modules/notes", middleware.home, noteRoutes);
 router.use("/modules/*", (req, res) => {
   return res.redirect("/error?status=404");
 });
