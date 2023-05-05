@@ -30,6 +30,9 @@ function toggleAddCalories() {
 
   // Reset the form
   $("#calorieForm").attr("action", "/modules/calories");
+  
+  // clear errors
+  $(".errorContainer").empty();
 
   // Remove all the existing food forms
   $(".addFoodForm").remove();
@@ -44,6 +47,10 @@ function toggleAddCalories() {
 // Toggle the edit modal
 async function toggleEditCalories() {
   $("#calorieModal").toggle();
+
+  // clear errors
+  $(".errorContainer").empty();
+
   $("#calorieForm").attr("action", `/modules/calories/${calorieId}`);
 
   // Get the calorie data

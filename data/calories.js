@@ -191,8 +191,10 @@ export const updateCalorie = async (id, foods) => {
   }
 
   const calorieEntry = {
+    userID: entry.userID,
     username: entry.username,
     dateTime: entry.dateTime,
+    date: entry.date,
     foods: foodObjects,
     totalCalories: totalCals,
   };

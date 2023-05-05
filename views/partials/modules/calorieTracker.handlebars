@@ -12,8 +12,8 @@
   </div>
   <div id="saved-calories">
     {{#each allCalories}}
-      <button id="selectCalorie?{{this._id}}" class="calorie-select-button w-full rounded-md border border-snow-1 p-2 text-left flex justify-between hover:bg-polar transition-colors">
-        <div>{{this.date}}</div> <div><span class="font-semibold">{{this.totalCalories}}</span> Cal</div>
+      <button id="selectCalorie?{{this._id}}" class="calorie-select-button [&>span]:pointer-events-none w-full rounded-md border border-snow-1 p-2 text-left flex justify-between hover:bg-polar transition-colors">
+        <span>{{this.date}}</span> <span><span class="font-semibold">{{this.totalCalories}}</span> Cal</span>
       </button>
     {{/each}}
   </div>

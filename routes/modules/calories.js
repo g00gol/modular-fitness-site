@@ -1,7 +1,7 @@
 import { Router } from "express";
 import xss from "xss";
 
-import * as calories from "../../data/calories.js";
+import * as calorieDataFuncs from "../../data/calories.js";
 import * as validation from "../../public/js/workoutTrackerValidation.js";
 import * as helpers from "../../utils/helpers.js";
 import moment from "moment";
@@ -19,7 +19,7 @@ const checkFoods = (foods) => {
     if (typeof food !== "object") {
       throw [400, "Error: food entry must be an Object"];
     }
-    helpers.invalidParams(food.food_name, food.calories, food.serving);
+    helpers.invalidParams(food.food_name, food.calories, food.quantity);
     helpers.invalidStrings(food.food_name);
     food.food_name = food.food_name.trim();
     if (food.food_name.length <= 0 || food.food_name.length > 1000) {
@@ -49,7 +49,7 @@ router.route("/").post(async (req, res) => {
     }
   }
 
-  let { foodName, caloriesPerServing, servings } = req.body;
+  let { foodName, calories, servings } = req.body;
   // XSS to sanitize the inputs
   function sanitizeInput(input) {
     if (!Array.isArray(input)) {
@@ -59,17 +59,17 @@ router.route("/").post(async (req, res) => {
   }
 
   foodName = sanitizeInput(foodName);
-  caloriesPerServing = sanitizeInput(caloriesPerServing);
+  calories = sanitizeInput(calories);
   servings = sanitizeInput(servings);
 
   // Check if all the fields have the same number of elements
   // Convert all the fields to arrays if they are not already
-  let foodFields = [foodName, caloriesPerServing, servings];
+  let foodFields = [foodName, calories, servings];
   const arrayFields = foodFields.map((field) =>
     Array.isArray(field) ? field : [field]
   );
 
-  [foodName, caloriesPerServing, servings] = arrayFields;
+  [foodName, calories, servings] = arrayFields;
 
   // Check if all fields have the same length
   const sameLength = arrayFields.every(
@@ -83,9 +83,9 @@ router.route("/").post(async (req, res) => {
   let foods = [];
   for (let i = 0; i < foodName.length; i++) {
     foods.push({
-      foodName: foodName[i],
-      calories: caloriesPerServing[i],
-      servings: servings[i],
+      food_name: foodName[i],
+      calories: Number(calories[i]),
+      quantity: Number(servings[i]),
     });
   }
 
@@ -98,7 +98,12 @@ router.route("/").post(async (req, res) => {
 
   // Create the calorie
   try {
-    await calories.enterCalorie(uid, username, moment().toISOString(), foods);
+    await calorieDataFuncs.enterCalorie(
+      uid,
+      username,
+      moment().toISOString(),
+      foods
+    );
   } catch (e) {
     return res.redirect(`/error?status=${e[0]}`);
   }
@@ -133,7 +138,7 @@ router.route("/:calorieID").get(async (req, res) => {
   // Check if the calorie exists
   let calorieEntry;
   try {
-    calorieEntry = await calories.getCalorieByID(calorieID);
+    calorieEntry = await calorieDataFuncs.getCalorieByID(calorieID);
   } catch (e) {
     return res.json({ error: e[1] });
   }
@@ -183,17 +188,17 @@ router.route("/:calorieId").post(async (req, res) => {
   // Check if the calorie exists
   let calorieEntry;
   try {
-    calorieEntry = await calories.getCalorieByID(calorieId);
+    calorieEntry = await calorieDataFuncs.getCalorieByID(calorieId);
   } catch (e) {
     return res.redirect("/error?status=500");
   }
 
   // IMPORTANT: make sure the current user is the owner of the calorie
-  if (calorieEntry.userId !== uid) {
+  if (calorieEntry.userID !== uid) {
     return res.redirect("/error?status=403");
   }
 
-  let { foodName, caloriesPerServing, servings } = req.body;
+  let { foodName, calories, servings } = req.body;
   // XSS to sanitize the inputs
   function sanitizeInput(input) {
     if (!Array.isArray(input)) {
@@ -203,17 +208,17 @@ router.route("/:calorieId").post(async (req, res) => {
   }
 
   foodName = sanitizeInput(foodName);
-  caloriesPerServing = sanitizeInput(caloriesPerServing);
+  calories = sanitizeInput(calories);
   servings = sanitizeInput(servings);
 
   // Check if all the fields have the same number of elements
   // Convert all the fields to arrays if they are not already
-  let foodFields = [foodName, caloriesPerServing, servings];
+  let foodFields = [foodName, calories, servings];
   const arrayFields = foodFields.map((field) =>
     Array.isArray(field) ? field : [field]
   );
 
-  [foodName, caloriesPerServing, servings] = arrayFields;
+  [foodName, calories, servings] = arrayFields;
 
   // Check if all fields have the same length
   const sameLength = arrayFields.every(
@@ -227,9 +232,9 @@ router.route("/:calorieId").post(async (req, res) => {
   let foods = [];
   for (let i = 0; i < foodName.length; i++) {
     foods.push({
-      foodName: foodName[i],
-      calories: caloriesPerServing[i],
-      servings: servings[i],
+      food_name: foodName[i],
+      calories: Number(calories[i]),
+      quantity: Number(servings[i]),
     });
   }
 
@@ -242,7 +247,7 @@ router.route("/:calorieId").post(async (req, res) => {
 
   // Update the calorie
   try {
-    await calories.updateCalorie(calorieId, foods);
+    await calorieDataFuncs.updateCalorie(calorieId, foods);
   } catch (e) {
     return res.redirect(`/error?status=${e[0]}`);
   }
