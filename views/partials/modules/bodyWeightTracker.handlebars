@@ -3,21 +3,34 @@
 {{#> module moduleName="Body Weight Tracker"}}
 
    {{#> panels/panel-1}}
-   <h2>Body Weight Tracker</h2>
+   <h2>Your last weight Entry (lbs)</h2>
+    <p id = "lastWeight"></p>
+
     <form id = "weightTrackerForm" action = '/modules/weight' method="POST">
       <label>
-        Weight
+        Enter new Weight reading (lbs)
         <input name="weightInput" type="number" id = "weightInput">
       </label>
       <button type="submit">Submit</button>
     </form>
+    
+    
     <p id = "weightError"></p>
   
   {{/panels/panel-1}}
 
   {{#> panels/panel-2}}
-    <h2>Your last weight Entry</h2>
-    <p id = "lastWeight"></p>
+   <h2>Your goal weight (lbs)</h2>
+    <p id = "goalWeight"></p>
+    <form id = "goalWeightForm" action = '/modules/Weight/goal' method="POST">
+      <label>
+        set a goal weight (lbs)
+        <input name="goalWeightInput" type="number" id = "goalWeightInput">
+      </label>
+      <button type="submit">Submit</button>
+    </form>
+  
+    <p id = "goalError"></p>
 
   {{/panels/panel-2}}
 
