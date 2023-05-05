@@ -11,7 +11,9 @@
       <button id="addWorkoutsBtn" class="text-xl hover:text-snow-1 transition-colors"><i class="fa-solid fa-plus"></i></button>
     </div>
     {{#each allWorkouts}}
-      <button id="selectWorkout?{{this._id}}" class="w-full rounded-md border border-snow-1 p-2 text-left hover:bg-polar transition-colors">{{this.workoutName}}</button>
+      <button id="selectWorkout?{{this._id}}" class="[&>span]:pointer-events-none w-full flex justify-between rounded-md border border-snow-1 text-white p-2 text-left hover:bg-polar transition-colors">
+        <span>{{this.workoutName}}</span><span>{{this.workoutDay}}</span>
+      </button>
     {{/each}}
   {{/panels/panel-1}}
 
@@ -70,7 +72,13 @@
         {{/each}}
       </div>
 
-      <div class="workoutsFormBtns !mt-[5vh] space-x-4">
+      <label id="delete-workout-option" hidden>
+        Delete
+        <input name="deleteWorkout" type="checkbox">
+        {{!-- add a default value --}}
+      </label>
+
+      <div id="workoutsFormBtns" class="workoutsFormBtns !mt-[5vh] space-x-4">
         <button
           type="submit"
           class="w-fit px-6 py-2 text-snow-3 hover:text-snow-1 underline bg-frost rounded-std"

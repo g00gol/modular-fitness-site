@@ -43,7 +43,7 @@ function toggleAddWorkouts() {
   $("#workoutsForm").attr("action", "/modules/workouts");
   $("#workoutsForm input[name='workoutName']").val("");
   $("#workoutsForm select[name='workoutDay']").val("Sunday");
-  
+
   // Remove all the existing exercise forms
   $(".addExerciseForm").remove();
 }
@@ -94,13 +94,8 @@ async function toggleEditWorkouts() {
     );
   }
 
-  // Add the event listeners to the remove exercise buttons
-  $(".addExerciseForm button").click(function () {
-    let ith = $(this).val();
-    $(`#addExerciseForm${ith}`).remove();
-  });
-
-  // Add the event listener to the add exercise button
+  // Toggle the delete exercise button
+  $("#delete-workout-option").toggle();
 }
 
 // Validate the workout form

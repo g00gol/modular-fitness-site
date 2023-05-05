@@ -65,7 +65,7 @@
 
   /* Panel */
   .panel {
-    @apply rounded-std h-full w-fit p-8 flex flex-col overflow-y-auto;
+    @apply rounded-std h-[35vh] w-fit p-8 flex flex-col overflow-y-auto;
   }
   .panel h2 {
     @apply font-bold;
@@ -125,6 +125,10 @@ a {
 }
 a:hover {
   color: var(--polar);
+}
+
+button {
+  font-size: 14pt;
 }
 
 .invalidInput {
