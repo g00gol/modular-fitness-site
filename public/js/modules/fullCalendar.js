@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
       center: "title",
       right: "dayGridMonth,timeGridWeek,timeGridDay",
     },
-    events: "/modules/calendar/events", // URL to fetch events from
+    events: "/modules/calendar/events",
     editable: true,
     selectable: true,
   });
