@@ -38,6 +38,14 @@ function addExerciseFormHTML(ith) {
 // Toggle the edit modal
 function toggleAddWorkouts() {
   $("#workoutsModal").toggle();
+
+  // Reset the form
+  $("#workoutsForm").attr("action", "/modules/workouts");
+  $("#workoutsForm input[name='workoutName']").val("");
+  $("#workoutsForm select[name='workoutDay']").val("Sunday");
+  
+  // Remove all the existing exercise forms
+  $(".addExerciseForm").remove();
 }
 
 // Toggle the edit modal
