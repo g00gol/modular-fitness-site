@@ -84,6 +84,11 @@
     @apply fixed top-0 left-nav z-10;
   }
 
+  /* Exercise */
+  .exercise h3 {
+    @apply underline;
+  }
+
   input {
     @apply bg-transparent border border-snow-1 p-2 rounded-md;
   }
