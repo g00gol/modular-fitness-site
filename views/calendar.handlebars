@@ -1,20 +1,12 @@
 <section>
   <h1>
-    Calendar
+    Calendars
   </h1>
-  {{#if calendars}}
-    <ul>
-      {{#each calendars}}
-        <li>
-          <a href="/calendar/{{id}}">
-            {{name}}
-          </a>
-        </li>
-      {{/each}}
-    </ul>
-  {{else}}
-    <p>
-      No calendars found.
-    </p>
-  {{/if}}
+  <ul>
+    {{#each calendars}}
+      <li>
+        {{summary}}
+      </li>
+    {{/each}}
+  </ul>
 </section>
