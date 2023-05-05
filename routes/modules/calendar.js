@@ -45,7 +45,6 @@ router.get("/", async (req, res) => {
   let calendar = google.calendar({ version: "v3", auth: sessionOAuth2Client });
   let { data } = await calendar.calendarList.list();
   let calendars = data.items;
-  console.log(calendars);
 
   res.render("calendar", { calendars });
 });

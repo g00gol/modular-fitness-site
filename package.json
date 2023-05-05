@@ -23,6 +23,10 @@
   },
   "homepage": "https://github.com/g00gol/modular-fitness-site#readme",
   "dependencies": {
+    "@fullcalendar/core": "^6.1.6",
+    "@fullcalendar/daygrid": "^6.1.6",
+    "@fullcalendar/interaction": "^6.1.6",
+    "@fullcalendar/timegrid": "^6.1.6",
     "@google-cloud/local-auth": "^2.1.0",
     "autoprefixer": "^10.4.14",
     "bcrypt": "^5.1.0",
