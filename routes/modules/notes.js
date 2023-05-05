@@ -149,15 +149,6 @@ router.route("/:noteID").post(async (req, res) => {
     return res.redirect("/error?status=403");
   }
 
-  let { foodName, caloriesPerServing, servings } = req.body;
-  // XSS to sanitize the inputs
-  function sanitizeInput(input) {
-    if (!Array.isArray(input)) {
-      return xss(input);
-    }
-    return input.map((item) => xss(item));
-  }
-
   let { title, text } = req.body;
   title = xss(title);
   text = xss(text);

@@ -7,15 +7,17 @@ function addFoodFormHTML(ith) {
   <button id="removeFoodBtn${ith}" value="${ith}"><i class="text-xl fa-solid fa-circle-minus"></i></button>
 
   <label>
+    Item Name
     <input name="foodName" type="text" maxlength="1000" />
-    Food or Beverage
   </label>
 
   <div class="flex">
     <label>
-      <input name="caloriesPerServing" type="number" step="any" min="0" max="30000" />
+      Calories per Serving
+      <input name="calories" type="number" step="any" min="0" max="30000" />
     </label>
     <label>
+      No. of Servings
       <input name="servings" type="number" step="any" min="1" max="1000" />
     </label>
   </div>
@@ -31,10 +33,17 @@ function toggleAddCalories() {
 
   // Remove all the existing food forms
   $(".addFoodForm").remove();
+
+  // Add the event listeners to the remove food buttons
+  $(".addFoodForm button").click(function () {
+    let ith = $(this).val();
+    $(`#addFoodForm${ith}`).remove();
+  });
 }
 
 // Toggle the edit modal
 async function toggleEditCalories() {
+  console.log(calorieId);
   $("#caloriesModal").toggle();
   $("#caloriesForm").attr("action", `/modules/calories/${calorieId}`);
 
@@ -62,7 +71,7 @@ async function toggleEditCalories() {
     $(`#addFoodForm${i} input[name='foodName']`).val(
       calorieData.foods[i].food_name
     );
-    $(`#addFoodForm${i} input[name='caloriesPerServing']`).val(
+    $(`#addFoodForm${i} input[name='calories']`).val(
       calorieData.foods[i].calories
     );
     $(`#addFoodForm${i} input[name='servings']`).val(
@@ -84,9 +93,7 @@ async function toggleEditCalories() {
  */
 function validateFoodForm(ith) {
   let foodName = $(`#addFoodForm${ith} input[name="foodName"]`).val();
-  let caloriesPerServing = $(
-    `#addFoodForm${ith} input[name="caloriesPerServing"]`
-  ).val();
+  let calories = $(`#addFoodForm${ith} input[name="calories"]`).val();
   let servings = $(`#addFoodForm${ith} select[name="servings"]`).val();
 
   // Reset invalidInput class
@@ -97,11 +104,12 @@ function validateFoodForm(ith) {
   try {
     validation.paramExists({
       foodName,
-      caloriesPerServing,
+      calories,
       servings,
     });
   } catch (e) {
     e.forEach((param) => {
+      console.log(param);
       $(`#addFoodForm${ith} input[name="${param}"]`).addClass("invalidInput");
     });
     return false;
@@ -123,27 +131,23 @@ function validateFoodForm(ith) {
   // Validate foodSets, foodReps, and foodWeight
   try {
     validation.paramIsNum({
-      caloriesPerServing,
+      calories,
       servings,
     });
 
     /**
      * Further validation for the specific fields
      */
-    caloriesPerServing = Number(caloriesPerServing);
+    calories = Number(calories);
     servings = Number(servings);
 
     // Check if calories per serving is an integer between 0 and 30000
-    if (
-      !Number.isInteger(caloriesPerServing) ||
-      caloriesPerServing < 0 ||
-      foodSets > 30000
-    ) {
-      invalidParams.push("caloriesPerServing");
+    if (!Number.isInteger(calories) || calories < 0 || calories > 30000) {
+      invalidParams.push("calories");
     }
 
     // Check if servings is an integer between 1 and 1000
-    if (!Number.isInteger(servings) || servings < 1 || servings > 99) {
+    if (!Number.isInteger(servings) || servings < 1 || servings > 1000) {
       invalidParams.push("servings");
     }
   } catch (e) {
@@ -238,7 +242,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Get the number of food forms with id addFoodForm${ith}
       let ith = $("div[id^='addFoodForm']").length;
       // Add the new food form
-      $("#addFoodBtn").after(addFoodFormHTML(ith++));
+      $("#addFoodBtn").before(addFoodFormHTML(ith++));
 
       $("button[id^='removeFoodBtn']").click((e) => {
         // Get this button's ith

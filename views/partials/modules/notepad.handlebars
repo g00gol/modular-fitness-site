@@ -2,9 +2,9 @@
   src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"
 ></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
-<script type="module" src="../public/js/modules/notepad.js"></script>
+<script type="module" src="../../../public/js/modules/notepad.js"></script>
 
-{{#> module moduleName="NotePad"}}
+{{#> module moduleName="Notepad"}}
   {{#> panels/panel-1}}
   <div class="flex justify-between">
       <h2 class="w-fit">Notes</h2>
@@ -26,12 +26,12 @@
     <form id="noteForm" class="flex flex-col space-y-4 text-lg" action="/modules/notes" method="POST">
       <label>
         Title
-        <input name="noteTitle" type="text">
+        <input name="noteTitle" type="text" maxlength="300">
       </label>
 
       <label>
         Text
-        <textarea name="noteText"></textarea>
+        <textarea name="noteText" maxlength="25000"></textarea>
       </label>
 
       <div class="errorContainer">

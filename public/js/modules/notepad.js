@@ -211,18 +211,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!noteId) return;
         noteId = noteId[1];
 
-        await toggleEditCalories();
+        await toggleEditNotes();
       });
     });
   }
 
   // Add event listener to add calorie entry button
   if ($("#addNoteBtn").length > 0) {
-    $("#addNoteBtn").click(toggleAddCalories);
+    $("#addNoteBtn").click(toggleAddNote);
   }
 
   if ($("#noteFormCancelBtn").length > 0) {
-    $("#noteFormCancelBtn").click(toggleAddCalories);
+    $("#noteFormCancelBtn").click(toggleAddNote);
   }
 
   if ($("#noteForm").length > 0) {

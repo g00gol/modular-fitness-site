@@ -2,12 +2,12 @@
   src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"
 ></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
-<script type="module" src="../public/js/modules/calorieTracker.js"></script>
+<script type="module" src="../../../public/js/modules/calorieTracker.js"></script>
 
 {{#> module moduleName="Calorie Tracker"}}
   {{#> panels/panel-1}}
   <div class="flex justify-between">
-      <h2 class="w-fit">Past Meals</h2>
+      <h2 class="w-fit">Past Entries</h2>
       <button id="addCalorieBtn" class="text-xl hover:text-snow-1 transition-colors"><i class="fa-solid fa-plus"></i></button>
   </div>
   <div id="saved-calories">
@@ -18,10 +18,11 @@
     {{/each}}
   </div>
   {{/panels/panel-1}}
+
   {{#> panels/panel-2}}
     <div class="flex justify-between">
       <h2 id="caloriePanel2Title" class="w-fit">
-        Food and Beverages
+        Foods and Beverages
       </h2>
       <button
         id="editCalorieBtn"
@@ -31,7 +32,7 @@
       </button>
     </div>
     <div id="foodsContainer">
-      <p>Select a meal to view.</p>
+      <p>Select an entry to view.</p>
     </div>
   {{/panels/panel-2}}
 {{/module}}
