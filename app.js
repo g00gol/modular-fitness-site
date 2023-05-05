@@ -116,6 +116,21 @@ hbs.handlebars.registerHelper("ifContains", function (arr, item, options) {
   return options.inverse(this);
 });
 
+hbs.handlebars.registerHelper("unlessContains", function (arr, item, options) {
+  if (!arr || !item || !options) return;
+  if (!Array.isArray(arr)) return;
+  let tags = []
+
+  for(let i =0; i < arr.length; i++){
+    tags.push(arr[i].tag);
+  }
+
+  if (!tags.includes(item)) {
+    return options.fn(this);
+  }
+  return options.this;
+});
+
 app.use(middleware.logging);
 configRoutes(app);
 
