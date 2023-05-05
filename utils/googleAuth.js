@@ -6,6 +6,7 @@ const SCOPES = [
 ];
 
 const clientID = process.env.GOOGLE_CLIENT_ID;
+console.log(process.env.GOOGLE_CLIENT_ID);
 const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
 const redirect_uris = ["http://localhost:3000/modules"];
 

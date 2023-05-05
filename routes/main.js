@@ -9,6 +9,7 @@ import * as dataModules from "../data/index.js"
 import * as users from "../data/users.js";
 //import * as workouts from "../data/workouts.js";
 import workoutsRoutes from "./modules/workouts.js";
+import calendarRoutes from "./modules/calendar.js";
 import cardioRoutes from "./modules/cardio.js";
 import timerRoutes from "./modules/timers.js";
 
@@ -61,10 +62,7 @@ router.route("/modules").get(middleware.home, async (req, res) => {
     }
   }
 
-
-
   try {
-    
     return res.render("modules", {
       title: "Home",
       user: req.session.user,
@@ -133,6 +131,7 @@ router.route("/modules").post(middleware.home, async (req, res) => {
 });
 
 router.use("/modules/workouts", middleware.home, workoutsRoutes);
+router.use("/modules/calendar", middleware.home, calendarRoutes)
 router.use("/modules/cardio", middleware.home, cardioRoutes);
 router.use("/modules/timers", middleware.home, timerRoutes);
 router.use("/modules/*", (req, res) => {

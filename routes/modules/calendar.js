@@ -3,7 +3,7 @@ import {
   getAuthUrl,
   getAuthByCode,
   getAuthByRefreshToken,
-} from "../../utils/googleAuth";
+} from "../../utils/googleAuth.js";
 import { google } from "googleapis";
 
 const router = Router();
@@ -22,14 +22,16 @@ router.get("/auth/callback", async (req, res) => {
 
 router.get("/", async (req, res) => {
   if (!req.session.oAuth2Client) {
-    res.redirect("/modules/auth");
+    res.redirect("/modules/calendar/auth");
     return;
   }
   const oAuth2Client = req.session.oAuth2Client;
   const calendar = google.calendar({ version: "v3", auth: oAuth2Client });
   const { data } = await calendar.calendarList.list();
   const calendars = data.items;
-  console.log(calendars);
+  console.log(calendars)
 
-  res.render("modules/calendar", { calendars });
+  res.render("calendar", { calendars });
 });
+
+export default router;
