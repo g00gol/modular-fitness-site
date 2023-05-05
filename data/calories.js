@@ -29,6 +29,7 @@ export const enterCalorie = async (userID, username, dateTime, foods) => {
     throw [400, "Error: no foods provided"];
   }
 
+  let totalCals = 0;
   let foodObjects = [];
   for (const food of foods) {
     if (typeof food !== "object") {
@@ -47,6 +48,7 @@ export const enterCalorie = async (userID, username, dateTime, foods) => {
     if (food.quantity <= 0 || food.quantity > 1000) {
       throw [400, "Error: invalid serving count"];
     }
+    totalCals = totalCals + food.calories * food.quantity;
     const newFoodObject = {
       _id: new ObjectId(),
       food_name: food.food_name, // not trimming the food name since it should be from the API
@@ -60,7 +62,9 @@ export const enterCalorie = async (userID, username, dateTime, foods) => {
     userID: userID,
     username: username.trim(),
     dateTime: dateTime,
+    date: moment(dateTime).format("MM/DD/YYYY h:mm a"),
     foods: foodObjects,
+    totalCalories: totalCals,
   };
 
   let calorieCollection = await calories();
@@ -157,6 +161,7 @@ export const updateCalorie = async (id, foods) => {
     throw [400, "Error: no foods provided"];
   }
 
+  let totalCals = 0;
   let foodObjects = [];
   for (const food of foods) {
     if (typeof food !== "object") {
@@ -175,6 +180,7 @@ export const updateCalorie = async (id, foods) => {
     if (food.quantity <= 0 || food.quantity > 1000) {
       throw [400, "Error: invalid serving count"];
     }
+    totalCals = totalCals + food.calories * food.quantity;
     const newFoodObject = {
       _id: new ObjectId(),
       food_name: food.food_name, // not trimming the food name since it should be from the API
@@ -188,6 +194,7 @@ export const updateCalorie = async (id, foods) => {
     username: entry.username,
     dateTime: entry.dateTime,
     foods: foodObjects,
+    totalCalories: totalCals,
   };
 
   let calorieCollection = await calories();
