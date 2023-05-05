@@ -8,6 +8,9 @@ const create = async (username, title, type, duration) => {
   invalidStrings(title, type);
   type = type.trim();
   title = title.trim();
+  if(title.length > 200){
+    throw "timer title length too long";
+  }
   if (!(type == "timer" || type == "stopwatch")) {
     throw "invalid type";
   }

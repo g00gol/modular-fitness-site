@@ -12,25 +12,30 @@ router.route("/").post(async (req, res) => {
 
     if(!cardioType || !distance || !duration || !date){return res.redirect("/modules?invalid=true");}
 
-
-    weight = xss(weight);
-    calories = xss(calories);
-    weight = parseInt(weight)
-    calories = parseInt(calories)
+    try{
+        weight = xss(weight);
+        calories = xss(calories);
+        weight = parseInt(weight)
+        calories = parseInt(calories)
+    }catch(e){
+        return res.redirect("/modules?invalid=true");
+    }
 
     if(!calories){calories = -1}
     if(!weight){weight = -1}
     if(weight == -1 && calories == -1){calories = 0}
     
 
-    cardioType = xss(cardioType);
-    distance = xss(distance);
-    duration = xss(duration);
-    date = xss(date);
-    
-
-    distance = parseInt(distance)
-    duration = parseInt(duration)
+    try{
+        cardioType = xss(cardioType);
+        distance = xss(distance);
+        duration = xss(duration);
+        date = xss(date);
+        distance = parseInt(distance)
+        duration = parseInt(duration)
+    }catch(e){
+        return res.redirect("/modules?invalid=true");
+    }
     
 
     try{

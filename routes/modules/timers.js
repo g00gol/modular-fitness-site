@@ -11,16 +11,20 @@ router.route("/").post(async (req, res) => {
 
     if(!title || !duration_hr || !duration_min || !duration_sec){return res.redirect("/modules?invalid=true");}
 
+    try{
+        title = xss(title);
+        if(title.length > 200){throw "title length too long"}
+        duration_hr = xss(duration_hr);
+        duration_min = xss(duration_min);
+        duration_sec = xss(duration_sec);
 
-    title = xss(title);
-    duration_hr = xss(duration_hr);
-    duration_min = xss(duration_min);
-    duration_sec = xss(duration_sec);
 
-
-    duration_hr = parseInt(duration_hr)
-    duration_min = parseInt(duration_min)
-    duration_sec = parseInt(duration_sec)
+        duration_hr = parseInt(duration_hr)
+        duration_min = parseInt(duration_min)
+        duration_sec = parseInt(duration_sec)
+    }catch(e){
+        return res.redirect("/modules?invalid=true");
+    }
 
     let duration = duration_hr*3600 + duration_min*60 + duration_sec;
 
@@ -44,6 +48,8 @@ router.route("/:timerId").post(async (req, res) => {
 
     try{
         title = xss(title);
+        if(title.length > 200){throw "title length too long"}
+
         duration_hr = xss(duration_hr);
         duration_min = xss(duration_min);
         duration_sec = xss(duration_sec);
