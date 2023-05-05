@@ -1,6 +1,8 @@
+<script src="../public/js/timer-select.js"></script>
+
 {{!-- Timers Module --}}
     {{#> module moduleName="Timer" data=allTimers}}
-      {{#> panels/timers-1}}
+      {{#> panels/panel-1}}
       <div class="flex justify-between">
         <h2>All Timers</h2>
         <button id="editTimersBtn" class="text-xl hover:text-snow-1 transition-colors"><i class="fa-solid fa-plus"></i></button>
@@ -12,9 +14,9 @@
           </button>
         {{/each}}
       </div>
-      {{/panels/timers-1}}
+      {{/panels/panel-1}}
 
-      {{#> panels/timers-2}}
+      {{#> panels/panel-2}}
       <select id="timer-stopwatch-select">
           <option name="timer">Timer</option>
           <option name="stopwatch">Stopwatch</option>
@@ -39,7 +41,7 @@
         
         <p id="play-pause-p" hidden></p>
       </div>
-      {{/panels/timers-2}}
+      {{/panels/panel-2}}
     {{/module}}
   {{!----}}
 
