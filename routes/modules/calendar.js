@@ -46,7 +46,38 @@ router.get("/", async (req, res) => {
   let { data } = await calendar.calendarList.list();
   let calendars = data.items;
 
-  res.render("calendar", { calendars });
+  res.render("calendar", { calendar: calendars[0] });
+});
+
+router.get("/events", async (req, res) => {
+  let { tokens } = req.session;
+  if (!tokens) {
+    res.redirect("/modules/calendar/auth");
+    return;
+  }
+
+  // Create a new oAuth2Client instance with the session tokens
+  const sessionOAuth2Client = new google.auth.OAuth2(
+    clientID,
+    clientSecret,
+    redirect_uris[0]
+  );
+  sessionOAuth2Client.setCredentials(tokens);
+
+  let calendar = google.calendar({ version: "v3", auth: sessionOAuth2Client });
+  let { data } = await calendar.events.list({
+    calendarId: req.query.calendarId,
+  });
+
+  let events = data.items.map((event) => {
+    return {
+      title: event.summary,
+      start: event.start.dateTime || event.start.date,
+      end: event.end.dateTime || event.end.date,
+    };
+  });
+
+  return res.json(events);
 });
 
 export default router;
