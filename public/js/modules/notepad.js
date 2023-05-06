@@ -83,7 +83,7 @@ async function toggleEditNotes() {
 
   // Fill out the form with the existing data
   $("#noteForm input[name='title']").val(noteData.title);
-  $("#noteForm textarea[name='text']").val(noteData.text);
+  $("#noteForm textarea[name='text']").focus().val(noteData.text);
 }
 
 // Wait for document to load
