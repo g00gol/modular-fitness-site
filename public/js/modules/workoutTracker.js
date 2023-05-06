@@ -38,6 +38,14 @@ function addExerciseFormHTML(ith) {
 // Toggle the edit modal
 function toggleAddWorkouts() {
   $("#workoutsModal").toggle();
+
+  // Reset the form
+  $("#workoutsForm").attr("action", "/modules/workouts");
+  $("#workoutsForm input[name='workoutName']").val("");
+  $("#workoutsForm select[name='workoutDay']").val("Sunday");
+  
+  // Remove all the existing exercise forms
+  $(".addExerciseForm").remove();
 }
 
 // Toggle the edit modal
@@ -303,8 +311,9 @@ document.addEventListener("DOMContentLoaded", async () => {
               (exercise) => `
               <div class="exercise">
                 <h3>${exercise.exerciseName}</h3>
-                <p>Reps: ${exercise.exerciseReps}</p>
                 <p>Sets: ${exercise.exerciseSets}</p>
+                <p>Reps: ${exercise.exerciseReps}</p>
+                <p>Weight: ${exercise.exerciseWeight} ${exercise.exerciseWeightUnits}</p>
               </div>
               `
             )

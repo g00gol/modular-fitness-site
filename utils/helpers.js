@@ -1,6 +1,7 @@
 // You can add and export any helper functions you want here - if you aren't using any, then you can just leave this file as is
 // You can add and export any helper functions you want here. If you aren't using any, then you can just leave this file as is.
 import { ObjectId } from "mongodb";
+import allModules from "../public/constants/allModules.js"
 
 /**
  * Takes in any amount of parameters and checks if they are defined
@@ -130,4 +131,12 @@ export const formatDuration = (s) => {
   if(s.length == 1){s = "0"+s}
 
   return `${hours}:${minutes}:${s}`
+}
+
+export const moduleGetName = (tag) => {
+  for(let i = 0; i < allModules.length; i++){
+    if(allModules[i].tag == tag){
+      return allModules[i].name;
+    }
+  }
 }

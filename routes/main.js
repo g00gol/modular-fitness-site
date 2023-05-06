@@ -15,6 +15,7 @@ import weightRoutes from "./modules/weight.js";
 import sugarRoutes from "./modules/sugar.js";
 
 import allModules from "../public/constants/allModules.js";
+import { moduleGetName } from "../utils/helpers.js";
 
 const router = Router();
 
@@ -65,6 +66,12 @@ router.route("/modules").get(middleware.home, async (req, res) => {
     }
   }
 
+  let enabledModules = [];
+  let enabledTags = req.session.user.enabledModules;
+  for(let i = 0; i < enabledTags.length; i++){
+    enabledModules.push({name: moduleGetName(enabledTags[i]), tag: enabledTags[i]})
+  }
+
   try {
     return res.render("modules", {
       title: "Home",
@@ -72,7 +79,7 @@ router.route("/modules").get(middleware.home, async (req, res) => {
       allModules,
       allTimers,
       allCardio,
-      enabledModules: req.session.user.enabledModules,
+      enabledModules: enabledModules,
       invalid: req.query?.invalid,
       allWorkouts,
     });
@@ -82,40 +89,15 @@ router.route("/modules").get(middleware.home, async (req, res) => {
 });
 
 router.route("/modules").post(middleware.home, async (req, res) => {
-  let {
-    bloodSugarTracker,
-    bodyWeightTracker,
-    calorieTracker,
-    cardioTracker,
-    eventsCalendar,
-    notepad,
-    timer,
-    workoutTracker,
-  } = req.body;
-  let newModules = [];
-
-  // Update the modules with the newly checked modules
-  function updateModule(moduleName) {
-    moduleName = eval(moduleName); // wow i cant believe i remembered this at 2am lmfao
-
-    let temp = [];
-    if (moduleName) {
-      // Make sure the module value matches one of the allModules
-      if (!allModules.find((module) => module.tag === moduleName)) {
-        throw 400;
-      }
-
-      temp.push(moduleName);
-    }
-
-    return temp;
+  let newModules = req.body.modules;
+  let validTags = [];
+  for(let i = 0; i < allModules.length; i++){
+    validTags.push(allModules[i].tag);
   }
-
-  for (let { tag } of allModules) {
-    try {
-      newModules.push(...updateModule(tag));
-    } catch (e) {
-      return res.redirect(`/error?status=${e}`);
+  
+  for(let i = 0; i < newModules.length; i++){
+    if(!validTags.includes(newModules[i])){
+      return res.redirect("/error?status=500")
     }
   }
 
@@ -130,6 +112,7 @@ router.route("/modules").post(middleware.home, async (req, res) => {
 
   req.session.user.enabledModules = newModules;
 
+  //return window.location.href = "/modules"
   return res.redirect("/modules");
 });
 
