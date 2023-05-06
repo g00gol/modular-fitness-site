@@ -72,8 +72,8 @@ await enterWeight("mkaur", 1);
 await enterWeight("mkaur", 2);
 await enterWeight("mkaur", 3);
 
-await enterWeight("johndoe", 1000);
-await enterWeight("johndoe", 1000);
+await enterWeight("johndoe", 100);
+await enterWeight("johndoe", 102);
 let ans22 = await getAllWeightsObj("mkaur");
 
 let ans = await updateWeightEntry(ans22[0]._id.toString(), 700);
@@ -86,12 +86,12 @@ await enterWeight("johndoe", 10);
 await enterWeight("johndoe", 100);
 await enterWeight("nycSwag", 101);
 
-await enterSugar("johndoe", 11234567, false);
+await enterSugar("johndoe", 11, false);
 
 await enterSugar("mkaur", 7, false);
-await enterSugar("mkaur", 11234567, false);
-await enterSugar("mkaur", 11234567, false);
-await enterSugar("mkaur", 11234567, true);
+await enterSugar("mkaur", 112, false);
+await enterSugar("mkaur", 113, false);
+await enterSugar("mkaur", 114, true);
 let ans2 = await getAllSugarObj("mkaur");
 await updateSugartEntry(ans2[0]._id.toString(), 700, true);
 

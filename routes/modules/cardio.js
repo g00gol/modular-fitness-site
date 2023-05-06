@@ -12,25 +12,30 @@ router.route("/").post(async (req, res) => {
 
     if(!cardioType || !distance || !duration || !date){return res.redirect("/modules?invalid=true");}
 
-
-    weight = xss(weight);
-    calories = xss(calories);
-    weight = parseInt(weight)
-    calories = parseInt(calories)
+    try{
+        weight = xss(weight);
+        calories = xss(calories);
+        weight = parseInt(weight)
+        calories = parseInt(calories)
+    }catch(e){
+        return res.redirect("/modules?invalid=true");
+    }
 
     if(!calories){calories = -1}
     if(!weight){weight = -1}
     if(weight == -1 && calories == -1){calories = 0}
     
 
-    cardioType = xss(cardioType);
-    distance = xss(distance);
-    duration = xss(duration);
-    date = xss(date);
-    
-
-    distance = parseInt(distance)
-    duration = parseInt(duration)
+    try{
+        cardioType = xss(cardioType);
+        distance = xss(distance);
+        duration = xss(duration);
+        date = xss(date);
+        distance = parseInt(distance)
+        duration = parseInt(duration)
+    }catch(e){
+        return res.redirect("/modules?invalid=true");
+    }
     
 
     try{
@@ -50,27 +55,39 @@ router.route("/:cardioId").post(async (req, res) => {
 
     let { cardioId } = req.params;
 
-    weight = xss(weight);
-    calories = xss(calories);
-    weight = parseInt(weight)
-    calories = parseInt(calories)
+    
+    try{
+        weight = xss(weight);
+        calories = xss(calories);
+        weight = parseInt(weight)
+        calories = parseInt(calories)
+    }catch(e){
+        return res.redirect("/modules?invalid=true");
+    }
 
     if(!calories){calories = -1}
     if(!weight){weight = -1}
     if(weight == -1 && calories == -1){calories = 0}
     
 
-    cardioType = xss(cardioType);
-    distance = xss(distance);
-    duration = xss(duration);
-    date = xss(date);
-    
-
-    distance = parseInt(distance)
-    duration = parseInt(duration)
+    try{
+        cardioType = xss(cardioType);
+        distance = xss(distance);
+        duration = xss(duration);
+        date = xss(date);
+        distance = parseInt(distance)
+        duration = parseInt(duration)
+        if(duration < 0){throw "invalid duration"}
+        if(distance < 0){throw "invalid distance"}
+    }catch(e){
+        return res.redirect("/modules?invalid=true");
+    }
 
     try{
-        await cardio.getByID(cardioId);
+        let username = (await cardio.getByID(cardioId)).username;
+        if(username != req.session.user.username){
+            throw("User does not have permisions to edit")
+        }
     }catch(e){
         console.log(e);
         return res.redirect("/modules?invalid=true");
