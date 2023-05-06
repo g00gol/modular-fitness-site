@@ -46,6 +46,7 @@ export const enterNote = async (userID, username, dateTime, title, text) => {
     userID: userID,
     username: username.trim(),
     lastUpdated: dateTime,
+    date: moment(dateTime).format("MM/DD/YYYY h:mm a"),
     title: title,
     text: text,
   };
@@ -142,8 +143,10 @@ export const updateNote = async (id, dateTime, title, text) => {
   note._id = note._id.toString();
 
   const noteEntry = {
+    userID: note.userID,
     username: note.username,
     lastUpdated: dateTime,
+    date: moment(dateTime).format("MM/DD/YYYY h:mm a"),
     title: title,
     text: text,
   };
