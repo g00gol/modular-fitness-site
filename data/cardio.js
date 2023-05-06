@@ -46,7 +46,7 @@ const create = async (
   if (typeof weight != "number") {
     throw "weight must be a number";
   }
-  console.log(caloriesBurned)
+  console.log(caloriesBurned);
   if (caloriesBurned < 0) {
     if (weight <= 0) {
       throw "invalid weight";
@@ -64,7 +64,7 @@ const create = async (
     duration: duration,
     dateTime: dateTime,
     caloriesBurned: caloriesBurned,
-    date: moment(dateTime).format("MM/DD/YYYY")
+    date: moment(dateTime).format("MM/DD/YYYY"),
   };
   let createInfo = await cardioCollection.insertOne(newCardio);
   if (!createInfo.acknowledged || !createInfo.insertedId)
@@ -228,7 +228,7 @@ const update = async (
     duration: duration,
     dateTime: dateTime,
     caloriesBurned: caloriesBurned,
-    date: moment(dateTime).format("MM/DD/YYYY")
+    date: moment(dateTime).format("MM/DD/YYYY"),
   };
   let updateInfo = await cardioCollection.findOneAndUpdate(
     { _id: new ObjectId(id) },

@@ -4,13 +4,15 @@
 
 import { Router } from "express";
 import * as middleware from "../utils/middleware.js";
-import * as dataModules from "../data/index.js"
+import * as dataModules from "../data/index.js";
 //import allModules from "../data/allModules.js";
 import * as users from "../data/users.js";
 //import * as workouts from "../data/workouts.js";
 import workoutsRoutes from "./modules/workouts.js";
 import cardioRoutes from "./modules/cardio.js";
 import timerRoutes from "./modules/timers.js";
+import weightRoutes from "./modules/weight.js";
+import sugarRoutes from "./modules/sugar.js";
 
 import allModules from "../public/constants/allModules.js";
 import { moduleGetName } from "../utils/helpers.js";
@@ -33,7 +35,9 @@ router.route("/modules").get(middleware.home, async (req, res) => {
   let allWorkouts = [];
   if (req.session.user.enabledModules.includes("workoutTracker")) {
     try {
-      allWorkouts = await dataModules.workouts.getWorkouts(req.session.user.uid);
+      allWorkouts = await dataModules.workouts.getWorkouts(
+        req.session.user.uid
+      );
     } catch (e) {
       console.log(e);
       return res.redirect("/error?status=500");
@@ -68,9 +72,7 @@ router.route("/modules").get(middleware.home, async (req, res) => {
     enabledModules.push({name: moduleGetName(enabledTags[i]), tag: enabledTags[i]})
   }
 
-
   try {
-    
     return res.render("modules", {
       title: "Home",
       user: req.session.user,
@@ -117,6 +119,8 @@ router.route("/modules").post(middleware.home, async (req, res) => {
 router.use("/modules/workouts", middleware.home, workoutsRoutes);
 router.use("/modules/cardio", middleware.home, cardioRoutes);
 router.use("/modules/timers", middleware.home, timerRoutes);
+router.use("/modules/weight", middleware.home, weightRoutes);
+router.use("/modules/sugar", middleware.home, sugarRoutes);
 router.use("/modules/*", (req, res) => {
   return res.redirect("/error?status=404");
 });
