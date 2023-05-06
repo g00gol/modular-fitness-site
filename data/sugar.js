@@ -270,8 +270,14 @@ const getLastSugarReading = async (username) =>
     {
         let sugarCollection = await sugar();
         let record = await sugarCollection.findOne({username: username});
+        // Check if record is null
+        if (record === null) {
+            return [];
+        }
+
         let data = record.data;
         let ans = data[data.length - 1];
+
         return ans; 
     }
     catch (e) 
