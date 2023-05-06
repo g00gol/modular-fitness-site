@@ -13,6 +13,8 @@ import cardioRoutes from "./modules/cardio.js";
 import timerRoutes from "./modules/timers.js";
 import calorieRoutes from "./modules/calories.js";
 import noteRoutes from "./modules/notes.js";
+import weightRoutes from "./modules/weight.js";
+import sugarRoutes from "./modules/sugar.js";
 
 import allModules from "../public/constants/allModules.js";
 import { moduleGetName } from "../utils/helpers.js";
@@ -150,6 +152,8 @@ router.use("/modules/cardio", middleware.home, cardioRoutes);
 router.use("/modules/timers", middleware.home, timerRoutes);
 router.use("/modules/calories", middleware.home, calorieRoutes);
 router.use("/modules/notes", middleware.home, noteRoutes);
+router.use("/modules/weight", middleware.home, weightRoutes);
+router.use("/modules/sugar", middleware.home, sugarRoutes);
 router.use("/modules/*", (req, res) => {
   return res.redirect("/error?status=404");
 });

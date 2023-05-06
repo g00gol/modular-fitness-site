@@ -174,7 +174,7 @@ const updateWeightEntry = async (id, weight) =>
     {
         throw `Missing the new weight num`
     }
-    if(typeof weight != 'number' || isNaN(weight) || weight <= 0)
+    if(typeof weight != 'number' || isNaN(weight) || weight <= 0 || weight > 1000)
     {
         throw `weight must be a valid number`
     }
@@ -196,6 +196,7 @@ const updateWeightEntry = async (id, weight) =>
     }
 
 }
+//this function is used to delete a weight entry from the weights collection.
 const deleteOneWeightEnrty  = async(username, id) =>
 {
     if(!username)
@@ -239,4 +240,144 @@ const deleteOneWeightEnrty  = async(username, id) =>
 
 }
 
-export { enterWeight, deleteAllWeightDataForUser, getAllWeightsObj, getWeightById, deleteOneWeightEnrty, updateWeightEntry };
+const getLastWeightReading = async (username) =>
+{
+    if(!username)
+    {
+        throw `Error: username not provided.`
+    }
+    if(typeof username != 'string' || username.trim().length === 0)
+    {
+        throw `Error: username must be a non empty string.`
+    }
+    username = username.trim();
+    let user
+    try 
+    {
+        let userCollection = await users();
+        user = await getByUsername(username)
+    }
+    catch (e)
+    {
+        console.log(e)
+        throw `error user does not exists in the users collection.`
+    }
+    try 
+    {
+        let weightCollection = await weights();
+        let record = await weightCollection.findOne({username: username});
+        if (record) {
+            let data = record.data;
+            let ans = data[data.length - 1];
+            return ans;
+        }
+        return [];
+    }
+    catch (e) 
+    {
+        console.log(e);
+        throw `Error: could not find.`;
+    }
+
+};
+// this function will add goal to the weights collection for the given username.
+const addGoal = async (username, goal) =>
+{
+    if(!username)
+    {
+        throw `Error: username not provided.`
+    }
+    if(typeof username != 'string' || username.trim().length === 0)
+    {
+        throw `Error: username must be a non empty string.`
+    }
+    username = username.trim();
+    let user
+    try 
+    {
+        let userCollection = await users();
+        user = await getByUsername(username)
+        // console.log(user)
+    }
+    catch (e)
+    {
+        console.log(e)
+        throw `error user does not exists in the users collection.`
+    }
+    if(!goal)
+    {
+        throw `Error: goal not provided.`
+    }
+    if(typeof goal != 'number' || isNaN(goal) || goal <= 0 || goal > 1000)
+    {
+        throw `goal must be a valid number`
+    }
+    try
+    {
+        let weightCollection = await weights();
+        let weight = await weightCollection.findOne({ username: username });
+        if (!weight) // no weight object for this user
+        {
+            weight = { username: username, goal: goal, data: [] };
+            let result = await weightCollection.insertOne(weight);
+            if (!result.insertedId) 
+            {
+                throw "Could not add new weight object.";
+            }
+        }
+        else if(!('goal' in weight) || weight.goal !== goal) // weight object exists but no goal or goal is different
+        {
+            weight.goal = goal;
+            let result = await weightCollection.updateOne({ username: username }, { $set: weight });
+            if (result.modifiedCount === 0) 
+            {
+                throw "Could not update weight object.";
+            }
+        }
+    }
+    catch (e) 
+    {
+        console.log(e);
+        throw `Error: could not add goal.`;
+    }
+};
+
+const getGoal = async (username) =>
+{
+    if(!username)
+    {
+        throw `Error: username not provided.`
+    }
+    if(typeof username != 'string' || username.trim().length === 0)
+    {
+        throw `Error: username must be a non empty string.`
+    }
+    username = username.trim();
+    let user
+    try
+    {
+        let userCollection = await users();
+        user = await getByUsername(username)
+    }
+    catch (e)
+    {
+        console.log(e)
+        throw `error user does not exists in the users collection.`
+    }
+    try
+    {
+        let weightCollection = await weights();
+        let weight = await weightCollection.findOne({ username: username });
+        if (weight && 'goal' in weight) 
+        {
+            return weight.goal;
+        }
+        // return null;
+    }
+    catch (e)
+    {
+        console.log(e);
+        throw `Error: could not find goal.`;
+    }
+};
+export { enterWeight, deleteAllWeightDataForUser,getGoal, addGoal, getLastWeightReading, getAllWeightsObj, getWeightById, deleteOneWeightEnrty, updateWeightEntry };

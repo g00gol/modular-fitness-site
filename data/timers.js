@@ -1,13 +1,21 @@
 import { ObjectId } from "mongodb";
 import { timers } from "../config/mongoCollections.js";
 import { getByUsername } from "./users.js";
-import { invalidParams, invalidStrings, invalidID, formatDuration} from "../utils/helpers.js";
+import {
+  invalidParams,
+  invalidStrings,
+  invalidID,
+  formatDuration,
+} from "../utils/helpers.js";
 
 const create = async (username, title, type, duration) => {
   invalidParams(title, type, duration);
   invalidStrings(title, type);
   type = type.trim();
   title = title.trim();
+  if(title.length > 200){
+    throw "timer title length too long";
+  }
   if (!(type == "timer" || type == "stopwatch")) {
     throw "invalid type";
   }
@@ -26,7 +34,7 @@ const create = async (username, title, type, duration) => {
     title: title,
     type: type,
     duration: duration,
-    durationFormat: formatDuration(duration)
+    durationFormat: formatDuration(duration),
   };
   let createInfo = await timerCollection.insertOne(newTimer);
   if (!createInfo.acknowledged || !createInfo.insertedId)
@@ -106,7 +114,7 @@ const update = async (id, username, title, type, duration) => {
     title: title,
     type: type,
     duration: duration,
-    durationFormat: formatDuration(duration)
+    durationFormat: formatDuration(duration),
   };
   let updateInfo = await timerCollection.findOneAndUpdate(
     { _id: new ObjectId(id) },
