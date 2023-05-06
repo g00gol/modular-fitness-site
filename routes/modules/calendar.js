@@ -30,8 +30,34 @@ router.get("/auth/callback", async (req, res) => {
 router.get("/", async (req, res) => {
   let { tokens } = req.session;
   if (!tokens) {
-    res.redirect("/modules/calendar/auth");
-    return;
+    return res.redirect("/modules/calendar/auth");
+  }
+
+  // Create a new oAuth2Client instance with the session tokens
+  const sessionOAuth2Client = new google.auth.OAuth2(
+    clientID,
+    clientSecret,
+    redirect_uris[0]
+  );
+
+  sessionOAuth2Client.setCredentials(tokens);
+
+  let calendar = google.calendar({ version: "v3", auth: sessionOAuth2Client });
+
+  try {
+    let { data } = await calendar.calendarList.list();
+    let calendars = data.items;
+
+    return res.render("calendar", { title: "Calendar", calendars });
+  } catch (e) {
+    return res.redirect("/error?status=500");
+  }
+});
+
+router.get("/events", async (req, res) => {
+  let { tokens } = req.session;
+  if (!tokens) {
+    return res.redirect("/modules/calendar/auth");
   }
 
   // Create a new oAuth2Client instance with the session tokens
@@ -43,13 +69,39 @@ router.get("/", async (req, res) => {
   sessionOAuth2Client.setCredentials(tokens);
 
   let calendar = google.calendar({ version: "v3", auth: sessionOAuth2Client });
+
+  // Get the calendar list
   let { data } = await calendar.calendarList.list();
   let calendars = data.items;
 
-  res.render("calendar", { calendar: calendars[0] });
+  // Get events from all calendars
+  let allEvents = [];
+  for (let calendarItem of calendars) {
+    let calendarId = calendarItem.id;
+    let eventsResponse = await calendar.events.list({ calendarId: calendarId });
+    let events = eventsResponse.data.items;
+    allEvents.push(...events);
+  }
+
+  let events = allEvents
+    .map((event) => {
+      if (event.status !== "cancelled") {
+        return {
+          id: event.id,
+          title: event.summary,
+          start: event.start.dateTime || event.start.date,
+          end: event.end.dateTime || event.end.date,
+        };
+      }
+
+      return;
+    })
+    .filter((event) => !!event);
+
+  return res.status(200).json({ events });
 });
 
-router.get("/events", async (req, res) => {
+router.post("/add-event", async (req, res) => {
   let { tokens } = req.session;
   if (!tokens) {
     res.redirect("/modules/calendar/auth");
@@ -65,19 +117,32 @@ router.get("/events", async (req, res) => {
   sessionOAuth2Client.setCredentials(tokens);
 
   let calendar = google.calendar({ version: "v3", auth: sessionOAuth2Client });
-  let { data } = await calendar.events.list({
-    calendarId: req.query.calendarId,
-  });
 
-  let events = data.items.map((event) => {
-    return {
-      title: event.summary,
-      start: event.start.dateTime || event.start.date,
-      end: event.end.dateTime || event.end.date,
-    };
-  });
+  let event = {
+    summary: req.body.title,
+    start: {
+      dateTime: new Date(req.body.start).toISOString(),
+      timeZone: "America/Los_Angeles",
+    },
+    end: {
+      dateTime: new Date(req.body.end).toISOString(),
+      timeZone: "America/Los_Angeles",
+    },
+  };
 
-  return res.json(events);
+  let { calendarId } = req.query;
+
+  try {
+    let { data } = await calendar.events.insert({
+      calendarId,
+      resource: event,
+    });
+
+    return res.status(200).json({ eventId: data.id });
+  } catch (e) {
+    console.log(e);
+    return res.redirect("/error?status=500");
+  }
 });
 
 export default router;
