@@ -43,7 +43,12 @@ function toggleAddWorkouts() {
   $("#workoutsForm").attr("action", "/modules/workouts");
   $("#workoutsForm input[name='workoutName']").val("");
   $("#workoutsForm select[name='workoutDay']").val("Sunday");
-  
+
+  // Clear errors
+  $("#workoutsForm input").removeClass("invalidInput");
+  $("#workoutsForm select").removeClass("invalidInput");
+  $(".errorContainer").empty();
+
   // Remove all the existing exercise forms
   $(".addExerciseForm").remove();
 }
@@ -52,6 +57,11 @@ function toggleAddWorkouts() {
 async function toggleEditWorkouts() {
   $("#workoutsModal").toggle();
   $("#workoutsForm").attr("action", `/modules/workouts/${workoutId}`);
+
+  // Clear errors
+  $("#workoutsForm input").removeClass("invalidInput");
+  $("#workoutsForm select").removeClass("invalidInput");
+  $(".errorContainer").empty();
 
   // Get the workout data
   let workoutData;

@@ -160,70 +160,81 @@ await workouts.createExercise(
   "lbs"
 );
 
-await calories.enterCalorie(userJohn.uid, "johndoe", moment().format(), [
+await calories.enterCalorie(userJohn.uid, "johndoe", moment().toISOString(), [
   { food_name: "banana", calories: 100, quantity: 2 },
   { food_name: "apple", calories: 100, quantity: 2 },
   { food_name: "watermelon", calories: 100, quantity: 2 },
 ]);
-await calories.enterCalorie(userJohn.uid, "johndoe", moment().format(), [
+await calories.enterCalorie(userJohn.uid, "johndoe", moment().toISOString(), [
   { food_name: "water", calories: 0, quantity: 1 },
   { food_name: "chips", calories: 100, quantity: 2 },
   { food_name: "soda", calories: 100, quantity: 1 },
 ]);
-await calories.enterCalorie(userMandeep.uid, "mkaur", moment().format(), [
+await calories.enterCalorie(userMandeep.uid, "mkaur", moment().toISOString(), [
   { food_name: "banana", calories: 100, quantity: 2 },
   { food_name: "apple", calories: 100, quantity: 2 },
   { food_name: "watermelon", calories: 100, quantity: 2 },
 ]);
-await calories.enterCalorie(userMandeep.uid, "mkaur", moment().format(), [
+await calories.enterCalorie(userMandeep.uid, "mkaur", moment().toISOString(), [
   { food_name: "water", calories: 0, quantity: 1 },
   { food_name: "chips", calories: 100, quantity: 2 },
   { food_name: "soda", calories: 100, quantity: 1 },
 ]);
-await calories.enterCalorie(userPat.uid, "nycSwag", moment().format(), [
-  { food_name: "water", calories: 0, quantity: 1 },
-  { food_name: "chips", calories: 100, quantity: 2 },
-  { food_name: "soda", calories: 100, quantity: 1 },
-]);
-await calories.enterCalorie(userPat.uid, "nycSwag", moment().format(), [
+await calories.enterCalorie(
+  userPat.uid,
+  "nycSwag",
+  moment().subtract(1, "days").toISOString(),
+  [
+    { food_name: "water", calories: 0, quantity: 1 },
+    { food_name: "chips", calories: 100, quantity: 2 },
+    { food_name: "soda", calories: 100, quantity: 1 },
+  ]
+);
+await calories.enterCalorie(userPat.uid, "nycSwag", moment().toISOString(), [
   { food_name: "banana", calories: 100, quantity: 2 },
   { food_name: "apple", calories: 100, quantity: 2 },
   { food_name: "watermelon", calories: 100, quantity: 2 },
 ]);
 
-await notes.enterNote(userJohn.uid, "johndoe", moment().format(), "", "\t");
 await notes.enterNote(
   userJohn.uid,
   "johndoe",
-  moment().format(),
+  moment().toISOString(),
+  "",
+  "\t"
+);
+await notes.enterNote(
+  userJohn.uid,
+  "johndoe",
+  moment().toISOString(),
   "log",
   "i feel pretty fit today ngl"
 );
 await notes.enterNote(
   userMandeep.uid,
   "mkaur",
-  moment().format(),
+  moment().toISOString(),
   "water",
   "\tdidn't drink enough of it today :("
 );
 await notes.enterNote(
   userMandeep.uid,
   "mkaur",
-  moment().format(),
+  moment().toISOString(),
   "food",
   "\tdidn't eat enough of it today :((("
 );
 await notes.enterNote(
   userPat.uid,
   "nycSwag",
-  moment().format(),
+  moment().toISOString(),
   "",
   "damn, the sky is mad beautiful today"
 );
 await notes.enterNote(
   userPat.uid,
   "nycSwag",
-  moment().format(),
+  moment().toISOString(),
   "",
   "who needs titles lol"
 );
