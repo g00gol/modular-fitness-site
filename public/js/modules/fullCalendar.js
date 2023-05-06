@@ -1,13 +1,15 @@
 document.addEventListener("DOMContentLoaded", function () {
-  var calendarEl = $() // add the id of the calendar element
+  let calendarEl = $("[id^='calendar']");
+  // split the id to get the calendarId
+  let calendarId = calendarEl.attr("id").split("?")[1];
 
-  var calendar = new FullCalendar.Calendar(calendarEl, {
+  let calendar = new FullCalendar.Calendar(calendarEl, {
     header: {
       left: "prev,next today",
       center: "title",
       right: "dayGridMonth,timeGridWeek,timeGridDay",
     },
-    events: "/modules/calendar/events",
+    events: `/modules/calendar/events?calendarId=${calendarId}`,
     editable: true,
     selectable: true,
   });
