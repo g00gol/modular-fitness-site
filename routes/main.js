@@ -12,6 +12,8 @@ import workoutsRoutes from "./modules/workouts.js";
 import cardioRoutes from "./modules/cardio.js";
 import timerRoutes from "./modules/timers.js";
 
+import profileRoutes from "./profile.js"
+
 import allModules from "../public/constants/allModules.js";
 import { moduleGetName } from "../utils/helpers.js";
 
@@ -73,7 +75,9 @@ router.route("/modules").get(middleware.home, async (req, res) => {
     
     return res.render("modules", {
       title: "Home",
+      profilePic: "../public/assets/images/Logo.png",
       user: req.session.user,
+      userData: user,
       allModules,
       allTimers,
       allCardio,
@@ -114,6 +118,7 @@ router.route("/modules").post(middleware.home, async (req, res) => {
   return res.redirect("/modules");
 });
 
+router.use("/profile/", middleware.home, profileRoutes);
 router.use("/modules/workouts", middleware.home, workoutsRoutes);
 router.use("/modules/cardio", middleware.home, cardioRoutes);
 router.use("/modules/timers", middleware.home, timerRoutes);

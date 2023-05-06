@@ -252,3 +252,11 @@ li.draggable-item.ui-sortable-placeholder {
 h3 {
   font-size: larger;
 }
+
+#bio-textarea{
+  @apply w-full mb-4 bg-transparent border border-snow-1 p-2 rounded-md;
+}
+
+#modules-bio{
+  display: block;
+}

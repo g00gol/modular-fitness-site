@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import { users } from "../config/mongoCollections.js";
+import { ObjectId } from "mongodb";
 
 import * as validation from "../utils/validation.js";
 
@@ -110,6 +111,31 @@ export const createUser = async (
   return { insertedUser: true };
 };
 
+export const updateUserById = async(id, fullname, bio, profilePic)=> {
+  if(!fullname || typeof(fullname)!="string" || fullname.length > 200){throw "invalid name";}
+  if(!bio){bio = ""}
+  if(typeof(bio)!="string" || bio.length > 1000){throw "invalid bio"}
+  if(!profilePic){throw "invalid picture"} //needs more input checking
+
+  const usersCollection = await users();
+  let updateInfo = await usersCollection.findOneAndUpdate(
+    { _id: new ObjectId(id) },
+    { $set: {fullName: fullname, bio: bio, profilePic:profilePic}},
+    { returnDocument: "after" }
+  );
+
+  if (updateInfo.lastErrorObject.n === 0) {
+    throw {
+      errorCode: 500,
+      errorMessage: "Error: could not update profile",
+    };
+  }
+
+  updateInfo.value._id = updateInfo.value._id.toString();
+  return updateInfo.value;
+  
+}
+
 /**
  * Checks if the user data is correct
  * @param {string} username
@@ -214,7 +240,9 @@ export const getByUsername = async (username) => {
   }
 
   return {
+    _id: user._id.toString(),
     fullName: user.fullName,
+    bio: user.bio,
     username: user.username,
     DOB: user.DOB,
     enabledModules: user.enabledModules,

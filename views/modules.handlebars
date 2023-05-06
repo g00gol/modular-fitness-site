@@ -1,4 +1,5 @@
 <script type="module" src="../public/js/editModules.js"></script>
+<script type="module" src="../public/js/editProfile.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 
 {{#if invalid}}
@@ -6,11 +7,12 @@
 {{/if}}
 
 <section class="px-12 py-8">
-  <h1>Hello, <span class="font-bold">{{user.fullName}}</span></h1>
+  <h1>Hello, <span class="font-bold">{{user.fullName}}  <button id="editProfileBtn"><i class="fa-solid fa-circle-user"></i></button></span></h1> 
   <div class="flex justify-between w-full">
     <p>Welcome to your modules!</p>
     <button id="editModulesBtn" class="text-frost hover:text-polar underline">Edit Modules</button>
   </div>
+  <p id="moudles-bio">{{userData.bio}}</p>
   {{#each enabledModules}}
     {{{renderModule this.tag}}}
   {{/each}}
@@ -62,6 +64,52 @@
       <div class="!mt-[5vh] space-x-4 module-edit-bottom-buttons">
         <button id="submit-edit-modules" type="button" class="w-fit px-6 py-2 text-snow-3 hover:text-snow-1 underline bg-frost rounded-std">Save</button>
         <button type="button" id="editModulesCancelBtn" class="w-fit text-gray-2 hover:text-gray-1 underline">Cancel</button>
+      </div>
+    </form>
+  {{/modal}}
+</div>
+
+{{!-- 
+edit profile modal --}}
+<div id="editProfileModal" class="fixed top-0 left-nav" hidden>
+  {{#> modal modalName="Edit Profile"}}
+
+<form id="editProfileForm" class="flex flex-col space-y-2 text-lg" action="/profile/{{userData._id}}" method="POST">
+      <label>
+        Full Name:
+        <input name="fullName" type="text" value="{{userData.fullName}}">
+      </label>
+      <br>
+      <label>
+        Bio:
+        <textarea id="bio-textarea" name="bio" type="text" value="{{userData.bio}}">{{userData.bio}}</textarea>
+      </label>
+      <br>
+      {{!-- <label for="profile-picture-big">Profile Picture</label>
+      <img id="profile-picture-big" src="{{profilePic}}" alt="Profile Picture">
+      <br>
+      <label>
+        Upload New:
+        <input name="profilePictureInput" type="file" accept="image/*">
+      </label> --}}
+
+      <div class="errorContainer">
+        {{#each error}}
+          <p class="error">
+            {{this}}
+          </p>
+        {{/each}}
+      </div>
+
+      <div class="!mt-[5vh] space-x-4 module-edit-bottom-buttons">
+        <button
+          type="submit"
+          class="w-fit px-6 py-2 text-snow-3 hover:text-snow-1 underline bg-frost rounded-std"
+        >
+          Save
+        </button>
+
+        <button type="button" id="editProfileCancelBtn" class="w-fit text-gray-2 hover:text-gray-1 underline">Cancel</button>
       </div>
     </form>
   {{/modal}}
