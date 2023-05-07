@@ -118,6 +118,29 @@ router.post("/add-event", async (req, res) => {
 
   let calendar = google.calendar({ version: "v3", auth: sessionOAuth2Client });
 
+  let calendarName = "mode-fitness";
+  let calendarId;
+
+  try {
+    let { data } = await calendar.calendarList.list();
+    let existingCalendar = data.items.find(
+      (calendar) => calendar.summary === calendarName
+    );
+
+    if (existingCalendar) {
+      calendarId = existingCalendar.id;
+    } else {
+      let { data } = await calendar.calendars.insert({
+        requestBody: {
+          summary: calendarName,
+        },
+      });
+      calendarId = data.id;
+    }
+  } catch (e) {
+    return res.redirect("/error?status=500");
+  }
+
   let event = {
     summary: req.body.title,
     start: {
@@ -130,8 +153,6 @@ router.post("/add-event", async (req, res) => {
     },
   };
 
-  let { calendarId } = req.query;
-
   try {
     let { data } = await calendar.events.insert({
       calendarId,
@@ -140,7 +161,6 @@ router.post("/add-event", async (req, res) => {
 
     return res.status(200).json({ eventId: data.id });
   } catch (e) {
-    console.log(e);
     return res.redirect("/error?status=500");
   }
 });
