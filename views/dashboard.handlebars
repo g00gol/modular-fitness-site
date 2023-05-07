@@ -1,4 +1,65 @@
+<script type="module" src="../public/js/editProfile.js"></script>
 <section>
   <h1>Dashboard</h1>
-  <p>{{user.fullName}}</p>
+  <span><p>{{user.fullName}} <button id="editProfileBtn"><i class="fa-solid fa-circle-user"></i></button></p></span>
 </section>
+
+
+{{!-- 
+edit profile modal --}}
+<div id="editProfileModal" class="fixed top-0 left-nav" {{editProfile}}>
+  {{#> modal modalName="Edit Profile"}}
+
+<form id="editProfileForm" class="flex flex-col space-y-2 text-lg" action="/profile/{{userData._id}}" method="POST">
+      <label>
+        Full Name:
+        <input name="fullName" type="text" value="{{userData.fullName}}">
+      </label>
+      <br>
+      <label>
+        Bio:
+        <textarea id="bio-textarea" name="bio" type="text" value="{{userData.bio}}">{{userData.bio}}</textarea>
+      </label>
+      <br>
+      {{!-- <label for="profile-picture-big">Profile Picture</label>
+      <img id="profile-picture-big" src="{{profilePic}}" alt="Profile Picture">
+      <br>
+      <label>
+        Upload New:
+        <input name="profilePictureInput" type="file" accept="image/*">
+      </label> --}}
+      
+      <button type="button" id="change-password-btn" value="false">Change Password</button>
+      
+
+      <label id="old-password-change" {{editPassword}}>
+        Old password:
+        <input id="old-password" name="oldPassword" type="password">
+      </label>
+
+      <label id="new-password-change" {{editPassword}}>
+        New password:
+        <input id="new-password" name="newPassword" type="password">
+      </label>
+
+      <div class="errorContainer">
+        {{#each error}}
+          <p class="error">
+            {{this}}
+          </p>
+        {{/each}}
+      </div>
+
+      <div class="!mt-[5vh] space-x-4 module-edit-bottom-buttons">
+        <button
+          type="submit"
+          class="w-fit px-6 py-2 text-snow-3 hover:text-snow-1 underline bg-frost rounded-std"
+        >
+          Save
+        </button>
+
+        <button type="button" id="editProfileCancelBtn" class="w-fit text-gray-2 hover:text-gray-1 underline">Cancel</button>
+      </div>
+    </form>
+  {{/modal}}
+</div>

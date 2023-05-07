@@ -116,6 +116,7 @@ export const updateUserById = async(id, fullname, bio, profilePic)=> {
   if(!bio){bio = ""}
   if(typeof(bio)!="string" || bio.length > 1000){throw "invalid bio"}
   if(!profilePic){throw "invalid picture"} //needs more input checking
+  validation.authFullName({fullNameInput: fullname});
 
   const usersCollection = await users();
   let updateInfo = await usersCollection.findOneAndUpdate(
@@ -282,3 +283,40 @@ export const updateEnabledModulesByUsername = async (
   }
   return { updated: true };
 };
+
+export const updatePassword = async (id, oldPassword, newPassword) => {
+  validation.authPassword(oldPassword, oldPassword);
+  validation.authPassword(newPassword, newPassword);
+
+  const usersCollection = await users();
+  let user = await usersCollection.findOne({_id: new ObjectId(id)})
+  if (user._id.toString() != id){
+    throw "Error finding user"
+  }
+  
+  await checkUser(user.username, oldPassword);
+  //user has the right old password
+
+
+
+  //update the password
+  let hashedPassword = await bcrypt.hash(newPassword, 10);
+
+
+  let updateInfo = await usersCollection.findOneAndUpdate(
+    { _id: new ObjectId(id) },
+    { $set: {password: hashedPassword}},
+    { returnDocument: "after" }
+  );
+
+  if (updateInfo.lastErrorObject.n === 0) {
+    throw {
+      errorCode: 500,
+      errorMessage: "Error: could not update profile",
+    };
+  }
+
+  updateInfo.value._id = updateInfo.value._id.toString();
+  return updateInfo.value;
+
+}

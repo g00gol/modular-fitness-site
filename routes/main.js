@@ -106,9 +106,7 @@ router.route("/modules").get(middleware.home, async (req, res) => {
   try {
     return res.render("modules", {
       title: "Home",
-      profilePic: "../public/assets/images/Logo.png",
       user: req.session.user,
-      userData: user,
       allModules,
       allTimers,
       allCardio,
