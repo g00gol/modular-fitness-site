@@ -243,9 +243,9 @@ const doStopwatch = () => {
     clearInterval(stopwatch);
     $("#timer-name").html("Select a Timer!");
     $("#timer-name").attr("data-id", "")
-    $("#countdown").attr("data-timeLeft", "");
-    $("#countdown-progress").attr("value", "");
-    $("#countdown-progress").attr("max", "");
+    $("#countdown").attr("data-timeLeft", "0");
+    $("#countdown-progress").attr("value", "0");
+    $("#countdown-progress").attr("max", "0");
     $("#timer-counter").attr("data-paused", "false")
     $("#timer-counter").attr("data-seconds", "")
     $("#stopwatch-pause-play").hide();

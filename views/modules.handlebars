@@ -40,7 +40,7 @@
         <h3>Unenabled Modules</h3>
         <ul class="connected-sortable unenabled">
           {{#each allModules}}
-            {{#unlessContains ../enabledModules this.tag}}<li class="draggable-item" tag="{{this.tag}}">{{this.name}}</li>{{/unlessContains}}
+            {{#unlessContains ../enabledModules this.tag}}<li class="draggable-item" data-tag="{{this.tag}}">{{this.name}}</li>{{/unlessContains}}
           {{/each}}
         </ul>
       </div>
@@ -49,7 +49,7 @@
         <h3>Enabled Modules</h3>
         <ul class="connected-sortable enabled" id="enabled-modules">
           {{#each enabledModules}}
-            <li class="draggable-item" tag="{{this.tag}}">{{this.name}}</li>
+            <li class="draggable-item" data-tag="{{this.tag}}">{{this.name}}</li>
           {{/each}}
         </ul>
       </div>

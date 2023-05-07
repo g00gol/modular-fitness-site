@@ -1,7 +1,7 @@
 <script type="module" src="../public/js/editProfile.js"></script>
 <section>
   <h1>Dashboard</h1>
-  <span><p>{{user.fullName}} <button id="editProfileBtn"><i class="fa-solid fa-circle-user"></i></button></p></span>
+  <span>{{user.fullName}} <button id="editProfileBtn"><i class="fa-solid fa-circle-user"></i></button></span>
 </section>
 
 
@@ -18,7 +18,7 @@ edit profile modal --}}
       <br>
       <label>
         Bio:
-        <textarea id="bio-textarea" name="bio" type="text" value="{{userData.bio}}">{{userData.bio}}</textarea>
+        <textarea id="bio-textarea" name="bio">{{userData.bio}}</textarea>
       </label>
       <br>
       {{!-- <label for="profile-picture-big">Profile Picture</label>
