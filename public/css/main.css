@@ -261,3 +261,11 @@ h3 {
 #modules-bio{
   display: block;
 }
+
+#change-password-btn{
+  background-color: #5e81ac;
+  color: white;
+  padding: 3px;
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
