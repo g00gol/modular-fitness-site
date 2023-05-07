@@ -31,24 +31,30 @@ const create = async (
   if (typeof duration != "number") {
     throw "Duration must be a number";
   }
-  if (duration <= 0) {
-    throw "Duration must be greater than 0";
+  if (duration <= 0 ||duration > 10000) {
+    throw "Duration must be greater than 0 and under 10000";
   }
   if (typeof distance != "number") {
     throw "Distance must be a number";
   }
-  if (distance <= 0) {
-    throw "Distance must be greater than 0";
+  if (distance <= 0 || distance > 10000) {
+    throw "Distance must be greater than 0, and under 10000";
   }
   if (typeof caloriesBurned != "number") {
     throw "caloriesBurned must be a number";
   }
+  if (caloriesBurned > 10000) {
+    throw "calories burned must be greater than 0, and under 10000";
+  }
   if (typeof weight != "number") {
     throw "weight must be a number";
   }
-  console.log(caloriesBurned);
+  if (weight > 10000) {
+    throw "weight must be greater than 0, and under 10000";
+  }
+
   if (caloriesBurned < 0) {
-    if (weight <= 0) {
+    if (weight < 0) {
       throw "invalid weight";
     }
     caloriesBurned = calculateCaloriesBurned(weight, distance, duration, type);
@@ -195,23 +201,30 @@ const update = async (
   if (typeof duration != "number") {
     throw "Duration must be a number";
   }
-  if (duration <= 0) {
-    throw "Duration must be greater than 0";
+  if (duration <= 0 ||duration > 10000) {
+    throw "Duration must be greater than 0 and under 10000";
   }
   if (typeof distance != "number") {
     throw "Distance must be a number";
   }
-  if (distance <= 0) {
-    throw "Distance must be greater than 0";
+  if (distance <= 0 || distance > 10000) {
+    throw "Distance must be greater than 0, and under 10000";
   }
   if (typeof caloriesBurned != "number") {
     throw "caloriesBurned must be a number";
   }
+  if (caloriesBurned > 10000) {
+    throw "calories burned must be greater than 0, and under 10000";
+  }
   if (typeof weight != "number") {
     throw "weight must be a number";
   }
-  if (caloriesBurned <= 0) {
-    if (weight <= 0) {
+  if (weight > 10000) {
+    throw "weight must be greater than 0, and under 10000";
+  }
+
+  if (caloriesBurned < 0) {
+    if (weight < 0) {
       throw "invalid weight";
     }
     caloriesBurned = calculateCaloriesBurned(weight, distance, duration, type);
@@ -269,7 +282,7 @@ let calculateCaloriesBurned = (weight, distance, time, type) => {
     },
   };
 
-  return (mets[type](distance / time) * weight * time).toFixed(0);
+  return (mets[type](distance / (time/60)) * (weight*2.2) * (time/60)).toFixed(0);
 };
 
 export { create, getByID, getByDate, getAll, getByType, remove, update };

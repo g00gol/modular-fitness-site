@@ -56,12 +56,12 @@
 
       <label>
         Distance (miles)
-        <input name="distance" type="number" min="0">
+        <input name="distance" type="number" min="0" max="10000">
       </label>
 
       <label>
         Duration (minutes)
-        <input name="duration" type="number" min="0">
+        <input name="duration" type="number" min="0" max="10000">
       </label>
 
       <label>
@@ -71,13 +71,13 @@
 
       <label>
         Weight (optional)
-        <input name="weight" type="number" min="0"> 
+        <input name="weight" type="number" min="0" max="10000"> 
         {{!-- add a default value --}}
       </label>
 
       <label>
         Calories Burned (optional)
-        <input name="calories" type="number" min="0"> 
+        <input name="calories" type="number" min="0" max="1000"> 
         {{!-- add a default value --}}
       </label>
 

@@ -103,6 +103,7 @@ function toggleEditTimers() {
   // Validate the workout form
   function validateTimersForm() {
     $("#editTimersForm input").removeClass("invalidInput");
+    let valid = true;
   
     let title = $("#editTimersForm input[name='title']").val().trim();
     let duration_hr = $("#editTimersForm input[name='duration_hr']").val();
@@ -112,13 +113,14 @@ function toggleEditTimers() {
     
     try {
       paramExists({ title, duration_hr, duration_min, duration_sec});
-      if(parseInt(duration_hr) + parseInt(duration_min) + parseInt(duration_sec) <= 0) {return false};
+      if(parseInt(duration_hr) + parseInt(duration_min) + parseInt(duration_sec) <= 0) {valid = false};
+      if(parseInt(duration_hr)*3600 + parseInt(duration_min)*60 + parseInt(duration_sec) > 89999) {valid = false};
       if(title.length > 200){
         $("#editTimersForm input[name='title']").addClass(
           "invalidInput"
         );
-        return false}
-      return true;
+        valid=false}
+      return valid;
     } catch (e) {
       // Add invalidInput class to the input fields that are missing
       e.forEach((param) => {
