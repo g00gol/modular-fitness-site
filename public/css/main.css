@@ -89,6 +89,11 @@
     @apply underline;
   }
 
+  /* Bio */
+  #bio-textarea {
+    @apply w-full mb-4 bg-transparent border border-snow-1 p-2 rounded-md;
+  }
+
   input {
     @apply bg-transparent border border-snow-1 p-2 rounded-md;
   }
@@ -251,4 +256,8 @@ li.draggable-item.ui-sortable-placeholder {
 
 h3 {
   font-size: larger;
+}
+
+#modules-bio{
+  display: block;
 }
