@@ -215,9 +215,16 @@ function addAutocomplete(ith) {
     event.preventDefault();
   };
 
+  const onFocus = (event, ui) => {
+    let label = ui.item.label;
+    foodName.val(label);
+    event.preventDefault();
+  };
+
   foodName
     .autocomplete({
       source: sourceFunc,
+      focus: onFocus,
       select: onSelect,
     })
     .each(function () {

@@ -252,3 +252,18 @@ li.draggable-item.ui-sortable-placeholder {
 h3 {
   font-size: larger;
 }
+
+.ui-menu .ui-menu-item {
+  border-style: solid;
+  border-width: thin;
+  border-radius: 3px;
+}
+
+.ui-menu .ui-menu-item:hover {
+  cursor: pointer;
+  background-color: #81a1c1;
+}
+
+.ui-autocomplete .ui-menu-item .ui-state-active {
+  background-color: #81a1c1;
+}
