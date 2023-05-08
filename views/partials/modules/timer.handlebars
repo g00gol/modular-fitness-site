@@ -10,7 +10,7 @@
       <div id="saved-timers">
         {{#each allTimers}}
           <button class="timer-select-button w-full rounded-md border border-snow-1 p-2 text-left hover:bg-polar transition-colors" id="{{this._id}}" data-title="{{this.title}}" data-duration="{{this.durationFormat}}" data-seconds="{{this.duration}}">
-            <p class="timer-title">{{this.title}}</p> <p class="timer-duration">{{this.durationFormat}}</p>
+            <span class="timer-title">{{this.title}}</span> <span class="timer-duration">{{this.durationFormat}}</span>
           </button>
         {{/each}}
       </div>
@@ -18,8 +18,8 @@
 
       {{#> panels/panel-2}}
       <select id="timer-stopwatch-select">
-          <option name="timer">Timer</option>
-          <option name="stopwatch">Stopwatch</option>
+          <option id="timer">Timer</option>
+          <option id="stopwatch">Stopwatch</option>
         </select>
       <div class="flex justify-between">
         <h2 id="timer-name" data-id="">Select a timer!</h2>
@@ -30,7 +30,7 @@
       <div class="right-panel" id="timer-counter" data-paused="false" data-seconds="">
         {{!-- <p id="timer-duration"></p> --}}
         <p id="countdown" data-timeLeft="" hidden ></p>
-        <progress id="countdown-progress" value="" max="" hidden></progress> 
+        <progress id="countdown-progress" value="0" max="1" hidden></progress> 
 
 
         <p id="stopwatch-counter" data-time="" hidden>0:00:00</p>
@@ -56,7 +56,7 @@
 
       <label>
         Timer Duration (hours)
-        <input name="duration_hr" type="number" min="0" value="0">
+        <input name="duration_hr" type="number" min="0" max="24" value="0">
       </label>
 
       <label>

@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#submit-edit-modules").on("click", function(){
     let enabledModules = []
     $("#enabled-modules li").each(function(){
-      enabledModules.push($(this).attr("tag"))
+      enabledModules.push($(this).attr("data-tag"))
     })
     return $.post("/modules", {modules: enabledModules}, function(){
       return window.location.href = "/modules"
