@@ -2,7 +2,7 @@ import { Router } from "express";
 import xss from "xss";
 
 import * as calorieDataFuncs from "../../data/calories.js";
-import * as validation from "../../public/js/workoutTrackerValidation.js";
+import * as validation from "../../public/js/moduleValidation.js";
 import * as helpers from "../../utils/helpers.js";
 import moment from "moment";
 
