@@ -8,13 +8,13 @@ function addFoodFormHTML(ith) {
 
   <label>
     Item Name
-    <input name="foodName" type="text" maxlength="1000" />
+    <input name="foodName" id="foodName" type="text" maxlength="1000" />
   </label>
 
   <div class="flex">
     <label>
       Calories per Serving
-      <input name="calories" type="number" step="any" min="0" max="30000" />
+      <input name="calories" id="numCalories" type="number" step="any" min="0" max="30000" />
     </label>
     <label>
       No. of Servings
@@ -30,7 +30,7 @@ function toggleAddCalories() {
 
   // Reset the form
   $("#calorieForm").attr("action", "/modules/calories");
-  
+
   // clear errors
   $(".errorContainer").empty();
 
@@ -83,6 +83,7 @@ async function toggleEditCalories() {
     $(`#addFoodForm${i} input[name='servings']`).val(
       calorieData.foods[i].quantity
     );
+    addAutocomplete(i);
   }
 
   // Add the event listeners to the remove food buttons
@@ -170,6 +171,60 @@ function validateFoodForm(ith) {
   return true;
 }
 
+// Add autocomplete to foodname
+function addAutocomplete(ith) {
+  let foodName = $(`#addFoodForm${ith} input[name="foodName"]`);
+  let calories = $(`#addFoodForm${ith} input[name="calories"]`);
+  let servings = $(`#addFoodForm${ith} input[name="servings"]`);
+
+  let api_key = $("div[id^='addFoodContainer']").attr("id").split("?");
+  if (!api_key) return;
+  api_key = api_key[1];
+
+  const sourceFunc = async (req, res) => {
+    let search = req.term;
+    try {
+      let results = await axios.get(
+        `https://api.nal.usda.gov/fdc/v1/foods/search?api_key=${api_key}&pageSize=5&query=${search}`
+      );
+      results = results.data.foods;
+      results = results.map((entry) => {
+        const name = entry.description;
+        let cals = entry.foodNutrients.find(
+          (obj) => obj.nutrientName === "Energy"
+        );
+        return {
+          label: name,
+          value: cals.value,
+        };
+      });
+      res(results);
+    } catch (e) {
+      console.log(e);
+      res([]);
+    }
+  };
+
+  let form = $("#calorieForm");
+
+  const onSelect = (event, ui) => {
+    let { label, value } = ui.item;
+    foodName.val(label);
+    calories.val(value);
+    servings.focus();
+    event.preventDefault();
+  };
+
+  foodName
+    .autocomplete({
+      source: sourceFunc,
+      select: onSelect,
+    })
+    .each(function () {
+      $(this).autocomplete("widget").insertAfter(form.parent());
+    });
+}
+
 // Wait for document to load
 document.addEventListener("DOMContentLoaded", async () => {
   if ($("[id^='selectCalorie']").length > 0) {
@@ -247,7 +302,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Get the number of food forms with id addFoodForm${ith}
       let ith = $("div[id^='addFoodForm']").length;
       // Add the new food form
-      $("#addFoodBtn").before(addFoodFormHTML(ith++));
+      $("#addFoodBtn").before(addFoodFormHTML(ith));
+      addAutocomplete(ith);
 
       $("button[id^='removeFoodBtn']").click((e) => {
         // Get this button's ith
