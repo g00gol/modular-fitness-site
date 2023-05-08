@@ -16,9 +16,6 @@ import noteRoutes from "./modules/notes.js";
 import weightRoutes from "./modules/weight.js";
 import sugarRoutes from "./modules/sugar.js";
 
-import dotenv from "dotenv";
-dotenv.config();
-
 import allModules from "../public/constants/allModules.js";
 import { moduleGetName } from "../utils/helpers.js";
 
@@ -116,7 +113,6 @@ router.route("/modules").get(middleware.home, async (req, res) => {
       allWorkouts,
       allCalories,
       allNotes,
-      food_api_key: process.env.USDA_API_KEY,
     });
   } catch (e) {
     return res.redirect("/error?status=500");

@@ -2,6 +2,8 @@ import * as validation from "../workoutTrackerValidation.js";
 
 let calorieId;
 
+let api_key;
+
 function addFoodFormHTML(ith) {
   return `<div id="addFoodForm${ith}" class="flex space-x-4 addFoodForm">
   <button id="removeFoodBtn${ith}" value="${ith}"><i class="text-xl fa-solid fa-circle-minus"></i></button>
@@ -93,6 +95,18 @@ async function toggleEditCalories() {
   });
 }
 
+// get api key from server
+async function getAPIKey() {
+  try {
+    let res = await axios.get(`/modules/calories/apikey`, {
+      headers: { "X-Client-Side-Request": "true" },
+    });
+    api_key = res.data.key;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 // Validate Food Form
 /**
  * Validatese the ith food form
@@ -177,10 +191,6 @@ function addAutocomplete(ith) {
   let calories = $(`#addFoodForm${ith} input[name="calories"]`);
   let servings = $(`#addFoodForm${ith} input[name="servings"]`);
 
-  let api_key = $("div[id^='addFoodContainer']").attr("id").split("?");
-  if (!api_key) return;
-  api_key = api_key[1];
-
   const sourceFunc = async (req, res) => {
     let search = req.term;
     try {
@@ -234,6 +244,8 @@ function addAutocomplete(ith) {
 
 // Wait for document to load
 document.addEventListener("DOMContentLoaded", async () => {
+  getAPIKey();
+
   if ($("[id^='selectCalorie']").length > 0) {
     const calorieEntryButtons = $("[id^='selectCalorie']");
 
