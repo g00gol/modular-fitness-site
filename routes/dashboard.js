@@ -5,6 +5,7 @@
 import { Router } from "express";
 import * as middleware from "../utils/middleware.js";
 import * as users from "../data/users.js"
+import {allCharts} from "../public/constants/allCharts.js"
 
 const router = Router();
 
@@ -16,6 +17,7 @@ router.route("/").get(middleware.home, async (req, res) => {
       title: "Dashboard",
       user: req.session.user,
       userData: user,
+      graphs: allCharts,
       editProfile: "hidden",
       editPassword: "hidden"
     });

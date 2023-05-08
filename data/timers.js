@@ -22,8 +22,8 @@ const create = async (username, title, type, duration) => {
   if (typeof duration != "number") {
     throw "Duration must be a number";
   }
-  if (duration <= 0) {
-    throw "Duration must be greater than 0";
+  if (duration <= 0 || duration > 89999) {
+    throw "Duration must be greater than 0, and less than 89999";
   }
 
   await getByUsername(username); //make sure it exists
@@ -94,14 +94,17 @@ const update = async (id, username, title, type, duration) => {
   invalidStrings(title, type);
   type = type.trim();
   title = title.trim();
+  if(title.length > 200){
+    throw "timer title length too long";
+  }
   if (!(type == "timer" || type == "stopwatch")) {
     throw "invalid type";
   }
   if (typeof duration != "number") {
     throw "Duration must be a number";
   }
-  if (duration <= 0) {
-    throw "Duration must be greater than 0";
+  if (duration <= 0 || duration > 89999) {
+    throw "Duration must be greater than 0, and less than 89999";
   }
   invalidID(id);
 

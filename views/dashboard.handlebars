@@ -1,9 +1,41 @@
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"
+></script>
+<script
+  type="module"
+  src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.1.1/chart.umd.js"
+></script>
 <script type="module" src="../public/js/editProfile.js"></script>
-<section>
+<script type="module" src="../public/js/selectGraph.js"></script>
+
+{{#each graphs}}
+  <script type="module" src="{{this.script}}"></script>
+{{/each}}
+
+
+
+
+<section class="px-12 py-8">
   <h1>Dashboard</h1>
-  <span><p>{{user.fullName}} <button id="editProfileBtn"><i class="fa-solid fa-circle-user"></i></button></p></span>
+  <span>{{user.fullName}} <button id="editProfileBtn"><i class="fa-solid fa-circle-user"></i></button></span>
   <br>
   <p>{{userData.bio}}</p>
+
+  <h2>Module Data Graphs</h2>
+  <select id="graph-select">
+      <option disabled selected value> select </option>
+      {{#each graphs}}
+        <option chart-id="{{this.id}}">{{this.name}}</option>
+      {{/each}}
+  </select>
+  <div id="graph-div">
+    {{#each graphs}}
+      <div hidden class="chart-div" id="{{this.id}}-div">
+        <canvas id="{{this.id}}" class="charts"></canvas>
+      </div>
+    {{/each}}
+  </div>
+  
 </section>
 
 
@@ -20,7 +52,7 @@ edit profile modal --}}
       <br>
       <label>
         Bio:
-        <textarea id="bio-textarea" name="bio" type="text" value="{{userData.bio}}">{{userData.bio}}</textarea>
+        <textarea id="bio-textarea" name="bio">{{userData.bio}}</textarea>
       </label>
       <br>
       {{!-- <label for="profile-picture-big">Profile Picture</label>

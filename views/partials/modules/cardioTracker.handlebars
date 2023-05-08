@@ -18,7 +18,7 @@
         <div id="saved-cardios">
         {{#each allCardio}}
           <button class="cardio-select-button w-full rounded-md border border-snow-1 p-2 text-left hover:bg-polar transition-colors" id="{{this._id}}" data-type="{{this.type}}" data-date="{{this.date}}" data-dateTime="{{this.dateTime}}" data-duration="{{this.duration}}" data-distance="{{this.distance}}" data-calories="{{this.caloriesBurned}}">
-            <p class="cardio-type">{{this.type}}</p> <p class="cardio.date">{{this.date}}</p>
+            <span class="cardio-type">{{this.type}}</span> <span class="cardio.date">{{this.date}}</span>
           </button>
         {{/each}}
         </div>
@@ -56,12 +56,12 @@
 
       <label>
         Distance (miles)
-        <input name="distance" type="number" min="0">
+        <input name="distance" type="number" min="0" max="10000">
       </label>
 
       <label>
         Duration (minutes)
-        <input name="duration" type="number" min="0">
+        <input name="duration" type="number" min="0" max="10000">
       </label>
 
       <label>
@@ -71,13 +71,13 @@
 
       <label>
         Weight (optional)
-        <input name="weight" type="number" min="0"> 
+        <input name="weight" type="number" min="0" max="10000"> 
         {{!-- add a default value --}}
       </label>
 
       <label>
         Calories Burned (optional)
-        <input name="calories" type="number" min="0"> 
+        <input name="calories" type="number" min="0" max="1000"> 
         {{!-- add a default value --}}
       </label>
 
