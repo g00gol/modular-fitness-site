@@ -1,4 +1,4 @@
-import * as validation from "../workoutTrackerValidation.js";
+import * as validation from "../moduleValidation.js";
 
 let calorieId;
 
@@ -30,7 +30,7 @@ function toggleAddCalories() {
 
   // Reset the form
   $("#calorieForm").attr("action", "/modules/calories");
-  
+
   // clear errors
   $(".errorContainer").empty();
 
