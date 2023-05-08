@@ -254,9 +254,10 @@ h3 {
 }
 
 .ui-menu .ui-menu-item {
+  background-color: white;
   border-style: solid;
   border-width: thin;
-  border-radius: 3px;
+  border-radius: 5px;
 }
 
 .ui-menu .ui-menu-item:hover {
@@ -266,4 +267,8 @@ h3 {
 
 .ui-autocomplete .ui-menu-item .ui-state-active {
   background-color: #81a1c1;
+}
+
+.ui-menu {
+  position: fixed;
 }
