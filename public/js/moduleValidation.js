@@ -74,3 +74,23 @@ export function paramIsArray(obj) {
   }
   if (invalidParams.length > 0) throw invalidParams;
 }
+
+/**
+ * Checks if the parameters are valid dates
+ * @param {object} obj An object of a user's date of birth whose key is the name of the parameter and the value is the value of the parameter
+ * @throws {array} An array of which parameters are invalid
+ */
+export function paramIsDate(obj) {
+  let invalidParams = [];
+  for (let key in obj) {
+    if (
+      typeof obj[key] === "undefined" ||
+      obj[key] === null ||
+      !isString(obj[key]) ||
+      !moment(obj[key], "YYYY-MM-DD", true).isValid() // date is not valid
+    ) {
+      invalidParams.push(key);
+    }
+  }
+  if (invalidParams.length > 0) throw invalidParams;
+}

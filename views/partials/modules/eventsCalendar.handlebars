@@ -1,0 +1,12 @@
+{{#> module moduleName="Events Calendar"}}
+  {{#> panels/panel-2}}
+    <h2>Today's Events</h2>
+    {{#if events}}
+
+    {{else}}
+      <p>Nothing today</p>
+    {{/if}}
+
+    <a href="/modules/calendar">View full calendar</a>
+  {{/panels/panel-2}}
+{{/module}}

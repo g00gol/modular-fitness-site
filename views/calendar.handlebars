@@ -1,13 +1,58 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.6/index.global.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
 <script type="module" src="../public/js/modules/fullCalendar.js"></script>
 
+{{#if invalid}}
+<script>alert("Invalid input")</script>
+{{/if}}
+
 <section>
-  <div id="calendar?{{calendar.id}}"></div>
+  <div id="calendar" class="max-w-[100vw] max-h-[100vh]"></div>
 </section>
 
 {{!-- Add Event Modal --}}
-<div id="eventsModal" class="fixed top-0 left-nav" hidden>
-  
+<div id="eventsModal" class="z-10 fixed top-0 left-nav" hidden>
+  {{#> modal modalName="Add Event"}}
+    <form id="eventsForm" class="flex flex-col space-y-4 text-lg" action="/modules/calendar/add-event" method="POST">
+      <label>
+        Event Name
+        <input name="eventName" type="text">
+      </label>
+
+      <label>
+        Event Date
+        <input name="eventDate" type="date">
+      </label>
+
+      <label>
+        Start Time
+        <input name="eventStartTime" type="time">
+      </label>
+
+      <label>
+        End Time
+        <input name="eventEndTime" type="time">
+      </label>
+
+      <label class="block">
+        Event Description (Optional) <br>
+        <textarea name="eventDescription" type="text" rows="5" cols="50"></textarea>
+      </label>
+
+      <div class="errorContainer">
+        {{#each error}}
+        <p class="error">
+          {{this}}
+        </p>
+        {{/each}}
+      </div>
+
+      <div id="eventsFormBtns" class="eventsFormBtns !mt-[5vh] space-x-4">
+        <button id="eventsFormSubmit" type="submit" class="w-fit px-6 py-2 text-snow-3 hover:text-snow-1 underline bg-frost rounded-std">Save</button>
+        <button id="eventsFormCancel" type="button" class="w-fit text-gray-2 hover:text-gray-1 underline">Cancel</button>
+      </div>
+    </form>
+  {{/modal}}
 </div>

@@ -1,4 +1,4 @@
-import * as validation from "../workoutTrackerValidation.js";
+import * as validation from "../moduleValidation.js";
 
 let workoutId;
 
@@ -365,7 +365,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if ($("#workoutsForm").length > 0) {
     $("#workoutsForm").submit((e) => {
       e.preventDefault();
-      $(".errorContainer").empty();
+      $(".errorContainer").empty(); 
 
       let valid = true;
       // Validate workout form

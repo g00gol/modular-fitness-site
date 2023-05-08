@@ -6,6 +6,9 @@ import {
   getAuthByRefreshToken,
 } from "../../utils/googleAuth.js";
 import { google } from "googleapis";
+import moment from "moment";
+
+import * as validation from "../../public/js/moduleValidation.js";
 
 dotenv.config();
 
@@ -48,7 +51,11 @@ router.get("/", async (req, res) => {
     let { data } = await calendar.calendarList.list();
     let calendars = data.items;
 
-    return res.render("calendar", { title: "Calendar", calendars });
+    return res.render("calendar", {
+      title: "Calendar",
+      calendars,
+      invalid: req.query?.invalid,
+    });
   } catch (e) {
     return res.redirect("/error?status=500");
   }
@@ -138,18 +145,74 @@ router.post("/add-event", async (req, res) => {
       calendarId = data.id;
     }
   } catch (e) {
-    return res.redirect("/error?status=500");
+    return res.redirect("/modules/calendar?invalid=true");
   }
 
+  let { eventName, eventDescription, eventDate, eventStartTime, eventEndTime } =
+    req.body;
+
+  // Check if params exist and are strings
+  try {
+    validation.paramExists({
+      eventName,
+      eventDate,
+      eventStartTime,
+      eventEndTime,
+    });
+    validation.paramIsString({
+      eventName,
+      eventDate,
+      eventStartTime,
+      eventEndTime,
+    });
+  } catch (e) {
+    return res.redirect("/modules/calendar?invalid=true");
+  }
+
+  // Validate eventDate
+  if (!moment(eventDate, "YYYY-MM-DD", true).isValid()) {
+    return res.redirect("/modules/calendar?invalid=true");
+  }
+
+  // Validate time format
+  let timeRegex = /([01][0-9]|[02][0-3]):[0-5][0-9]/;
+  if (!timeRegex.test(eventStartTime) || !timeRegex.test(eventEndTime)) {
+    return res.redirect("/modules/calendar?invalid=true");
+  }
+
+  // Check if eventStartTime is before eventEndTime
+  let eventStartTimeDate = new Date(`01/01/2000 ${eventStartTime}`);
+  let eventEndTimeDate = new Date(`01/01/2000 ${eventEndTime}`);
+  if (eventStartTimeDate > eventEndTimeDate) {
+    return res.redirect("/modules/calendar?invalid=true");
+  }
+
+  // If eventDescription is not empty, check if it's a string
+  if (eventDescription.trim().length > 0) {
+    try {
+      validation.paramIsString({
+        eventDescription,
+      });
+    } catch (e) {
+      return res.redirect("/modules/calendar?invalid=true");
+    }
+  }
+
+  let startDateTimeISO = new Date(
+    `${eventDate}T${eventStartTime}`
+  ).toISOString();
+  let endDateTimeISO = new Date(`${eventDate}T${eventEndTime}`).toISOString();
+
   let event = {
-    summary: req.body.title,
+    summary: eventName,
+    description: eventDescription,
     start: {
-      dateTime: new Date(req.body.start).toISOString(),
-      timeZone: "America/Los_Angeles",
+      dateTime: startDateTimeISO,
+      timeZone: "America/New_York",
     },
     end: {
-      dateTime: new Date(req.body.end).toISOString(),
-      timeZone: "America/Los_Angeles",
+      dateTime: endDateTimeISO,
+      timeZone: "America/New_York",
     },
   };
 
@@ -159,7 +222,7 @@ router.post("/add-event", async (req, res) => {
       resource: event,
     });
 
-    return res.status(200).json({ eventId: data.id });
+    return res.redirect("/modules/calendar");
   } catch (e) {
     return res.redirect("/error?status=500");
   }
