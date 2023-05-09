@@ -25,7 +25,7 @@
   <select id="graph-select">
       <option disabled selected value> select </option>
       {{#each graphs}}
-        <option chart-id="{{this.id}}">{{this.name}}</option>
+        <option data-chart-id="{{this.id}}">{{this.name}}</option>
       {{/each}}
   </select>
   <div id="graph-div">
