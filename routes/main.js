@@ -17,7 +17,7 @@ import noteRoutes from "./modules/notes.js";
 import weightRoutes from "./modules/weight.js";
 import sugarRoutes from "./modules/sugar.js";
 
-import profileRoutes from "./profile.js"
+import profileRoutes from "./profile.js";
 
 import allModules from "../public/constants/allModules.js";
 import { moduleGetName } from "../utils/helpers.js";
@@ -104,6 +104,22 @@ router.route("/modules").get(middleware.home, async (req, res) => {
     }
   }
 
+  let eventsCalendar = { auth: true, upcoming: [] };
+  if (req.session.user.enabledModules.includes("eventsCalendar")) {
+    if (!req.session.tokens) {
+      eventsCalendar.auth = false;
+    } else {
+      try {
+        eventsCalendar.upcoming = await dataModules.calendar.getUpcomingEvents(
+          req.session.tokens
+        );
+      } catch (e) {
+        console.log(e);
+        return res.redirect("/error?status=500");
+      }
+    }
+  }
+
   try {
     return res.render("modules", {
       title: "Home",
@@ -116,6 +132,7 @@ router.route("/modules").get(middleware.home, async (req, res) => {
       allWorkouts,
       allCalories,
       allNotes,
+      eventsCalendar,
     });
   } catch (e) {
     return res.redirect("/error?status=500");

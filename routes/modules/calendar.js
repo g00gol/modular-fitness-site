@@ -9,6 +9,7 @@ import { google } from "googleapis";
 import moment from "moment";
 
 import * as validation from "../../public/js/moduleValidation.js";
+import * as calendarData from "../../data/calendar.js";
 
 dotenv.config();
 
@@ -17,12 +18,12 @@ const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
 const redirect_uris = ["http://localhost:3000/modules/calendar/auth/callback"];
 
 const router = Router();
-router.get("/auth", async (req, res) => {
+router.route("/auth").get(async (req, res) => {
   let authUrl = await getAuthUrl(req.originalUrl);
   res.redirect(authUrl);
 });
 
-router.get("/auth/callback", async (req, res) => {
+router.route("/auth/callback").get(async (req, res) => {
   let code = req.query.code;
   let tokens = await getAuthByCode(code);
 
@@ -30,30 +31,15 @@ router.get("/auth/callback", async (req, res) => {
   res.redirect("/modules/calendar");
 });
 
-router.get("/", async (req, res) => {
+router.route("/").get(async (req, res) => {
   let { tokens } = req.session;
   if (!tokens) {
     return res.redirect("/modules/calendar/auth");
   }
 
-  // Create a new oAuth2Client instance with the session tokens
-  const sessionOAuth2Client = new google.auth.OAuth2(
-    clientID,
-    clientSecret,
-    redirect_uris[0]
-  );
-
-  sessionOAuth2Client.setCredentials(tokens);
-
-  let calendar = google.calendar({ version: "v3", auth: sessionOAuth2Client });
-
   try {
-    let { data } = await calendar.calendarList.list();
-    let calendars = data.items;
-
     return res.render("calendar", {
       title: "Calendar",
-      calendars,
       invalid: req.query?.invalid,
     });
   } catch (e) {
@@ -61,54 +47,27 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/events", async (req, res) => {
+router.route("/events").get(async (req, res) => {
+  let isClientSideRequest = req.header("X-Client-Side-Request") === "true";
+  if (!isClientSideRequest) {
+    return res.redirect("/error?status=403");
+  }
+
   let { tokens } = req.session;
   if (!tokens) {
     return res.redirect("/modules/calendar/auth");
   }
 
-  // Create a new oAuth2Client instance with the session tokens
-  const sessionOAuth2Client = new google.auth.OAuth2(
-    clientID,
-    clientSecret,
-    redirect_uris[0]
-  );
-  sessionOAuth2Client.setCredentials(tokens);
-
-  let calendar = google.calendar({ version: "v3", auth: sessionOAuth2Client });
-
-  // Get the calendar list
-  let { data } = await calendar.calendarList.list();
-  let calendars = data.items;
-
-  // Get events from all calendars
-  let allEvents = [];
-  for (let calendarItem of calendars) {
-    let calendarId = calendarItem.id;
-    let eventsResponse = await calendar.events.list({ calendarId: calendarId });
-    let events = eventsResponse.data.items;
-    allEvents.push(...events);
+  // Get all events
+  try {
+    let events = await calendarData.getAllEvents(tokens);
+    return res.status(200).json({ events });
+  } catch (e) {
+    return res.redirect("/error?status=500");
   }
-
-  let events = allEvents
-    .map((event) => {
-      if (event.status !== "cancelled") {
-        return {
-          id: event.id,
-          title: event.summary,
-          start: event.start.dateTime || event.start.date,
-          end: event.end.dateTime || event.end.date,
-        };
-      }
-
-      return;
-    })
-    .filter((event) => !!event);
-
-  return res.status(200).json({ events });
 });
 
-router.post("/add-event", async (req, res) => {
+router.route("/add-event").post(async (req, res) => {
   let { tokens } = req.session;
   if (!tokens) {
     res.redirect("/modules/calendar/auth");
@@ -144,6 +103,8 @@ router.post("/add-event", async (req, res) => {
       });
       calendarId = data.id;
     }
+
+    req.session.calendarId = calendarId;
   } catch (e) {
     return res.redirect("/modules/calendar?invalid=true");
   }
@@ -198,33 +159,46 @@ router.post("/add-event", async (req, res) => {
     }
   }
 
-  let startDateTimeISO = new Date(
-    `${eventDate}T${eventStartTime}`
-  ).toISOString();
-  let endDateTimeISO = new Date(`${eventDate}T${eventEndTime}`).toISOString();
-
-  let event = {
-    summary: eventName,
-    description: eventDescription,
-    start: {
-      dateTime: startDateTimeISO,
-      timeZone: "America/New_York",
-    },
-    end: {
-      dateTime: endDateTimeISO,
-      timeZone: "America/New_York",
-    },
-  };
-
   try {
-    let { data } = await calendar.events.insert({
+    let event = await calendarData.addEvent(
+      calendar,
       calendarId,
-      resource: event,
-    });
+      eventName,
+      eventDescription,
+      eventDate,
+      eventStartTime,
+      eventEndTime
+    );
 
     return res.redirect("/modules/calendar");
   } catch (e) {
-    return res.redirect("/error?status=500");
+    if (e.invalid) {
+      return res.redirect("/modules/calendar?invalid=true");
+    } else {
+      return res.redirect("/error?status=500");
+    }
+  }
+});
+
+// Gets the events for the current day and the next day
+router.route("/upcoming-events").get(async (req, res) => {
+  let { tokens } = req.session;
+  if (!tokens) {
+    res.redirect("/modules/calendar/auth");
+    return;
+  }
+
+  try {
+    // Get the upcoming events function
+    let upcomingEvents = await calendarData.getUpcomingEvents(tokens);
+
+    return res.status(200).json({ upcomingEvents });
+  } catch (e) {
+    if (e.invalid) {
+      return res.redirect("/modules/calendar?invalid=true");
+    } else {
+      return res.redirect("/error?status=500");
+    }
   }
 });
 

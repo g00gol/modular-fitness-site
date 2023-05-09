@@ -43,11 +43,9 @@ async function addEvent() {
     try {
       validation.paramIsDate({
         eventDate,
-        });
+      });
     } catch (e) {
-      $(".errorContainer").append(
-        `<p class="error">Invalid date format</p>`
-      );
+      $(".errorContainer").append(`<p class="error">Invalid date format</p>`);
       return;
     }
 

@@ -1,12 +1,23 @@
 {{#> module moduleName="Events Calendar"}}
-  {{#> panels/panel-2}}
-    <h2>Today's Events</h2>
-    {{#if events}}
+{{#> panels/panel-2}}
+<h2>Upcoming Events</h2>
+{{#if eventsCalendar.auth}}
+{{#if eventsCalendar.upcoming}}
+<ul class="space-y-4">
+  {{#each eventsCalendar.upcoming}}
+  <div>
+    <li>{{this.title}}</li>
+    <li>{{this.start}} - {{this.end}}</li>
+  </div> {{/each}}
+</ul>
+{{else}}
+<p>Nothing today</p>
+{{/if}}
+<a href="/modules/calendar">View full calendar</a>
 
-    {{else}}
-      <p>Nothing today</p>
-    {{/if}}
+{{else}}
+<a href="/modules/calendar/auth">Log in to view events</a>
+{{/if}}
 
-    <a href="/modules/calendar">View full calendar</a>
-  {{/panels/panel-2}}
+{{/panels/panel-2}}
 {{/module}}

@@ -117,6 +117,10 @@
   --polar: #81a1c1;
   --gray-1: #4c566a;
   --gray-2: #2e3440;
+
+  /* Custom colors for fullcalendar */
+  --fc-event-bg-color: #5e81ac;
+  --fc-event-border-color: #5e81ac;
 }
 
 body {
@@ -140,7 +144,10 @@ a:hover {
   color: var(--polar);
 }
 
-button {
+button,
+p,
+label,
+a {
   font-size: 14pt;
 }
 
