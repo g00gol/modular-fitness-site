@@ -1,20 +1,23 @@
 <header
   class="[&>a]:icons-clickable fixed h-screen w-nav py-[4vh] flex flex-col items-center space-y-[4vh] bg-snow-3 border-r-[1px] border-snow-1 z-10"
 >
-  <a href="/">
-    <img src="../../public/assets/images/Logo-Dark.svg" alt="logo" />
+  <a href="/" aria-label="logo">
+    <img
+      aria-hidden="true"
+      src="../../public/assets/images/Logo-Dark.svg"
+      alt="logo"
+    />
+    <span class="sr-only">
+      logo
+    </span>
   </a>
-
-  <a href="/signup">
+  <a href="/signup" aria-label="user">
     <i class="fa-solid fa-circle-user"></i>
   </a>
-
-  <a href="/myData">
+  <a href="/myData" aria-label="data">
     <i class="fa-solid fa-binoculars"></i>
   </a>
-
-  <a class="!mt-auto bottom-0" href="/logout"><i
-      class="fa-solid fa-arrow-right-from-bracket"
-    ></i>
+  <a class="!mt-auto bottom-0" href="/logout" aria-label="logout">
+    <i class="fa-solid fa-arrow-right-from-bracket"></i>
   </a>
 </header>
