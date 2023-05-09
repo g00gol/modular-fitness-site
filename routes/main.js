@@ -9,6 +9,7 @@ import * as dataModules from "../data/index.js";
 import * as users from "../data/users.js";
 //import * as workouts from "../data/workouts.js";
 import workoutsRoutes from "./modules/workouts.js";
+import calendarRoutes from "./modules/calendar.js";
 import cardioRoutes from "./modules/cardio.js";
 import timerRoutes from "./modules/timers.js";
 import calorieRoutes from "./modules/calories.js";
@@ -103,6 +104,22 @@ router.route("/modules").get(middleware.home, async (req, res) => {
     }
   }
 
+  let eventsCalendar = { auth: true, upcoming: [] };
+  if (req.session.user.enabledModules.includes("eventsCalendar")) {
+    if (!req.session.tokens) {
+      eventsCalendar.auth = false;
+    } else {
+      try {
+        eventsCalendar.upcoming = await dataModules.calendar.getUpcomingEvents(
+          req.session.tokens
+        );
+      } catch (e) {
+        console.log(e);
+        return res.redirect("/error?status=500");
+      }
+    }
+  }
+
   try {
     return res.render("modules", {
       title: "Home",
@@ -115,6 +132,7 @@ router.route("/modules").get(middleware.home, async (req, res) => {
       allWorkouts,
       allCalories,
       allNotes,
+      eventsCalendar,
     });
   } catch (e) {
     return res.redirect("/error?status=500");
@@ -156,6 +174,7 @@ router.route("/modules/enabled").get(middleware.home, async (req, res) => {
 
 router.use("/profile/", middleware.home, profileRoutes);
 router.use("/modules/workouts", middleware.home, workoutsRoutes);
+router.use("/modules/calendar", middleware.home, calendarRoutes);
 router.use("/modules/cardio", middleware.home, cardioRoutes);
 router.use("/modules/timers", middleware.home, timerRoutes);
 router.use("/modules/calories", middleware.home, calorieRoutes);

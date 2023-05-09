@@ -65,7 +65,7 @@
 
   /* Panel */
   .panel {
-    @apply rounded-std h-full w-fit p-8 flex flex-col overflow-y-auto;
+    @apply rounded-std h-[35vh] w-fit p-8 flex flex-col overflow-y-auto;
   }
   .panel h2 {
     @apply font-bold;
@@ -97,6 +97,9 @@
   input {
     @apply bg-transparent border border-snow-1 p-2 rounded-md;
   }
+  textarea {
+    @apply bg-transparent border border-snow-1 p-2 rounded-md;
+  }
   select {
     @apply bg-transparent border border-snow-1 p-2 rounded-md;
   }
@@ -114,6 +117,10 @@
   --polar: #81a1c1;
   --gray-1: #4c566a;
   --gray-2: #2e3440;
+
+  /* Custom colors for fullcalendar */
+  --fc-event-bg-color: #5e81ac;
+  --fc-event-border-color: #5e81ac;
 }
 
 body {
@@ -135,6 +142,13 @@ a {
 }
 a:hover {
   color: var(--polar);
+}
+
+button,
+p,
+label,
+a {
+  font-size: 16pt;
 }
 
 .invalidInput {

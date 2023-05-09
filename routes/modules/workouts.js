@@ -364,6 +364,30 @@ router.route("/:workoutId").post(async (req, res) => {
     return res.redirect("/error?status=403");
   }
 
+  let { deleteWorkout } = req.body;
+  // Check if deleteWorkout is valid
+  try {
+    validation.paramExists({ deleteWorkout });
+    validation.paramIsString({ deleteWorkout });
+  } catch (e) {
+    if (e.invalid) {
+      return res.redirect("/error?status=400");
+    } else {
+      return res.redirect("/error?status=500");
+    }
+  }
+
+  // Delete the workout
+  if (deleteWorkout) {
+    try {
+      await workouts.deleteWorkout(workoutId);
+    } catch (e) {
+      return res.redirect("/error?status=500");
+    }
+
+    return res.redirect("/modules");
+  }
+
   let { workoutName, workoutDay } = req.body;
   workoutName = xss(workoutName);
   workoutDay = xss(workoutDay);

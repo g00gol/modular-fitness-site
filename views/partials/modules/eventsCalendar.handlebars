@@ -1,0 +1,23 @@
+{{#> module moduleName="Events Calendar"}}
+{{#> panels/panel-2}}
+<h2>Upcoming Events</h2>
+{{#if eventsCalendar.auth}}
+{{#if eventsCalendar.upcoming}}
+<ul class="space-y-4">
+  {{#each eventsCalendar.upcoming}}
+  <div>
+    <li>{{this.title}}</li>
+    <li>{{this.start}} - {{this.end}}</li>
+  </div> {{/each}}
+</ul>
+{{else}}
+<p>Nothing today</p>
+{{/if}}
+<a href="/modules/calendar">View full calendar</a>
+
+{{else}}
+<a href="/modules/calendar/auth">Log in to view events</a>
+{{/if}}
+
+{{/panels/panel-2}}
+{{/module}}

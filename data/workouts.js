@@ -398,10 +398,37 @@ const editWorkout = async (workoutId, workoutName, workoutDay, exercises) => {
   return { updatedWorkout: true };
 };
 
+/**
+ * Deletes a workout by the workoutId
+ * @param {*} workoutId
+ * @returns {deletedWorkout: true} if the workout was successfully deleted
+ */
+const deleteWorkout = async (workoutId) => {
+  // Validate workoutId
+  try {
+    validation.paramExists({ workoutId });
+    validation.paramIsString({ workoutId });
+    workoutId = helpers.invalidID(workoutId);
+  } catch (e) {
+    throw { invalid: ["workoutId"] };
+  }
+
+  const workoutCollection = await workouts();
+  const deleteInfo = await workoutCollection.deleteOne({
+    _id: new ObjectId(workoutId),
+  });
+
+  if (deleteInfo.deletedCount === 0) {
+    throw { serverError: [500, "Internal Server Error"] };
+  }
+  return { deletedWorkout: true };
+};
+
 export {
   createWorkout,
   createExercise,
   getWorkouts,
   getWorkoutById,
   editWorkout,
+  deleteWorkout,
 };
