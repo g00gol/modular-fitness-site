@@ -60,6 +60,13 @@ const logout = async (req, res, next) => {
   return next();
 };
 
+const myData = async (req, res, next) => {
+  if (!req.session?.user) {
+    return res.redirect("/login");
+  }
+  return next();
+};
+
 const logging = async (req, res, next) => {
   let timestamp = new Date().toUTCString();
   let { method, path } = req;
@@ -81,4 +88,4 @@ const authAPI = async (req, res, next) => {
   return next();
 };
 
-export { noCache, root, login, signup, home, logout, logging, authAPI };
+export { noCache, root, login, signup, home, logout, logging, authAPI, myData};

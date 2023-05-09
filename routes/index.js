@@ -7,6 +7,7 @@ import dashboardRoutes from "./dashboard.js";
 import * as sugarAPIRoutes from "./api/sugar.js";
 import * as weightAPIRoutes from "./api/weight.js";
 import * as cardioAPIRoutes from "./api/cardio.js";
+import userDataRoutes from "./userData.js"
 
 import * as middleware from "../utils/middleware.js";
 
@@ -16,6 +17,7 @@ const constructorMethod = (app) => {
   app.use("/signup", middleware.noCache, userRoutes.signupRouter);
   app.use("/dashboard", dashboardRoutes);
   app.use("/logout", userRoutes.logoutRouter);
+  app.use("/myData", middleware.myData ,userDataRoutes);
 
   app.use("/error", async (req, res) => {
     let statusCode = Number(req.query?.status) || 404;

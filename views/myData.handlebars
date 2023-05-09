@@ -1,0 +1,54 @@
+<script type="module" src="../public/js/myData.js"></script>
+<h1>Your Data</h1>
+
+<button id="download-csv">Download</button>
+<div id="download-here"></div>
+
+<p class="error">{{error}}</p>
+
+<ul>
+    <li>
+        <h2>Calorie Data</h2>
+        <ol>
+            {{#each data.calories}}
+                <li class="data">Date/Time: {{this.date}}, Foods: {{#each this.foods}} [{{this.food_name}} ({{this.quantity}}, {{this.calories}} calories)]{{/each}}, Total Calories: {{this.totalCalories}}</li>
+            {{/each}}
+        </ol>
+    </li>
+    <li>
+        <h2>Cardio Data</h2>
+        <ol>
+            {{#each data.cardio}}
+                <li class="data">Date: {{this.date}}, Type: {{this.type}}, Distance: {{this.distance}}, Duration: {{this.duration}}, Calories Burned: {{this.caloriesBurned}}</li>
+            {{/each}}
+        </ol>
+    </li>
+    <li>
+        <h2>Note Data</h2>
+        <ol>
+            {{#each data.notes}}
+                <li class="data">Date: {{this.date}}, Title: {{this.title}}, Text: {{this.text}}</li>
+            {{/each}}
+        </ol>
+    </li>
+    <li>
+        <h2>Timer Data</h2>
+        <ol>
+            {{#each data.timers}}
+                <li class="data">Title: {{this.title}}, Duration: {{this.durationFormat}}</li>
+            {{/each}}
+        </ol>
+    </li>
+    <li>
+        <h2>Workout Data</h2>
+        <ol>
+            {{#each data.workouts}}
+                <li class="data">Workout Name: {{this.workName}}, Workout Day: {{this.workoutDay}}, Exercises {{#each this.exercises}}[{{this.exerciseName}} ({{this.exerciseSets}} x {{this.exerciseReps}} @ {{this.exerciseWeight}}{{this.exerciseWeightUnits}})]{{/each}}</li>
+            {{/each}}
+        </ol>
+    </li>
+    
+
+
+
+</ul>
