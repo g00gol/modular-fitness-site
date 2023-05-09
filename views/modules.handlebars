@@ -37,7 +37,7 @@
   <div class="drag-drop-container">
     <div class="row">
       <div class="column">
-        <h3>Unenabled Modules</h3>
+        <p>Unenabled Modules</p>
         <ul class="connected-sortable unenabled">
           {{#each allModules}}
             {{#unlessContains ../enabledModules this.tag}}<li class="draggable-item" data-tag="{{this.tag}}">{{this.name}}</li>{{/unlessContains}}
@@ -46,7 +46,7 @@
       </div>
       
       <div class="column">
-        <h3>Enabled Modules</h3>
+        <p>Enabled Modules</p>
         <ul class="connected-sortable enabled" id="enabled-modules">
           {{#each enabledModules}}
             <li class="draggable-item" data-tag="{{this.tag}}">{{this.name}}</li>
