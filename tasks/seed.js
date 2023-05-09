@@ -60,7 +60,7 @@ let userPat = await users.checkUser("nycswag", testPassword);
 //create some cardio workouts
 await cardio.create("johndoe", "run", 1500, 1, moment(), -1, 60);
 await cardio.create("johndoe", "walk", 15, 2, moment(), -1, 60);
-await cardio.create("johndoe", "run", 15003, 1, moment(), 1502, -1);
+await cardio.create("johndoe", "run", 1003, 1, moment(), 1502, -1);
 
 //create some timers
 let timer1 = await timers.create("johndoe", "plank", "timer", 50);

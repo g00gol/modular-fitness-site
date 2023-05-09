@@ -2,19 +2,21 @@ import * as validation from "../moduleValidation.js";
 
 let calorieId;
 
+let api_key;
+
 function addFoodFormHTML(ith) {
   return `<div id="addFoodForm${ith}" class="flex space-x-4 addFoodForm">
   <button id="removeFoodBtn${ith}" value="${ith}"><i class="text-xl fa-solid fa-circle-minus"></i></button>
 
   <label>
     Item Name
-    <input name="foodName" type="text" maxlength="1000" />
+    <input name="foodName" id="foodName" type="text" maxlength="1000" />
   </label>
 
   <div class="flex">
     <label>
       Calories per Serving
-      <input name="calories" type="number" step="any" min="0" max="30000" />
+      <input name="calories" id="numCalories" type="number" step="any" min="0" max="30000" />
     </label>
     <label>
       No. of Servings
@@ -83,6 +85,7 @@ async function toggleEditCalories() {
     $(`#addFoodForm${i} input[name='servings']`).val(
       calorieData.foods[i].quantity
     );
+    addAutocomplete(i);
   }
 
   // Add the event listeners to the remove food buttons
@@ -90,6 +93,18 @@ async function toggleEditCalories() {
     let ith = $(this).val();
     $(`#addFoodForm${ith}`).remove();
   });
+}
+
+// get api key from server
+async function getAPIKey() {
+  try {
+    let res = await axios.get(`/modules/calories/apikey`, {
+      headers: { "X-Client-Side-Request": "true" },
+    });
+    api_key = res.data.key;
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 // Validate Food Form
@@ -170,8 +185,67 @@ function validateFoodForm(ith) {
   return true;
 }
 
+// Add autocomplete to foodname
+function addAutocomplete(ith) {
+  let foodName = $(`#addFoodForm${ith} input[name="foodName"]`);
+  let calories = $(`#addFoodForm${ith} input[name="calories"]`);
+  let servings = $(`#addFoodForm${ith} input[name="servings"]`);
+
+  const sourceFunc = async (req, res) => {
+    let search = req.term;
+    try {
+      let results = await axios.get(
+        `https://api.nal.usda.gov/fdc/v1/foods/search?api_key=${api_key}&pageSize=5&query=${search}`
+      );
+      results = results.data.foods;
+      results = results.map((entry) => {
+        const name = entry.description;
+        let cals = entry.foodNutrients.find(
+          (obj) => obj.nutrientName === "Energy"
+        );
+        return {
+          label: name,
+          value: cals.value,
+        };
+      });
+      res(results);
+    } catch (e) {
+      console.log(e);
+      res([]);
+    }
+  };
+
+  let form = $("#calorieForm");
+
+  const onSelect = (event, ui) => {
+    let { label, value } = ui.item;
+    foodName.val(label);
+    calories.val(value);
+    servings.focus();
+    event.preventDefault();
+  };
+
+  const onFocus = (event, ui) => {
+    let label = ui.item.label;
+    foodName.val(label);
+    event.preventDefault();
+  };
+
+  foodName
+    .autocomplete({
+      source: sourceFunc,
+      focus: onFocus,
+      select: onSelect,
+    })
+    .each(function () {
+      $(this).autocomplete("widget").insertAfter(form.parent());
+    });
+}
+
 // Wait for document to load
 document.addEventListener("DOMContentLoaded", async () => {
+  getAPIKey();
+
   if ($("[id^='selectCalorie']").length > 0) {
     const calorieEntryButtons = $("[id^='selectCalorie']");
 
@@ -247,7 +321,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Get the number of food forms with id addFoodForm${ith}
       let ith = $("div[id^='addFoodForm']").length;
       // Add the new food form
-      $("#addFoodBtn").before(addFoodFormHTML(ith++));
+      $("#addFoodBtn").before(addFoodFormHTML(ith));
+      addAutocomplete(ith);
 
       $("button[id^='removeFoodBtn']").click((e) => {
         // Get this button's ith
