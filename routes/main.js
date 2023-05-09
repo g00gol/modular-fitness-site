@@ -16,7 +16,7 @@ import noteRoutes from "./modules/notes.js";
 import weightRoutes from "./modules/weight.js";
 import sugarRoutes from "./modules/sugar.js";
 
-import profileRoutes from "./profile.js"
+import profileRoutes from "./profile.js";
 
 import allModules from "../public/constants/allModules.js";
 import { moduleGetName } from "../utils/helpers.js";
@@ -147,6 +147,11 @@ router.route("/modules").post(middleware.home, async (req, res) => {
 
   //return window.location.href = "/modules"
   return res.redirect("/modules");
+});
+
+router.route("/modules/enabled").get(middleware.home, async (req, res) => {
+  const enabledModules = req.session.user.enabledModules.join("\n");
+  res.send(enabledModules);
 });
 
 router.use("/profile/", middleware.home, profileRoutes);
