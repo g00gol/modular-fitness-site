@@ -47,6 +47,22 @@
             {{/each}}
         </ol>
     </li>
+    <li>
+        <h2>Sugar Data</h2>
+        <ol>
+            {{#each data.sugar}}
+                <li class="data">Sugar Reading: {{this.sugarReading}}, Fasting: {{this.fasting}}, Time: {{this.time}}</li>
+            {{/each}}
+        </ol>
+    </li>
+    <li>
+        <h2>Weight Data</h2>
+        <ol>
+            {{#each data.weight}}
+                <li class="data">Weight: {{this.weight}}, Time: {{this.time}}</li>
+            {{/each}}
+        </ol>
+    </li>
     
 
 
