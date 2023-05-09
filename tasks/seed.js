@@ -67,20 +67,14 @@ let timer1 = await timers.create("johndoe", "plank", "timer", 50);
 await timers.create("johndoe", "meditation", "timer", 100);
 await timers.create("johndoe", "chill", "timer", 2000);
 
-await enterWeight("mkaur", 99);
-await enterWeight("mkaur", 1);
-await enterWeight("mkaur", 2);
-await enterWeight("mkaur", 3);
+await enterWeight("mkaur", 160);
+await enterWeight("mkaur", 163);
+await enterWeight("mkaur", 162);
+await enterWeight("mkaur", 159);
 
-await enterWeight("johndoe", 100);
-await enterWeight("johndoe", 102);
+await enterWeight("johndoe", 120);
+await enterWeight("johndoe", 122);
 let ans22 = await getAllWeightsObj("mkaur");
-
-let ans = await updateWeightEntry(ans22[0]._id.toString(), 700);
-// let ans = await getWeightById(ans2[0]._id.toString())
-// await deleteOneWeightEnrty("mkaur",ans22[0]._id.toString())
-// // console.log("id sent is: "+ ans2[0]._id.toString())
-// console.log(ans)
 
 await enterWeight("johndoe", 101);
 await enterWeight("johndoe", 99);
@@ -91,7 +85,6 @@ await enterWeight("nycSwag", 140);
 await enterSugar("johndoe", 191, false);
 await enterSugar("johndoe", 201, false);
 await enterSugar("johndoe", 182, true);
-
 
 
 await enterSugar("mkaur", 109, true);
