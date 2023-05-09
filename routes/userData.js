@@ -5,6 +5,8 @@ import { Parser } from "json2csv";
 import * as path from "path"
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { getAllSugarObj } from "../data/sugar.js"
+import { getAllWeightsObj } from "../data/weight.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -39,6 +41,9 @@ router.route("/").get(async (req, res) => {
         allData.notes = await userData.notes.getNotesByUserID(userId)
         allData.timers = await userData.timers.getAll(username)
         allData.workouts = await userData.workouts.getWorkouts(userId)
+        allData.sugar = await getAllSugarObj(username)
+        allData.weight = await getAllWeightsObj(username)
+        
     }catch(e){
         return res.render("myData", 
             {title: "my Data",
@@ -77,6 +82,8 @@ router.route("/download").get(async (req, res) => {
         allData.notes = await userData.notes.getNotesByUserID(userId)
         allData.timers = await userData.timers.getAll(username)
         allData.workouts = await userData.workouts.getWorkouts(userId)
+        allData.sugar = await getAllSugarObj(username)
+        allData.weight = await getAllWeightsObj(username)
     }catch(e){
         return res.render("myData", 
             {title: "my Data",
