@@ -58,8 +58,12 @@ document.addEventListener("DOMContentLoaded", () => {
     $("#enabled-modules li").each(function () {
       enabledModules.push($(this).attr("data-tag"));
     });
-    return $.post("/modules", { modules: enabledModules }, function () {
-      return (window.location.href = "/modules");
+    $.post(
+      "/modules",
+      { modules: enabledModules },
+      () => (window.location.href = "/modules")
+    ).fail(function () {
+      window.location.href = "/error?status=500";
     });
   });
 });
@@ -73,6 +77,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     const link = window.URL.createObjectURL(blob);
     $("#exportModulesBtn").attr("href", link).attr("download", "modules.txt");
+  }).fail(function () {
+    window.location.href = "/error?status=500";
   });
 
   // Implement import modules button
