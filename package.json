@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "seed": "node tasks/seed.js",
-    "start": "node app.js",
+    "start": "npm run build:css && node app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:css": "postcss public/css/main.css -o public/css/build.css",
     "watch:css": "nodemon -w public/css -w views -e css,handlebars,js -x \"npm run build:css\"",
