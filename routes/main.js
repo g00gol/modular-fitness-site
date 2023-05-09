@@ -32,7 +32,7 @@ router.route("/").get(middleware.root, (req, res) => {
 
 router.route("/modules").get(middleware.home, async (req, res) => {
   let user = await users.getByUsername(req.session.user.username);
-  if (!user) {
+  if (!user || !user.enabledModules) {
     return res.redirect("/error?status=500");
   }
   req.session.user.enabledModules = user.enabledModules;
@@ -141,6 +141,20 @@ router.route("/modules").get(middleware.home, async (req, res) => {
 
 router.route("/modules").post(middleware.home, async (req, res) => {
   let newModules = req.body.modules;
+  if (!newModules) {
+    req.session.user.enabledModules = [];
+
+    // Update the user's modules
+    let updatedUser = await users.updateEnabledModulesByUsername(
+      req.session.user.username,
+      []
+    );
+    if (!updatedUser.updated) {
+      return res.redirect("/error?status=500");
+    }
+    return res.redirect("/modules");
+  }
+
   let validTags = [];
   for (let i = 0; i < allModules.length; i++) {
     validTags.push(allModules[i].tag);

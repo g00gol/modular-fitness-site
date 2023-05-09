@@ -1,6 +1,6 @@
 {{#> module moduleName="Events Calendar"}}
 {{#> panels/panel-2}}
-<h2>Upcoming Events</h2>
+<h2 class="w-fit">Upcoming Events</h2>
 {{#if eventsCalendar.auth}}
 {{#if eventsCalendar.upcoming}}
 <ul class="space-y-4">
@@ -11,7 +11,7 @@
   </div> {{/each}}
 </ul>
 {{else}}
-<p>Nothing today</p>
+<p>No upcoming events</p>
 {{/if}}
 <a href="/modules/calendar">View full calendar</a>
 
