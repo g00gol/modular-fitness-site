@@ -6,6 +6,9 @@ import * as validation from "../../public/js/moduleValidation.js";
 import * as helpers from "../../utils/helpers.js";
 import moment from "moment";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 const router = Router();
 
 const checkFoods = (foods) => {
@@ -109,6 +112,15 @@ router.route("/").post(async (req, res) => {
   }
 
   return res.redirect("/modules");
+});
+
+router.route("/apikey").get(async (req, res) => {
+  let isClientSideRequest = req.header("X-Client-Side-Request") === "true";
+  if (!isClientSideRequest) {
+    return res.redirect("/error?status=403");
+  }
+
+  return res.json({ key: process.env.USDA_API_KEY });
 });
 
 router.route("/:calorieID").get(async (req, res) => {
