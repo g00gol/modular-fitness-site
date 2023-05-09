@@ -38,6 +38,8 @@ await users.createUser(
   "2001-01-01"
 );
 let userJohn = await users.checkUser("johndoe", testPassword);
+let john = await users.getByUsername("johndoe")
+await users.updateUserById(john._id, "John Doe", "Here is my bio, I like to workout", "null");
 
 await users.createUser(
   "Mandeep Kaur",
