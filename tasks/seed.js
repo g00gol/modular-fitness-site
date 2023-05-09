@@ -82,27 +82,26 @@ let ans = await updateWeightEntry(ans22[0]._id.toString(), 700);
 // // console.log("id sent is: "+ ans2[0]._id.toString())
 // console.log(ans)
 
-await enterWeight("johndoe", 10);
-await enterWeight("johndoe", 100);
-await enterWeight("nycSwag", 101);
+await enterWeight("johndoe", 101);
+await enterWeight("johndoe", 99);
 
-await enterSugar("johndoe", 11, false);
+await enterWeight("nycSwag", 142);
+await enterWeight("nycSwag", 140);
 
-await enterSugar("mkaur", 7, false);
-await enterSugar("mkaur", 112, false);
-await enterSugar("mkaur", 113, false);
-await enterSugar("mkaur", 114, true);
+await enterSugar("johndoe", 191, false);
+await enterSugar("johndoe", 201, false);
+await enterSugar("johndoe", 182, true);
+
+
+
+await enterSugar("mkaur", 109, true);
+await enterSugar("mkaur", 192, false);
+await enterSugar("mkaur", 113, true);
+await enterSugar("mkaur", 154, false);
+
 let ans2 = await getAllSugarObj("mkaur");
-await updateSugartEntry(ans2[0]._id.toString(), 700, true);
 
-// let ans = await getSugarById(ans2[0]._id.toString())
-// console.log("id sent is: "+ ans2[0]._id.toString())
-// console.log(ans)
-// await deleteOneSugarEnrty("mkaur","6438460abb940a8db0c70896!")
-// await deleteAllSugarDataForUser("mkaur")
-// await deleteAllWeightDataForUser("mkaur")
 
-// create some workouts
 let workout1 = await workouts.createWorkout(
   userPat.uid,
   userPat.username,
