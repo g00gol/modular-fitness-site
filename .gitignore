@@ -111,3 +111,6 @@ dist
 
 # package-lock.json
 package-lock.json
+
+# data.csv
+data.csv
