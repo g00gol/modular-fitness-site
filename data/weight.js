@@ -139,7 +139,7 @@ const getAllWeightsObj = async (username) =>
     {
         let weightsCollection = await weights();
         let record = await weightsCollection.findOne({username: username});
-        return record.data;
+        return record?.data;
         
     }
     catch (e) 

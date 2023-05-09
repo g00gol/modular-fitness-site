@@ -167,6 +167,11 @@ router.route("/modules").post(middleware.home, async (req, res) => {
   return res.redirect("/modules");
 });
 
+router.route("/modules/enabled").get(middleware.home, async (req, res) => {
+  const enabledModules = req.session.user.enabledModules.join("\n");
+  res.send(enabledModules);
+});
+
 router.use("/profile/", middleware.home, profileRoutes);
 router.use("/modules/workouts", middleware.home, workoutsRoutes);
 router.use("/modules/calendar", middleware.home, calendarRoutes);

@@ -235,7 +235,7 @@ const getAllSugarObj = async (username) =>
     {
         let sugarCollection = await sugar();
         let record = await sugarCollection.findOne({username: username});
-        return record.data;
+        return record?.data;
         
     }
     catch (e) 
