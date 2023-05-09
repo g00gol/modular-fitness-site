@@ -1,4 +1,4 @@
-import * as validation from "../workoutTrackerValidation.js";
+import * as validation from "../moduleValidation.js";
 
 let workoutId;
 

@@ -72,4 +72,13 @@ const logging = async (req, res, next) => {
   next();
 };
 
-export { noCache, root, login, signup, home, logout, logging };
+const authAPI = async (req, res, next) => {
+  // req.session.user = { username: "johndoe" };
+
+  if (!req.session?.user) {
+    return res.status(403).json({ error: req.session });
+  }
+  return next();
+};
+
+export { noCache, root, login, signup, home, logout, logging, authAPI };

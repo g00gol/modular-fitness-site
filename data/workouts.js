@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { workouts } from "../config/mongoCollections.js";
 
-import * as validation from "../public/js/workoutTrackerValidation.js";
+import * as validation from "../public/js/moduleValidation.js";
 import * as helpers from "../utils/helpers.js";
 
 /**

@@ -16,6 +16,8 @@ import noteRoutes from "./modules/notes.js";
 import weightRoutes from "./modules/weight.js";
 import sugarRoutes from "./modules/sugar.js";
 
+import profileRoutes from "./profile.js"
+
 import allModules from "../public/constants/allModules.js";
 import { moduleGetName } from "../utils/helpers.js";
 
@@ -147,6 +149,7 @@ router.route("/modules").post(middleware.home, async (req, res) => {
   return res.redirect("/modules");
 });
 
+router.use("/profile/", middleware.home, profileRoutes);
 router.use("/modules/workouts", middleware.home, workoutsRoutes);
 router.use("/modules/cardio", middleware.home, cardioRoutes);
 router.use("/modules/timers", middleware.home, timerRoutes);

@@ -89,6 +89,11 @@
     @apply underline;
   }
 
+  /* Bio */
+  #bio-textarea {
+    @apply w-full mb-4 bg-transparent border border-snow-1 p-2 rounded-md;
+  }
+
   input {
     @apply bg-transparent border border-snow-1 p-2 rounded-md;
   }
@@ -271,4 +276,20 @@ h3 {
 
 .ui-menu {
   position: fixed;
+}
+
+#modules-bio {
+  display: block;
+}
+
+#change-password-btn {
+  background-color: #5e81ac;
+  color: white;
+  padding: 3px;
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
+
+.charts {
+  width: 20%;
 }

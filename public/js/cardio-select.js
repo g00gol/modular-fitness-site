@@ -65,6 +65,7 @@ function toggleEditCardio() {
   function validateCardioForm() {
     $("#editCardioForm input").removeClass("invalidInput");
   
+    let valid = true;
     let cardioType = $("#editCardioForm select[name='cardioType']").val();
     let cardioDistance = $("#editCardioForm input[name='distance']").val();
     let cardioDuration = $("#editCardioForm input[name='duration']").val();
@@ -72,48 +73,81 @@ function toggleEditCardio() {
     let cardioWeight = $("#editCardioForm input[name='weight']").val();
     let cardioCalories = $("#editCardioForm input[name='calories']").val();
 
+    let cardioWeightInt = parseInt(cardioWeight);
+    let cardioCaloriesInt = parseInt(cardioCalories);
+    let cardioDistanceInt = parseInt(cardioDistance);
+    let cardioDurationInt = parseInt(cardioDuration);
+
+    if(cardioCaloriesInt < 0 || cardioCaloriesInt > 10000){
+      $("#editCardioForm input[name='calories']").addClass(
+        "invalidInput"
+      );
+      valid = false;
+    }
+
+    if(cardioWeightInt < 0 || cardioWeightInt > 10000){
+      $("#editCardioForm input[name='weight']").addClass(
+        "invalidInput"
+      );
+      valid = false;
+    }
+
+    if(cardioDurationInt <= 0 || cardioDurationInt > 10000){
+      $("#editCardioForm input[name='duration']").addClass(
+        "invalidInput"
+      );
+      valid = false;
+    }
+
+    if(cardioDistanceInt <= 0 || cardioDistanceInt > 10000){
+      $("#editCardioForm input[name='distance']").addClass(
+        "invalidInput"
+      );
+      valid = false;
+    }
+
     if(!cardioCalories){cardioCalories = -1}
     if(!cardioWeight){cardioWeight = -1}
 
-    cardioDistance = parseInt(cardioDistance);
-    cardioDuration = parseInt(cardioDuration);
-    cardioWeight = parseInt(cardioWeight);
-    cardioCalories = parseInt(cardioCalories);
+    
+    
+
+    
   
     // Validate workoutName and workoutDate
     try {
       paramExists({ cardioType, cardioDistance, cardioDuration, cardioDate, cardioWeight, cardioCalories});
-      return true;
+      return valid;
     } catch (e) {
       // Add invalidInput class to the input fields that are missing
       e.forEach((param) => {
         if (param === "cardioType") {
-          $("#editCardioForm input[name='cardioType']").addClass(
+          $("#editCardioForm select[name='cardioType']").addClass(
             "invalidInput"
           );
         }
         if (param === "cardioDistance") {
-          $("#editCardioForm select[name='distance']").addClass(
+          $("#editCardioForm input[name='distance']").addClass(
             "invalidInput"
           );
         }
         if (param === "cardioDuration") {
-            $("#editCardioForm select[name='duration']").addClass(
+            $("#editCardioForm input[name='duration']").addClass(
               "invalidInput"
             );
         }
         if (param === "cardioDate") {
-            $("#editCardioForm select[name='date']").addClass(
+            $("#editCardioForm input[name='date']").addClass(
               "invalidInput"
             );
         }
         if (param === "cardioWeight") {
-            $("#editCardioForm select[name='weight']").addClass(
+            $("#editCardioForm input[name='weight']").addClass(
               "invalidInput"
             );
         }
         if (param === "cardioCalories") {
-            $("#editCardioForm select[name='calories']").addClass(
+            $("#editCardioForm input[name='calories']").addClass(
               "invalidInput"
             );
         }
@@ -133,7 +167,7 @@ function toggleEditCardio() {
     $("#updateCardioBtn").on("click", function(){
 
       $("#delete-cardio-option").show();
-      $("#editCardioForm select[name='type']").val($("#cardio-data").attr("data-type")).change()
+      $("#editCardioForm select[name='cardioType']").val($("#cardio-data").attr("data-type")).change()
       $("#editCardioForm input[name='distance']").attr("value", $("#cardio-data").attr("data-distance"))
       $("#editCardioForm input[name='duration']").attr("value", $("#cardio-data").attr("data-duration"))
       $("#editCardioForm input[name='date']").attr("value" , ($("#cardio-data").attr("data-date")))
@@ -148,7 +182,7 @@ function toggleEditCardio() {
     if ($("#editCardioBtn").length > 0) {
       $("#editCardioBtn").on("click", function(){
         $("#delete-cardio-option").hide();
-        $("#editCardioForm select[name='title']").val("walk").change()
+        $("#editCardioForm select[name='cardioType']").val("walk").change()
         $("#editCardioForm input[name='distance']").attr("value", "")
         $("#editCardioForm input[name='duration']").attr("value", "")
         $("#editCardioForm input[name='date']").attr("value", "")
