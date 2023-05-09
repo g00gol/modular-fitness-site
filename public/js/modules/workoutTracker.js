@@ -104,13 +104,8 @@ async function toggleEditWorkouts() {
     );
   }
 
-  // Add the event listeners to the remove exercise buttons
-  $(".addExerciseForm button").click(function () {
-    let ith = $(this).val();
-    $(`#addExerciseForm${ith}`).remove();
-  });
-
-  // Add the event listener to the add exercise button
+  // Toggle the delete exercise button
+  $("#delete-workout-option").toggle();
 }
 
 // Validate the workout form
@@ -380,7 +375,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if ($("#workoutsForm").length > 0) {
     $("#workoutsForm").submit((e) => {
       e.preventDefault();
-      $(".errorContainer").empty();
+      $(".errorContainer").empty(); 
 
       let valid = true;
       // Validate workout form

@@ -37,7 +37,7 @@
   <div class="drag-drop-container">
     <div class="row">
       <div class="column">
-        <h3>Unenabled Modules</h3>
+        <p>Unenabled Modules</p>
         <ul class="connected-sortable unenabled">
           {{#each allModules}}
             {{#unlessContains ../enabledModules this.tag}}<li class="draggable-item" data-tag="{{this.tag}}">{{this.name}}</li>{{/unlessContains}}
@@ -46,7 +46,7 @@
       </div>
       
       <div class="column">
-        <h3>Enabled Modules</h3>
+        <p>Enabled Modules</p>
         <ul class="connected-sortable enabled" id="enabled-modules">
           {{#each enabledModules}}
             <li class="draggable-item" data-tag="{{this.tag}}">{{this.name}}</li>
@@ -56,8 +56,14 @@
     </div>
   </div>
 
+      <div class="errorContainer"></div>
 
-
+      <div class="module-edit-import">
+        <button type="button" id="importModulesBtn" class="w-fit px-6 py-2 text-frost hover:polar underline bg-white rounded-std">Import</button>
+        <input type="file" id="modulesFileInput" accept="text/plain" />
+      </div>
+      
+      <a id="exportModulesBtn" class="block w-fit px-6 py-2 text-frost hover:polar underline bg-white rounded-std">Export</a>
 
       <div class="!mt-[5vh] space-x-4 module-edit-bottom-buttons">
         <button id="submit-edit-modules" type="button" class="w-fit px-6 py-2 text-snow-3 hover:text-snow-1 underline bg-frost rounded-std">Save</button>
