@@ -8,7 +8,7 @@
   {{#> panels/panel-1}}
     <div class="flex justify-between">
       <h2 class="w-fit">Your Workouts</h2>
-      <button id="addWorkoutsBtn" class="text-xl hover:text-snow-1 transition-colors"><i class="fa-solid fa-plus"></i></button>
+      <label><button id="addWorkoutsBtn" class="text-xl hover:text-snow-1 transition-colors"><i class="fa-solid fa-plus"></i></button></label>
     </div>
     {{#each allWorkouts}}
       <button id="selectWorkout?{{this._id}}" class="[&>span]:pointer-events-none w-full flex justify-between rounded-md border border-snow-1 text-white p-2 text-left hover:bg-polar transition-colors">
