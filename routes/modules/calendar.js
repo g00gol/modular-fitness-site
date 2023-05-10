@@ -222,7 +222,24 @@ router.route("/share").get(async (req, res) => {
   if (!calendarId) {
     return res.status(500).json({ error: "Calendar ID not found" });
   }
-  let { shareEmail } = req.body;
+  let { shareEmail } = req.query;
+
+  try {
+    validation.paramExists({ shareEmail });
+    validation.paramIsString({ shareEmail });
+    if (
+      typeof shareEmail === "undefined" ||
+      shareEmail === null ||
+      // https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address
+      !/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(
+        shareEmail
+      )
+    ) {
+      throw ["shareEmail"];
+    }
+  } catch (e) {
+    return res.status(500).json({ error: e });
+  }
 
   // Create a new oAuth2Client instance with the session tokens
   const sessionOAuth2Client = new google.auth.OAuth2(
@@ -235,7 +252,7 @@ router.route("/share").get(async (req, res) => {
   let calendar = google.calendar({ version: "v3", auth: sessionOAuth2Client });
   const aclRule = {
     scope: {
-      type: "default",
+      type: "user",
       value: shareEmail,
     },
     role: "writer",

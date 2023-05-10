@@ -28,11 +28,23 @@
 {{!-- Share Calendar Modal --}}
 <div id="shareCalendarModal" class="fixed top-0 left-nav" hidden>
 {{#> modal modalName="Share Calendar"}}
-<form id="shareCalendarForm" action="/modules/calendar/share" type="POST">
-  <label>Email<input name="shareEmail" type="email"></label>
-  <button>Share</button>
-</form>
+<form id="shareCalendarForm">
+  <label>Email<input id="shareEmail" name="shareEmail" type="email"></label>
+  <label><input id="shareCalendarInput" type="text" readonly></label>
 
-<button id="shareCalendarCancel" type="button" class="w-fit text-gray-2 hover:text-gray-1 underline">Cancel</button>
+  <div class="errorContainer">
+    {{#each error}}
+    <p class="error">
+      {{this}}
+    </p>
+    {{/each}}
+  </div>
+
+  <div id="shareCalendarBtns" class="eventsFormBtns !mt-[5vh] space-x-4">
+    <button id="shareCalendarSubmit" type="submit"
+      class="w-fit px-6 py-2 text-snow-3 hover:text-snow-1 underline bg-frost rounded-std">Save</button>
+    <button id="shareCalendarCancel" type="button" class="w-fit text-gray-2 hover:text-gray-1 underline">Cancel</button>
+  </div>
+</form>
 {{/modal}}
 </div>
