@@ -62,7 +62,7 @@ let userMK = await users.checkUser("mkaur", testPassword);
 
 
 //create some cardio workouts
-await cardio.create("johndoe", "run", 10, 3, moment(), -1, 2);
+await cardio.create("johndoe", "run", 10, 3, moment("02-01-2021", "DD-MM-YYYY"), -1, 2);
 await cardio.create("johndoe", "walk", 15, 2, moment(), 40, 60);
 await cardio.create("johndoe", "run", 13, 1, moment(), 12, -1);
 
