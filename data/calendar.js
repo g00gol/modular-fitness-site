@@ -2,6 +2,7 @@ import * as validation from "../public/js/moduleValidation.js";
 import dotenv from "dotenv";
 import { google } from "googleapis";
 import moment from "moment";
+import xss from "xss";
 
 dotenv.config();
 
@@ -95,6 +96,13 @@ async function addEvent(
   } catch (e) {
     throw { invalid: true };
   }
+
+  // Sanitize inputs
+  eventName = xss(eventName);
+  eventDescription = xss(eventDescription);
+  eventDate = xss(eventDate);
+  eventStartTime = xss(eventStartTime);
+  eventEndTime = xss(eventEndTime);
 
   // Validate eventDate
   if (!moment(eventDate, "YYYY-MM-DD", true).isValid()) {
