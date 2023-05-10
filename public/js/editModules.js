@@ -82,7 +82,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Implement import modules button
-  $("#importModulesBtn").on("click", () => {
+  $("#importExportForm").submit((e) => {
+    e.preventDefault();
     let file = $("#modulesFileInput").prop("files")[0];
     if (!file) {
       $(".errorContainer").append(`<p class="error">No file provided</p>`);
