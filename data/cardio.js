@@ -27,6 +27,9 @@ const create = async (
   if (!moment(dateTime).isValid()) {
     throw "invalid date";
   }
+  if(moment(dateTime).isAfter(moment())){
+    throw "date cannot be in the future"
+  }
   ///
   if (typeof duration != "number") {
     throw "Duration must be a number";

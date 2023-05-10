@@ -243,7 +243,7 @@ li.draggable-item:hover {
   cursor: pointer;
   background-color: #eaeaea;
 }
-/* styles during drag */
+
 li.draggable-item.ui-sortable-helper {
   background-color: #e5e5e5;
   z-index: 100;

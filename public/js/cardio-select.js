@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-    $("#date-input").attr("max", new Date().toISOString().split("T")[0]);
+    let date = new Date()
+    date = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`
+    $("#date-input").attr("max", date);
 
     $("button.cardio-select-button").on("click", function(){
         //this.id has the id for the timer
