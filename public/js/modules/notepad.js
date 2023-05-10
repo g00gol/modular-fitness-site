@@ -16,7 +16,7 @@ function validateNoteForm() {
     invalidParams.push("text");
   } else if (typeof title !== "string") {
     invalidParams.push("title");
-  } else if (title.length > 300) {
+  } else if (title.length > 75) {
     invalidParams.push("title");
   } else if (text.length > 25000) {
     invalidParams.push("text");
