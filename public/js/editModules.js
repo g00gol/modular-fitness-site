@@ -26,6 +26,21 @@ function checkImportedModules(modulesString) {
   let validTags = allModules.map((mod) => mod.tag);
   let enabledModules = modulesString.trim().split(/\s+/);
 
+  let checkDuplicates = (arr) => {
+    let isDuplicate = (elem, ind) => {
+      let index = arr.indexOf(elem);
+      return index !== ind;
+    };
+    let length = arr.filter(isDuplicate).length;
+    return length > 0;
+  };
+
+  if (checkDuplicates(enabledModules)) {
+    $(".errorContainer").append(`<p class="error">Invalid import file.</p>`);
+    $(`#modulesFileInput`).addClass("invalidInput");
+    return;
+  }
+
   for (const module of enabledModules) {
     if (!validTags.includes(module)) {
       $(".errorContainer").append(`<p class="error">Invalid import file.</p>`);
@@ -87,6 +102,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let file = $("#modulesFileInput").prop("files")[0];
     if (!file) {
       $(".errorContainer").append(`<p class="error">No file provided</p>`);
+      $(`#modulesFileInput`).addClass("invalidInput");
+    } else if (file.size > 5000) {
+      $(".errorContainer").append(`<p class="error">File too large</p>`);
       $(`#modulesFileInput`).addClass("invalidInput");
     } else {
       $(".errorContainer").empty();
