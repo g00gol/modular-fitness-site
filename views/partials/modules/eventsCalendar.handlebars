@@ -30,7 +30,7 @@
 {{#> modal modalName="Share Calendar"}}
 <form id="shareCalendarForm">
   <label>Email<input id="shareEmail" name="shareEmail" type="email"></label>
-  <label><input id="shareCalendarInput" type="text" readonly></label>
+  <span id="shareCalendarURL" hidden></span>
 
   <div class="errorContainer">
     {{#each error}}

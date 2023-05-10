@@ -8,9 +8,13 @@ document.addEventListener("DOMContentLoaded", function () {
     $("#shareCalendarModal").toggle();
   });
 
+  // When user clicks, copy the html text
+  $("#shareCalendarURL").click(() => {});
+
   $("#shareCalendarForm").submit(async (e) => {
     e.preventDefault();
     $(".errorContainer").empty();
+    $("#shareCalendarURL").hide();
 
     // Get email
     let shareEmail = $("#shareEmail").val();
@@ -39,8 +43,10 @@ document.addEventListener("DOMContentLoaded", function () {
         shareEmail,
       },
       success: (data) => {
-        // Populate the input with the URL
-        $("#shareCalendarInput").val(
+        // Populate the span with the URL
+        $("#shareCalendarURL").show();
+
+        $("#shareCalendarURL").text(
           `https://www.google.com/calendar/render?cid=${encodeURIComponent(
             data.url
           )}`
