@@ -1,4 +1,4 @@
-import * as validation from "../moduleValidation.js";
+import * as validation from "./moduleValidation.js";
 
 // Toggles the modal for adding a new event
 async function addEvent() {

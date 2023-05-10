@@ -37,6 +37,41 @@ router.route("/").get(async (req, res) => {
     return res.redirect("/modules/calendar/auth");
   }
 
+  // Create a new oAuth2Client instance with the session tokens
+  const sessionOAuth2Client = new google.auth.OAuth2(
+    clientID,
+    clientSecret,
+    redirect_uris[0]
+  );
+  sessionOAuth2Client.setCredentials(tokens);
+
+  let calendar = google.calendar({ version: "v3", auth: sessionOAuth2Client });
+
+  let calendarName = "mode-fitness";
+  let calendarId;
+
+  try {
+    let { data } = await calendar.calendarList.list();
+    let existingCalendar = data.items.find(
+      (calendar) => calendar.summary === calendarName
+    );
+
+    if (existingCalendar) {
+      calendarId = existingCalendar.id;
+    } else {
+      let { data } = await calendar.calendars.insert({
+        requestBody: {
+          summary: calendarName,
+        },
+      });
+      calendarId = data.id;
+    }
+
+    req.session.calendarId = calendarId;
+  } catch (e) {
+    return res.redirect("/modules/calendar?invalid=true");
+  }
+
   try {
     return res.render("calendar", {
       title: "Calendar",
@@ -74,6 +109,8 @@ router.route("/add-event").post(async (req, res) => {
     return;
   }
 
+  let { calendarId } = req.session;
+
   // Create a new oAuth2Client instance with the session tokens
   const sessionOAuth2Client = new google.auth.OAuth2(
     clientID,
@@ -83,31 +120,6 @@ router.route("/add-event").post(async (req, res) => {
   sessionOAuth2Client.setCredentials(tokens);
 
   let calendar = google.calendar({ version: "v3", auth: sessionOAuth2Client });
-
-  let calendarName = "mode-fitness";
-  let calendarId;
-
-  try {
-    let { data } = await calendar.calendarList.list();
-    let existingCalendar = data.items.find(
-      (calendar) => calendar.summary === calendarName
-    );
-
-    if (existingCalendar) {
-      calendarId = existingCalendar.id;
-    } else {
-      let { data } = await calendar.calendars.insert({
-        requestBody: {
-          summary: calendarName,
-        },
-      });
-      calendarId = data.id;
-    }
-
-    req.session.calendarId = calendarId;
-  } catch (e) {
-    return res.redirect("/modules/calendar?invalid=true");
-  }
 
   let { eventName, eventDescription, eventDate, eventStartTime, eventEndTime } =
     req.body;
@@ -184,8 +196,7 @@ router.route("/add-event").post(async (req, res) => {
 router.route("/upcoming-events").get(async (req, res) => {
   let { tokens } = req.session;
   if (!tokens) {
-    res.redirect("/modules/calendar/auth");
-    return;
+    return res.redirect("/modules/calendar/auth");
   }
 
   try {
@@ -200,6 +211,65 @@ router.route("/upcoming-events").get(async (req, res) => {
       return res.redirect("/error?status=500");
     }
   }
+});
+
+router.route("/share").get(async (req, res) => {
+  let { tokens } = req.session;
+  if (!tokens) {
+    return res.status(403).json({ error: "Not authorized" });
+  }
+  let { calendarId } = req.session;
+  if (!calendarId) {
+    return res.status(500).json({ error: "Calendar ID not found" });
+  }
+  let { shareEmail } = req.query;
+
+  try {
+    validation.paramExists({ shareEmail });
+    validation.paramIsString({ shareEmail });
+    if (
+      typeof shareEmail === "undefined" ||
+      shareEmail === null ||
+      // https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address
+      !/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(
+        shareEmail
+      )
+    ) {
+      throw ["shareEmail"];
+    }
+  } catch (e) {
+    return res.status(500).json({ error: e });
+  }
+
+  // Create a new oAuth2Client instance with the session tokens
+  const sessionOAuth2Client = new google.auth.OAuth2(
+    clientID,
+    clientSecret,
+    redirect_uris[0]
+  );
+  sessionOAuth2Client.setCredentials(tokens);
+
+  let calendar = google.calendar({ version: "v3", auth: sessionOAuth2Client });
+  const aclRule = {
+    scope: {
+      type: "user",
+      value: shareEmail,
+    },
+    role: "writer",
+  };
+
+  try {
+    await calendar.acl.insert({
+      calendarId,
+      requestBody: aclRule,
+    });
+  } catch (e) {
+    return res.status(500).json({ error: e });
+  }
+
+  return res.status(200).json({
+    url: `https://calendar.google.com/calendar/ical/${calendarId}/public/basic.ics`,
+  });
 });
 
 export default router;

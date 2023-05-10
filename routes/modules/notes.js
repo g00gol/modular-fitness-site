@@ -17,7 +17,7 @@ const checkNote = (title, text) => {
     throw [400, "note body must be a string"];
   } else if (typeof title !== "string") {
     throw [400, "note title must be a string"];
-  } else if (title.length > 300) {
+  } else if (title.length > 75) {
     throw [400, "note title too long"];
   } else if (text.length > 25000) {
     throw [400, "note text too long"];
