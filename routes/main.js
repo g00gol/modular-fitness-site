@@ -166,6 +166,19 @@ router.route("/modules").post(middleware.home, async (req, res) => {
     }
   }
 
+  let checkDuplicates = (arr) => {
+    let isDuplicate = (elem, ind) => {
+      let index = arr.indexOf(elem);
+      return index !== ind;
+    };
+    let length = arr.filter(isDuplicate).length;
+    return length > 0;
+  };
+
+  if (checkDuplicates(newModules)) {
+    return res.redirect("/error?status=500");
+  }
+
   // Update the user's modules
   let updatedUser = await users.updateEnabledModulesByUsername(
     req.session.user.username,
